@@ -1,8 +1,10 @@
 <script setup>
+import { Navbar } from './components';
+
 </script>
 <template>
   <div id="app">
-    <p>home</p>
+    <Navbar />
   </div>
 </template>
 
