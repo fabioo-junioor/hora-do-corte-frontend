@@ -1,22 +1,27 @@
 <script setup>
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 const getPageLogin = () => {
-    console.log('page');
+    router.push({ name: 'loginUser' });
 
 };
 </script>
 <template>
   <div id="navbar">
     <q-layout view="hHh lpR fFf">
-      <q-header elevated class="bg-grey-9 text-grey-3 q-pl-md q-pr-md">
+      <q-header elevated class="q-px-md q-py-xs">
         <q-toolbar class="q-py-sm">
-          <q-toolbar-title>
-                <i class='bx bx-calendar q-px-sm' />
-                Agenda estilo
-          </q-toolbar-title>
+          <router-link class="q-pa-xs" to="/">
+            <q-toolbar-title>
+              <i class='bx bx-calendar q-px-sm' />
+              Agenda estilo        
+            </q-toolbar-title>
+          </router-link>
         <div class="btn-area-user">
             <q-btn 
                 outline 
-                color="grey-2"
+                color="brown-10"
                 @click="getPageLogin" >
                 <i class='bx bx-log-in q-pr-md' />
                 Área do cliente
@@ -35,14 +40,32 @@ const getPageLogin = () => {
 <style lang="scss" scoped>
 #navbar{
     .q-header{
-        .q-toolbar__title{
-            display: flex;
+      background-color: $darkColorSecondary;
 
-            i{
-                font-size: 2rem;
+      .q-toolbar{
+        display: flex;
+        justify-content: space-between;
 
-            }
+        a{
+          text-decoration: none;
+          color: $brown-10;
+
+          .q-toolbar__title{
+              display: flex;
+
+              i{
+                  font-size: 2rem;
+                  color: $brown-10;
+
+              }
+          }
+          &:hover{
+            background-color: rgba(255, 255, 255, .3);
+            border-radius: 5px;
+
+          }
         }
+      }
         .btn-area-user{
             i{
                 font-size: 1.5rem;
