@@ -1,7 +1,8 @@
 <script setup>
 import { reactive } from 'vue';
+import { FormUser } from '../../components';
 
-const dataFormUser = reactivective({
+const dataFormUser = reactive({
     email: '',
     password: ''
 
@@ -20,7 +21,12 @@ const loginUser = () => {
                     fit="contain" /> 
             </div>
             <div class="login-user-forms">
-                
+                <FormUser
+                    class="form-user"
+                    typeForm="loginUser"
+                    v-model:email="dataFormUser.email"
+                    v-model:password="dataFormUser.password"
+                    @loginUser="loginUser" />
             </div>
         </div>
     </div>
@@ -32,15 +38,16 @@ const loginUser = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 3.1rem);
+    height: calc(100vh - 4rem);
     font-family: "Fredoka", sans-serif;
 
     .login-user{
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: red;
-        box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, .5);
+        background-color: $darkColorSecondary;
+        box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, .3);
+        border: 1px solid $brown-10;
         border-radius: 5px;
         width: 60%;
         height: 80%;
@@ -49,7 +56,7 @@ const loginUser = () => {
             width: 50%;
             height: 100%;
             border-radius: 5px;
-            background-color: blueviolet;
+            background-color: $darkColorSecondary;
 
             .q-img{
                 height: 100%;
