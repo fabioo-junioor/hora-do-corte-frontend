@@ -36,7 +36,7 @@ onMounted(() => {
             <q-input
                 dark
                 class="q-mb-md"
-                color="orange-9"
+                color="brown-8"
                 v-model="emailUser"
                 type="text"
                 label="Seu e-mail:"
@@ -45,7 +45,7 @@ onMounted(() => {
             <q-input
                 dark
                 class="q-mb-md"
-                color="orange-9"
+                color="brown-8"
                 v-model="passwordUser"
                 :type="isPwd1 ? 'password' : 'text'"
                 label="Sua senha:"
@@ -61,7 +61,7 @@ onMounted(() => {
                 dark
                 v-if="!typeFormUser"
                 class="q-mb-md"
-                color="orange-9"
+                color="brown-8"
                 v-model="repeatPasswordUser"
                 :type="isPwd2 ? 'password' : 'text'"
                 label="Repita a senha:"
@@ -106,8 +106,8 @@ onMounted(() => {
         .q-btn{
             height: 3rem;
             width: 100%;
-            color: white;
-            background-color: orange;
+            color: $whiteColorPrimary;
+            background-color: $darkColorPrimary;
 
         }
         .links-type-form-user{
@@ -116,11 +116,11 @@ onMounted(() => {
             
             a{
                 text-decoration: underline;
-                color: white;
+                color: $whiteColorPrimary;
                 font-size: .9rem;
                 
                 &:hover{
-                    color: orange;
+                    color: $brown-8;
 
                 }
             }
