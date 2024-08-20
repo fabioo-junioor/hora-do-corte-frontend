@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-
-import { Home, LoginUser, CadUser } from '../pages';
+import { Home, LoginUser, CadUser, HomeUser } from '../pages';
 
 const routes = [
     {
@@ -14,7 +13,17 @@ const routes = [
         }
     },
     {
-        path: '/loginUser',
+        path: '/:nameUser',
+        name: 'homeUser',
+        component: HomeUser,
+        beforeEnter: (_, __, next) => {
+            next();
+            return;
+
+        }
+    },
+    {
+        path: '/:nameUser/loginUser',
         name: 'loginUser',
         component: LoginUser,
         beforeEnter: (_, __, next) => {
@@ -24,14 +33,14 @@ const routes = [
         }
     },
     {
-        path: '/cadUser',
+        path: '/:nameUser/cadUser',
         name: 'cadUser',
         component: CadUser,
         beforeEnter: (_, __, next) => {
             next();
             return;
 
-        }   
+        }
     },
     {
         path: '/:pathMatch(.*)',

@@ -1,10 +1,17 @@
 <script setup>
-import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
+const isPageUser = ref(false);
 const getPageLogin = () => {
-    router.push({ name: 'loginUser' });
+  if(route.params.nameUser){
+    router.push({ path: `/${route.params.nameUser}/loginUser` });
+    console.log(route.params.nameUser, isPageUser.value);
+    return;
 
+    };
 };
 </script>
 <template>
@@ -12,18 +19,19 @@ const getPageLogin = () => {
     <q-layout view="hHh lpR fFf">
       <q-header elevated class="q-px-md q-py-xs">
         <q-toolbar class="q-py-sm">
-          <router-link class="q-pa-xs" to="/">
+          <router-link class="q-pa-xs" :to="route.params.nameUser ? `/${route.params.nameUser}` : '/'">
             <q-toolbar-title>
               <i class='bx bx-calendar q-px-sm' />
               Agenda estilo        
             </q-toolbar-title>
           </router-link>
-        <div class="btn-area-user">
+        <div class="btn-area-user"
+          v-if="route.params.nameUser">
             <q-btn 
                 outline 
                 color="brown-10"
                 @click="getPageLogin" >
-                <i class='bx bx-log-in q-pr-md' />
+                <i class='bx bx-log-in q-px-sm' />
                 Área do cliente
             </q-btn>
         </div>
@@ -67,6 +75,11 @@ const getPageLogin = () => {
         }
       }
         .btn-area-user{
+          .q-btn:hover{
+            background-color: $brown-10 !important;
+            color: $whiteColorPrimary !important;
+
+          }
             i{
                 font-size: 1.5rem;
 
