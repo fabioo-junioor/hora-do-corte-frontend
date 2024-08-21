@@ -1,12 +1,19 @@
 <script setup>
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const isReservation = ref(false);
+const isReservation = ref(true);
+const step = ref(1);
+const dataReservation = reactive({
+    chosenProfessional: '',
+    services: [],
+    dateTime: ''
+
+});
 const reservation = () => {
-    isReservation.value = !isReservation.value;
-    console.log(isReservation.value);
+    console.log('reservou!', dataReservation);
+
 };
 </script>
 <template>
@@ -18,14 +25,81 @@ const reservation = () => {
                 outline
                 size="lg"
                 color="brown-10"
-                @click="reservation" >
+                @click="isReservation = !isReservation" >
                     <i class='bx bxs-hand-up q-px-sm' />
                     Agendar
             </q-btn>
             <div
                 v-if="isReservation" 
                 class="reservation-content">
+                <q-stepper
+                    bordered
+                    style="background-color: #A9907E;"
+                    v-model="step"
+                    ref="stepper"
+                    active-color="brown-10"
+                    inactive-color="brown-8"
+                    done-color="green-10"
+                    animated>
+                    <q-step
+                        :name="1"
+                        title="Selecionar um profissional"
+                        icon="person"
+                        :done="step > 1">
+                        <h4>teste1</h4>
+                    </q-step>
+                    <q-step
+                        :name="2"
+                        title="Selecione o(s) serviço(s)"
+                        icon="content_cut"
+                        :done="step > 2">
+                        <h4>teste2</h4>
+                    </q-step>
+                    <q-step
+                        :name="3"
+                        title="Selecione data e hora"
+                        icon="today"
+                        :done="step > 3">
+                        <h4>teste3</h4>
+                    </q-step>
+                    <q-step
+                        :name="4"
+                        title="Confirmar agendamento"
+                        icon="done_outline"
+                        :done="step > 4">
+                        <h4>teste4</h4>
+                    </q-step>
+                    <template v-slot:navigation>
+                        <q-stepper-navigation>
+                            <q-btn
+                                v-if="step === 4"
+                                @click="reservation"
+                                icon="check_circle"
+                                color="brown-10"
+                                label="Agendar" />
+                            <q-btn
+                                v-else
+                                @click="$refs.stepper.next()"
+                                icon-right="arrow_forward"
+                                color="brown-10"
+                                label="Proxima etapa" />
+                            <q-btn
+                                v-if="step > 1"
+                                flat
+                                icon="arrow_back"
+                                color="brown-8"
+                                @click="$refs.stepper.previous()"
+                                label="Voltar"
+                                class="q-ml-sm" />
+                        </q-stepper-navigation>
+                    </template>
 
+                    <template v-slot:message>
+                        <q-banner v-if="step === 1" class="bg-brown-10 text-white q-px-md">
+                        Campaign settings are important...
+                        </q-banner>
+                    </template>
+                </q-stepper>
             </div>
         </div>
     </div>
@@ -65,8 +139,7 @@ const reservation = () => {
         .reservation-content{
             height: 100%;
             width: 100%;
-            background-color: aquamarine;
-
+            
         }
     }
 }
