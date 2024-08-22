@@ -1,20 +1,36 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { CardProfessional } from '../../components';
 
 const route = useRoute();
 const isReservation = ref(true);
 const step = ref(1);
-const dataReservation = reactive({
-    chosenProfessional: '',
-    services: [],
-    dateTime: ''
-
-});
+const dataServices = reactive([
+    {
+        professional: 'fabio',
+        services: ['corte', 'barba']
+    },
+    {
+        professional: 'joao',
+        services: ['corte', 'barba', 'pezin']
+    }
+]);
+const dataReservation = reactive([
+    {
+        professional: 'fabio',
+        services: [],
+        dateTime: ''
+    }
+]);
 const reservation = () => {
     console.log('reservou!', dataReservation);
 
 };
+const checkProfessional = (data) => {
+    console.log(data);
+    
+}
 </script>
 <template>
     <div id="home-user">
@@ -46,7 +62,11 @@ const reservation = () => {
                         title="Selecionar um profissional"
                         icon="person"
                         :done="step > 1">
-                        <h4>teste1</h4>
+                        <CardProfessional
+                            v-for="i in dataServices" :key="i"
+                            :professional="i.professional"
+                            @checkProfessional='checkProfessional' />
+                            {{dataReservation.professional}}
                     </q-step>
                     <q-step
                         :name="2"
