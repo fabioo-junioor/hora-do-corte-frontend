@@ -22,7 +22,7 @@ const getPageLogin = () => {
           <router-link class="q-pa-xs" :to="route.params.nameUser ? `/${route.params.nameUser}` : '/'">
             <q-toolbar-title>
               <i class='bx bx-calendar q-px-sm' />
-              Agenda estilo        
+              Hora do corte    
             </q-toolbar-title>
           </router-link>
         <div class="btn-area-user"
