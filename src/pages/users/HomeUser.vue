@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { CardProfessional } from '../../components';
 
@@ -34,7 +34,12 @@ const reservation = () => {
 const checkProfessional = (data) => {
     dataReservation.idProfessional = data.idProfessional;
     dataReservation.professional = data.professional;
+    dataReservation.services = [];
     
+};
+const verifyKeyByIdProfessional = (id) => {
+    return dataServices.findIndex(elem => elem.idProfessional == id);
+
 };
 </script>
 <template>
@@ -80,7 +85,19 @@ const checkProfessional = (data) => {
                         title="Selecione o(s) serviço(s)"
                         icon="content_cut"
                         :done="step > 2">
-                        <h4>teste2</h4>
+                        <div v-if="dataReservation.idProfessional != null"
+                            class="reservation-content-services">
+                            <q-checkbox
+                                dark
+                                class="reservation-content-service text-brown-10 q-py-xs q-px-md"
+                                v-for="i in dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].services" :key="i"
+                                v-model="dataReservation.services"
+                                color="brown-8"
+                                keep-color
+                                :val="i"
+                                :label="i"
+                                left-label />
+                        </div>
                     </q-step>
                     <q-step
                         :name="3"
@@ -129,8 +146,20 @@ const checkProfessional = (data) => {
                                 </p>
                             </q-banner>
                             <q-banner v-if="step === 2" class="messages-banner-info bg-brown-10 text-white q-px-md">
+                                <p 
+                                    v-if="dataReservation.idProfessional != null"
+                                    class="q-ma-none q-py-md">
+                                    Escolha um ou mais serviços. Os serviços estão relacionados com o profissional anteriormente definido!
+                                </p>
+                                <p
+                                    v-else
+                                    class="q-ma-none q-py-md">
+                                    Volte e escolha um profissional para que os serviços sejam visiveis!
+                                </p>
+                            </q-banner>
+                            <q-banner v-if="step === 3" class="messages-banner-info bg-brown-10 text-white q-px-md">
                                 <p class="q-ma-none q-py-md">
-                                    Escolha um ou mais serviços. Tais serviços estão relacionados com o profissional anteriormente definido!
+                                    Defina o dia e horário que estão disponiveis!
                                 </p>
                             </q-banner>
                             <q-banner class="messages-banner-details bg-brown-9 text-white q-px-md">
@@ -152,6 +181,14 @@ const checkProfessional = (data) => {
                                         {{ dataReservation.services }}
                                     </span>
                                 </p>
+                                <p class="q-ma-none q-py-xs">
+                                    <q-icon class="q-ma-xs" name="today" size="1.5rem" />
+                                    Horário:
+                                    <span v-if="!!dataReservation.dateTime"
+                                        class="q-ml-xs">
+                                        {{ dataReservation.dateTime }}
+                                    </span>
+                                </p>
                             </q-banner>
                         </div>
                     </template>
@@ -167,7 +204,7 @@ const checkProfessional = (data) => {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 4rem);
+    min-height: calc(100vh - 4rem);
     font-family: "Fredoka", sans-serif;
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .05)),
       url("../../assets/background/background-wave.png") no-repeat
@@ -196,6 +233,24 @@ const checkProfessional = (data) => {
             height: 100%;
             width: 100%;
 
+            .reservation-content-services{
+                display: flex;
+                flex-wrap: wrap;
+                gap: 1rem;
+
+                .reservation-content-service{
+                    border-radius: 5px;
+                    border: 1px solid $brown-8;
+                    font-size: 1.2rem;
+    
+                    &:hover{
+                        border: 1px solid $brown-10;
+                        background-color: $brown-5;
+                        
+                    }
+    
+                }
+            }
             .reservation-content-step-card-professional{
                 display: flex;
                 gap: 1rem;
@@ -205,17 +260,17 @@ const checkProfessional = (data) => {
             .reservation-content-messages{
                 display: flex;
                 width: 100%;
-                min-height: 10rem;
 
                 .messages-banner-info{
                     width: 70%;
 
+                    p{
+                        font-size: 1rem;
+
+                    }
                 }
                 .messages-banner-details{
                     width: 30%;
-
-                }
-                .messages-banner-details{
                     display: flex;
                     justify-content: center;
                     align-items: flex-start;
@@ -229,7 +284,6 @@ const checkProfessional = (data) => {
                         display: flex;
                         align-items: center;
                     }
-                    
                 }
             }
         }
