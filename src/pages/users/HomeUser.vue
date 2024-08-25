@@ -1,31 +1,19 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { CardProfessional } from '../../components';
+import { CardProfessional, CalendarSchedule } from '../../components';
+import { dataServicesTest } from '../../utils/dataTests.js';
 
 const route = useRoute();
 const isReservation = ref(true);
 const step = ref(1);
-const teste = ref('fabio');
-const dataServices = reactive([
-    {
-        idProfessional: 1,
-        professional: 'fabio',
-        image: 'https://cdn.quasar.dev/img/avatar.png',
-        services: ['corte', 'barba']
-    },
-    {
-        idProfessional: 2,
-        professional: 'joao',
-        image: '',
-        services: ['corte', 'barba', 'pezin']
-    }
-]);
+const dataServices = reactive([]);
 const dataReservation = reactive({
         idProfessional: null,
         professional: '',
         services: [],
-        dateTime: ''
+        date: '',
+        hours: ''
 });
 const reservation = () => {
     console.log('reservou!', dataReservation);
@@ -37,10 +25,20 @@ const checkProfessional = (data) => {
     dataReservation.services = [];
     
 };
+const checkScheduleDate = (data) => {
+    dataReservation.date = data;
+    console.log(dataReservation)
+
+};
 const verifyKeyByIdProfessional = (id) => {
     return dataServices.findIndex(elem => elem.idProfessional == id);
 
 };
+onMounted(() => {
+    dataServices.push(...dataServicesTest);
+    //console.log(dataServices)
+
+});
 </script>
 <template>
     <div id="home-user">
@@ -72,7 +70,7 @@ const verifyKeyByIdProfessional = (id) => {
                         title="Selecionar um profissional"
                         icon="person"
                         :done="step > 1">
-                        <div class="reservation-content-step-card-professional">
+                        <div class="reservation-content-step-card-professional q-my-md">
                             <CardProfessional
                                 v-for="i, index in dataServices" :key="i"
                                 :dataServices="dataServices[index]"
@@ -86,7 +84,7 @@ const verifyKeyByIdProfessional = (id) => {
                         icon="content_cut"
                         :done="step > 2">
                         <div v-if="dataReservation.idProfessional != null"
-                            class="reservation-content-services">
+                            class="reservation-content-services q-my-md">
                             <q-checkbox
                                 dark
                                 class="reservation-content-service text-brown-10 q-py-xs q-px-md"
@@ -94,9 +92,11 @@ const verifyKeyByIdProfessional = (id) => {
                                 v-model="dataReservation.services"
                                 color="brown-8"
                                 keep-color
-                                :val="i"
-                                :label="i"
-                                left-label />
+                                :val="i.name"
+                                left-label>
+                                {{ i.name }}
+                                <q-badge color="brown-10" :label="'R$'+i.price" />
+                            </q-checkbox>
                         </div>
                     </q-step>
                     <q-step
@@ -104,7 +104,11 @@ const verifyKeyByIdProfessional = (id) => {
                         title="Selecione data e hora"
                         icon="today"
                         :done="step > 3">
-                        <h4>teste3</h4>
+                        <div class="reservation-content-schedules q-my-md">
+                            <CalendarSchedule
+                                :schedules='dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].schedules'
+                                @checkScheduleDate='checkScheduleDate' />
+                        </div>
                     </q-step>
                     <q-step
                         :name="4"
@@ -184,9 +188,9 @@ const verifyKeyByIdProfessional = (id) => {
                                 <p class="q-ma-none q-py-xs">
                                     <q-icon class="q-ma-xs" name="today" size="1.5rem" />
                                     Horário:
-                                    <span v-if="!!dataReservation.dateTime"
+                                    <span v-if="!!dataReservation.date"
                                         class="q-ml-xs">
-                                        {{ dataReservation.dateTime }}
+                                        {{ dataReservation.date }}
                                     </span>
                                 </p>
                             </q-banner>
@@ -233,29 +237,46 @@ const verifyKeyByIdProfessional = (id) => {
             height: 100%;
             width: 100%;
 
+            .reservation-content-step-card-professional{
+                display: flex;
+                gap: 1rem;
+                flex-wrap: wrap;
+
+            }
             .reservation-content-services{
                 display: flex;
                 flex-wrap: wrap;
-                gap: 1rem;
+                gap: 1.5rem;
 
                 .reservation-content-service{
                     border-radius: 5px;
                     border: 1px solid $brown-8;
                     font-size: 1.2rem;
+                    position: relative;
     
                     &:hover{
                         border: 1px solid $brown-10;
                         background-color: $brown-5;
                         
                     }
-    
+                    .q-badge{
+                        font-size: .9rem;
+                        position: absolute;
+                        right: -20px;
+                        top: -8px;
+
+                        &:hover{
+                            background-color: $whiteColorPrimary !important;
+                            color: $darkColorPrimary;
+
+                        }
+                    }
                 }
             }
-            .reservation-content-step-card-professional{
+            .reservation-content-schedules{
                 display: flex;
-                gap: 1rem;
-                flex-wrap: wrap;
-
+                justify-content: center;
+                
             }
             .reservation-content-messages{
                 display: flex;
