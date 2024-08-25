@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import userDefault from '../../assets/user/userDefault.png';
+import { formatString } from '../../utils/formatters.js';
 
 const props = defineProps(['dataServices']);
 const emit = defineEmits(['checkProfessional']);
@@ -22,7 +23,7 @@ const onSubmit = () => {
           <img :src="props.dataServices.image || userDefault">
         </q-avatar>
         <q-separator vertical class="q-mx-sm" color="white" />
-        <div class="text-h6">{{ props.dataServices.professional }}</div>
+        <div class="text-h6">{{ formatString(props.dataServices.professional) }}</div>
       </q-card-section>
       <q-card-section>
         <q-icon
