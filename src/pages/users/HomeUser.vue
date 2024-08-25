@@ -3,6 +3,7 @@ import { onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { CardProfessional, CalendarSchedule } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
+import { formatString } from '../../utils/formatters.js';
 
 const route = useRoute();
 const isReservation = ref(true);
@@ -34,9 +35,12 @@ const verifyKeyByIdProfessional = (id) => {
     return dataServices.findIndex(elem => elem.idProfessional == id);
 
 };
+const calculePriceTotal = () => {
+    return dataReservation.services.reduce((acc, value) => acc + Number(value.price), 0);
+    
+};
 onMounted(() => {
     dataServices.push(...dataServicesTest);
-    //console.log(dataServices)
 
 });
 </script>
@@ -92,10 +96,10 @@ onMounted(() => {
                                 v-model="dataReservation.services"
                                 color="brown-8"
                                 keep-color
-                                :val="i.name"
-                                left-label>
+                                :val="i">
                                 {{ i.name }}
-                                <q-badge color="brown-10" :label="'R$'+i.price" />
+                                <q-badge transparent class="badge-time q-py-sm q-ma-xs" color="brown-10" :label="i.time+'min'" />
+                                <q-badge class="badge-price q-py-xs" color="brown-10" :label="'R$'+i.price" />
                             </q-checkbox>
                         </div>
                     </q-step>
@@ -174,16 +178,8 @@ onMounted(() => {
                                     Profissional:
                                     <span v-if="!!dataReservation.professional"
                                         class="q-ml-xs">
-                                        {{ dataReservation.professional }}
+                                        {{ formatString(dataReservation.professional) }}
                                     </span>    
-                                </p>
-                                <p class="q-ma-none q-py-xs">
-                                    <q-icon class="q-ma-xs" name="content_cut" size="1.5rem" />
-                                    Serviços:
-                                    <span v-if="dataReservation.services.length !== 0"
-                                        class="q-ml-xs">
-                                        {{ dataReservation.services }}
-                                    </span>
                                 </p>
                                 <p class="q-ma-none q-py-xs">
                                     <q-icon class="q-ma-xs" name="today" size="1.5rem" />
@@ -193,6 +189,27 @@ onMounted(() => {
                                         {{ dataReservation.date }}
                                     </span>
                                 </p>
+                                <div v-if="dataReservation.services.length !== 0"
+                                    class="q-mt-lg">
+                                    <div v-for="i, index in dataReservation.services" :key="i"
+                                        class="row justify-between">
+                                        <p class="q-ma-none">
+                                            {{`${index+1}. ` + formatString(i.name) }}
+                                        </p>
+                                        <p class="q-ma-none">
+                                            {{ 'R$ ' + i.price}}
+                                        </p>
+                                    </div>
+                                    <q-separator class="q-my-xs" color="white" />
+                                    <div class="row justify-between">
+                                        <p class="q-ma-none">
+                                            Total:
+                                        </p>
+                                        <p class="q-ma-none">
+                                            <q-badge outline class="q-my-xs q-pa-xs" color="white" :label="'R$ ' + calculePriceTotal()" />
+                                        </p>
+                                    </div>
+                                </div>
                             </q-banner>
                         </div>
                     </template>
@@ -259,11 +276,11 @@ onMounted(() => {
                         background-color: $brown-5;
                         
                     }
-                    .q-badge{
+                    .badge-price{
                         font-size: .9rem;
                         position: absolute;
                         right: -20px;
-                        top: -8px;
+                        top: -15px;
 
                         &:hover{
                             background-color: $whiteColorPrimary !important;
