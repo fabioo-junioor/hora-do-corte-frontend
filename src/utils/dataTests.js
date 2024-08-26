@@ -59,6 +59,33 @@ const dataServicesTest = [
     }
 ];
 
+function dividirHorariosEmIntervalos(schedules) {
+    const resultado = {};
+
+  schedules.forEach(dia => {
+    const diaSemana = Object.keys(dia)[0];
+    resultado[diaSemana] = [];
+
+    for (const periodo in dia[diaSemana]) {
+      const { open, close } = dia[diaSemana][periodo];
+      const [horaInicio, minutoInicio] = open.split(':').map(Number);
+      const [horaFim, minutoFim] = close.split(':').map(Number);
+
+      const minutosInicio = horaInicio * 60 + minutoInicio;
+      const minutosFim = horaFim * 60 + minutoFim - 30; // Subtrai 30 minutos do horário de fechamento
+
+      for (let minutos = minutosInicio; minutos <= minutosFim; minutos += 30) {
+        const hora = Math.floor(minutos / 60).toString().padStart(2, '0');
+        const minuto = (minutos % 60).toString().padStart(2, '0');
+        resultado[diaSemana].push(`${hora}:${minuto}`);
+      }
+    }
+  });
+
+  return resultado;
+  }
+
 export {
-    dataServicesTest
+    dataServicesTest,
+    dividirHorariosEmIntervalos
 };

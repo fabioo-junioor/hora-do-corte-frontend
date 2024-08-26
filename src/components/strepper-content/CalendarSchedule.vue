@@ -1,5 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
+import { TimeSchedule } from '../../components';
+import { dividirHorariosEmIntervalos } from '../../utils/dataTests.js';
 import { verifySchedulesAvailable, getDateToday } from '../../utils/dateTimeFormatters.js';
 const props = defineProps(['schedules']);
 const emit = defineEmits(['checkScheduleDate']);
@@ -54,6 +56,7 @@ watch(date, () => {
 onMounted(() => {
     date.value = getDateToday();
     verifySchedules();
+    console.log(dividirHorariosEmIntervalos(props.schedules))
 
 });
 </script>
@@ -91,7 +94,12 @@ onMounted(() => {
                 <q-tab-panel :name="date">
                     <div class="text-h4 text-center">{{ date }}</div>
                     <q-separator class="q-my-md" color="white" />
-                    <p>horarios do dia</p>
+                    <div class="row">
+                        <TimeSchedule
+                            v-for='i in 15' :key='i'
+                            :time='i'
+                            :isAvailable='false' />
+                    </div>
                 </q-tab-panel>
             </q-tab-panels>    
         </template>  

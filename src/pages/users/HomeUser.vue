@@ -28,7 +28,7 @@ const checkProfessional = (data) => {
 };
 const checkScheduleDate = (data) => {
     dataReservation.date = data;
-    console.log(dataReservation)
+    //console.log(dataReservation)
 
 };
 const verifyKeyByIdProfessional = (id) => {
