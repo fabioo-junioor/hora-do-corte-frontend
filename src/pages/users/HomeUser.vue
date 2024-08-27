@@ -4,17 +4,19 @@ import { useRoute } from 'vue-router';
 import { CardProfessional, CalendarSchedule } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
 import { formatString } from '../../utils/formatters.js';
+import { divideHoursIntoIntervals } from '../../utils/dateTimeFormatters.js';
 
 const route = useRoute();
 const isReservation = ref(true);
 const step = ref(1);
 const dataServices = reactive([]);
+const dataTimesFromWeek = reactive([]);
 const dataReservation = reactive({
         idProfessional: null,
         professional: '',
         services: [],
-        date: '',
-        hours: ''
+        dateReservation: '',
+        timeReservation: ''
 });
 const reservation = () => {
     console.log('reservou!', dataReservation);
@@ -27,17 +29,39 @@ const checkProfessional = (data) => {
     
 };
 const checkScheduleDate = (data) => {
-    dataReservation.date = data;
-    //console.log(dataReservation)
+    if(data){
+        dataTimesFromWeek.splice(0);
+        dataReservation.dateReservation = data;
+        let schedulesProfessional = dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].schedules;
+        let dayWeek = getDayWeekFromDate(data);
+        let totalMinutes = sumMinutes(dataReservation.services);
+        dataTimesFromWeek.push(...divideHoursIntoIntervals(schedulesProfessional, totalMinutes)[dayWeek]);
+        
+    }
+};
+const checkScheduleTime = (data) => {
+    dataReservation.timeReservation = data;
 
 };
 const verifyKeyByIdProfessional = (id) => {
     return dataServices.findIndex(elem => elem.idProfessional == id);
 
 };
+const getDayWeekFromDate = (date) => {
+    let parts = date.split('-');
+    date = new Date(parts[2], parts[1] - 1, parts[0]);
+    let dayWeek = String(date).slice(0, 3);
+    dayWeek = dayWeek.toLowerCase();
+    return dayWeek;
+
+};
 const calculePriceTotal = () => {
     return dataReservation.services.reduce((acc, value) => acc + Number(value.price), 0);
     
+};
+const sumMinutes = (data) => {
+    return data.reduce((acc, minutes) => acc + Number(minutes.time), 0);
+
 };
 onMounted(() => {
     dataServices.push(...dataServicesTest);
@@ -46,8 +70,8 @@ onMounted(() => {
 </script>
 <template>
     <div id="home-user">
-        <div class="home-user q-pa-sm">
-            <h5 class="text-white q-pa-md">Bem vindo!</h5>
+        <div class="home-user q-pa-xs">
+            <h5 class="text-white q-py-md q-my-md">Bem vindo!</h5>
             <q-btn
                 v-if="!isReservation"
                 outline
@@ -111,7 +135,9 @@ onMounted(() => {
                         <div class="reservation-content-schedules q-my-md">
                             <CalendarSchedule
                                 :schedules='dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].schedules'
-                                @checkScheduleDate='checkScheduleDate' />
+                                :timesAvailable='dataTimesFromWeek'
+                                @checkScheduleDate='checkScheduleDate'
+                                @checkScheduleTime='checkScheduleTime' />
                         </div>
                     </q-step>
                     <q-step
@@ -183,10 +209,18 @@ onMounted(() => {
                                 </p>
                                 <p class="q-ma-none q-py-xs">
                                     <q-icon class="q-ma-xs" name="today" size="1.5rem" />
-                                    Horário:
-                                    <span v-if="!!dataReservation.date"
+                                    Dia:
+                                    <span v-if="!!dataReservation.dateReservation"
                                         class="q-ml-xs">
-                                        {{ dataReservation.date }}
+                                        {{ dataReservation.dateReservation }}
+                                    </span>
+                                </p>
+                                <p class="q-ma-none q-py-xs">
+                                    <q-icon class="q-ma-xs" name="alarm" size="1.5rem" />
+                                    Horário:
+                                    <span v-if="!!dataReservation.timeReservation"
+                                        class="q-ml-xs">
+                                        {{ dataReservation.timeReservation }}
                                     </span>
                                 </p>
                                 <div v-if="dataReservation.services.length !== 0"
@@ -224,7 +258,7 @@ onMounted(() => {
 #home-user{
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     min-height: calc(100vh - 4rem);
     font-family: "Fredoka", sans-serif;
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .05)),
@@ -236,8 +270,7 @@ onMounted(() => {
         display: flex;
         flex-direction: column;
         align-items: center;
-        height: 80%;
-        width: 80%;
+        width: 85%;
 
         .q-btn{
             i{
