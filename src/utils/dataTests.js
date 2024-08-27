@@ -1,7 +1,7 @@
 const dataServicesTest = [
     {
         idProfessional: 1,
-        professional: 'fabio',
+        professional: 'maria',
         image: 'https://cdn.quasar.dev/img/avatar.png',
         services: [
             { name: 'corte', time: '30', price: '20' },
@@ -38,7 +38,7 @@ const dataServicesTest = [
         services: [
             { name: 'cabelo', time: '30', price: '50' },
             { name: 'barba', time: '10', price: '15' },
-            { name: 'pintura', time: '01:20', price: '100' }
+            { name: 'pintura', time: '80', price: '100' }
         ],
         schedules: [
             {

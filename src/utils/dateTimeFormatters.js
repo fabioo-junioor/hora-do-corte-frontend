@@ -35,9 +35,35 @@ const verifySchedulesAvailable = (dateReservation, schedules) => {
     return false;
 
 }
+const divideHoursIntoIntervals = (schedules, time) => {
+    const result = {};
+
+  schedules.forEach(day => {
+    const dayWeek = Object.keys(day)[0];
+    result[dayWeek] = [];
+
+    for (const period in day[dayWeek]) {
+      const { open, close } = day[dayWeek][period];
+      const [startTime, startMinute] = open.split(':').map(Number);
+      const [endTime, endMinute] = close.split(':').map(Number);
+
+      const startMinutes = startTime * 60 + startMinute;
+      const endMinutes = endTime * 60 + endMinute - time; // Subtrai 30 minutos do horário de fechamento
+
+      for (let minutes = startMinutes; minutes <= endMinutes; minutes += time) {
+        const time = Math.floor(minutes / 60).toString().padStart(2, '0');
+        const minute = (minutes % 60).toString().padStart(2, '0');
+        result[dayWeek].push(`${time}:${minute}`);
+      }
+    }
+  });
+
+  return result;
+}
 
 export {
     verifySchedulesAvailable,
-    getDateToday
+    getDateToday,
+    divideHoursIntoIntervals
 
 };
