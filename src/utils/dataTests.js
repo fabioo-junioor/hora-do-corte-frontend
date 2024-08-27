@@ -54,6 +54,13 @@ const dataServicesTest = [
                     tarde: { open: '14:00', close: '17:00' },
                     noite: { open: '19:00', close: '23:00' }
                 }
+            },
+            {
+                tue: {
+                    manha: { open: '', close: '' },
+                    tarde: { open: '', close: '' },
+                    noite: { open: '', close: '' }
+                }
             }
         ]
     }

@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { verifySchedulesAvailable, getDateToday } from '../../utils/dateTimeFormatters.js';
+import { verifySchedulesAvailable, getDateToday } from '../../utils/formatters.js';
 import { TimeSchedule } from '../../components';
 const props = defineProps(['schedules', 'timesAvailable']);
 const emit = defineEmits(['checkScheduleDate', 'checkScheduleTime']);
@@ -57,10 +57,6 @@ const checkScheduleTime = (data) => {
     emit('checkScheduleTime', data);
 
 };
-const options2 = (date) => {
-    return date >= '2024/08/26';
-
-}
 watch(date, () => {
     emit('checkScheduleDate', date.value);
 
