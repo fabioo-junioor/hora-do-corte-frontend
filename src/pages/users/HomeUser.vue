@@ -1,10 +1,9 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { CardProfessional, CalendarSchedule } from '../../components';
+import { CardProfessional, CalendarSchedule, FormReservation } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
-import { formatString } from '../../utils/formatters.js';
-import { divideHoursIntoIntervals } from '../../utils/dateTimeFormatters.js';
+import { divideHoursIntoIntervals, formatString } from '../../utils/formatters.js';
 
 const route = useRoute();
 const isReservation = ref(true);
@@ -16,27 +15,31 @@ const dataReservation = reactive({
         professional: '',
         services: [],
         dateReservation: '',
-        timeReservation: ''
+        timeReservation: '',
+        duration: null
 });
-const reservation = () => {
-    console.log('reservou!', dataReservation);
-
-};
+const dataFormReservation = reactive({
+    name: '',
+    email: '',
+    phone: '',
+    observation: ''
+});
 const checkProfessional = (data) => {
     dataReservation.idProfessional = data.idProfessional;
     dataReservation.professional = data.professional;
     dataReservation.services = [];
     
 };
-const checkScheduleDate = (data) => {
-    if(data){
+const checkScheduleDate = (date) => {
+    if(date){
         dataTimesFromWeek.splice(0);
-        dataReservation.dateReservation = data;
+        dataReservation.dateReservation = date;
         let schedulesProfessional = dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].schedules;
-        let dayWeek = getDayWeekFromDate(data);
+        let dayWeek = getDayWeekFromDate(date);
         let totalMinutes = sumMinutes(dataReservation.services);
+        dataReservation.duration = totalMinutes;
         dataTimesFromWeek.push(...divideHoursIntoIntervals(schedulesProfessional, totalMinutes)[dayWeek]);
-        
+                
     }
 };
 const checkScheduleTime = (data) => {
@@ -61,6 +64,34 @@ const calculePriceTotal = () => {
 };
 const sumMinutes = (data) => {
     return data.reduce((acc, minutes) => acc + Number(minutes.time), 0);
+
+};
+const veriryReservationComplete = () => {
+    console.log('reservou!', dataReservation, dataFormReservation);
+    if(dataReservation.professional == ''){
+        return;
+
+    }
+    if(dataReservation.services.length == 0){
+        return;
+
+    }
+    if(dataReservation.dateReservation == ''){
+        return;
+
+    }
+    if(dataReservation.timeReservation == ''){
+        return;
+
+    }
+    if(dataFormReservation.name == ''){
+        return;
+
+    }
+    if(dataFormReservation.phone == ''){
+        return;
+
+    }
 
 };
 onMounted(() => {
@@ -145,13 +176,16 @@ onMounted(() => {
                         title="Confirmar agendamento"
                         icon="done_outline"
                         :done="step > 4">
-                        <h4>teste4</h4>
+                        <div class="reservation-content-confirm">
+                            <FormReservation
+                                v-model:dataFormReservation="dataFormReservation" />
+                        </div>
                     </q-step>
                     <template v-slot:navigation>
                         <q-stepper-navigation>
                             <q-btn
                                 v-if="step === 4"
-                                @click="reservation"
+                                @click="veriryReservationComplete"
                                 icon="check_circle"
                                 color="brown-10"
                                 label="Agendar" />
@@ -196,7 +230,13 @@ onMounted(() => {
                                     Defina o dia e horário que estão disponiveis!
                                 </p>
                             </q-banner>
-                            <q-banner class="messages-banner-details bg-brown-9 text-white q-px-md">
+                            <q-banner v-if="step === 4" class="messages-banner-info bg-brown-10 text-white q-px-md">
+                                <p class="q-ma-none q-py-md">
+                                    Confira seu dados e preencha os campos abaixo.
+                                    Os campos (nome e telefone) são obrigatórios!
+                                </p>
+                            </q-banner>
+                            <q-banner class="messages-banner-details bg-brown-8 text-white q-px-md">
                                 <h5 class="q-ma-none q-py-sm">Detalhes da reserva</h5>
                                 <q-separator class="q-my-sm" color="white" inset />
                                 <p class="q-ma-none q-py-xs">
