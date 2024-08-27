@@ -1,13 +1,13 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { TimeSchedule } from '../../components';
-import { dividirHorariosEmIntervalos } from '../../utils/dataTests.js';
 import { verifySchedulesAvailable, getDateToday } from '../../utils/dateTimeFormatters.js';
-const props = defineProps(['schedules']);
-const emit = defineEmits(['checkScheduleDate']);
+import { TimeSchedule } from '../../components';
+const props = defineProps(['schedules', 'timesAvailable']);
+const emit = defineEmits(['checkScheduleDate', 'checkScheduleTime']);
 
 const splitterModel = ref(40);
 const date = ref(null);
+const timeCheck = ref('');
 const options = reactive([]);
 const myLocale = reactive({
     days: 'Domingo_Segunda_Terça_Quarta_Quinta_Sexta_Sábado'.split('_'),
@@ -20,43 +20,54 @@ const myLocale = reactive({
 });
 const verifySchedules = () => {
     let today = new Date();
+    let day = today.getDate();
     let month = today.getMonth() + 1;
     let year = today.getFullYear();
+    day = (day < 10) ? Number(`0${day}`) : Number(`${day}`); 
+
     for(let i = 1; i <= 31; i++){
         if(i < 10 && month < 10){
-            if(verifySchedulesAvailable(`${year}/0${month}/0${i}`, props.schedules)){
+            if(verifySchedulesAvailable(`${year}/0${month}/0${i}`, props.schedules) && `${year}/0${month}/0${i}` >= `${year}/0${month}/${day}`){
                 options.push(`${year}/0${month}/0${i}`);
 
             }
         }
         if(i < 10 && month >= 10){
-            if(verifySchedulesAvailable(`${year}/${month}/0${i}`, props.schedules)){
+            if(verifySchedulesAvailable(`${year}/${month}/0${i}`, props.schedules) && `${year}/${month}/0${i}` >= `${year}/${month}/${day}`){
                 options.push(`${year}/${month}/0${i}`);
 
             }
         }
         if(i >= 10 && month < 10){
-            if(verifySchedulesAvailable(`${year}/0${month}/${i}`, props.schedules)){
+            if(verifySchedulesAvailable(`${year}/0${month}/${i}`, props.schedules) && `${year}/0${month}/${i}` >= `${year}/0${month}/${day}`){
                 options.push(`${year}/0${month}/${i}`);
                 
             }
         }
         if(i >= 10 && month >= 10){
-            if(verifySchedulesAvailable(`${year}/${month}/${i}`, props.schedules)){
+            if(verifySchedulesAvailable(`${year}/${month}/${i}`, props.schedules) && `${year}/${month}/${i}` >= `${year}/${month}/${day}`){
                 options.push(`${year}/${month}/${i}`);
 
             }
         }
     }
 };
+const checkScheduleTime = (data) => {
+    timeCheck.value = data;
+    emit('checkScheduleTime', data);
+
+};
+const options2 = (date) => {
+    return date >= '2024/08/26';
+
+}
 watch(date, () => {
     emit('checkScheduleDate', date.value);
 
-})
+});
 onMounted(() => {
     date.value = getDateToday();
     verifySchedules();
-    console.log(dividirHorariosEmIntervalos(props.schedules))
 
 });
 </script>
@@ -94,11 +105,13 @@ onMounted(() => {
                 <q-tab-panel :name="date">
                     <div class="text-h4 text-center">{{ date }}</div>
                     <q-separator class="q-my-md" color="white" />
-                    <div class="row">
+                    <div class="calendar-schedules-times">
                         <TimeSchedule
-                            v-for='i in 15' :key='i'
+                            @click="checkScheduleTime(i)"
+                            v-for='i in props.timesAvailable' :key='i'
                             :time='i'
-                            :isAvailable='false' />
+                            v-model:timeCheck='timeCheck'
+                            :isAvailable='true' />
                     </div>
                 </q-tab-panel>
             </q-tab-panels>    
@@ -110,6 +123,13 @@ onMounted(() => {
 #calendar-schedules{
     width: 70%;
     
+    .calendar-schedules-times{
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: .2rem;
+
+    }
     .q-date, .q-tab-panels{
         border-radius: 5px;
         
