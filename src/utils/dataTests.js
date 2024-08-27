@@ -1,7 +1,7 @@
 const dataServicesTest = [
     {
         idProfessional: 1,
-        professional: 'fabio',
+        professional: 'maria',
         image: 'https://cdn.quasar.dev/img/avatar.png',
         services: [
             { name: 'corte', time: '30', price: '20' },
@@ -38,7 +38,7 @@ const dataServicesTest = [
         services: [
             { name: 'cabelo', time: '30', price: '50' },
             { name: 'barba', time: '10', price: '15' },
-            { name: 'pintura', time: '01:20', price: '100' }
+            { name: 'pintura', time: '80', price: '100' }
         ],
         schedules: [
             {
@@ -59,33 +59,6 @@ const dataServicesTest = [
     }
 ];
 
-function dividirHorariosEmIntervalos(schedules) {
-    const resultado = {};
-
-  schedules.forEach(dia => {
-    const diaSemana = Object.keys(dia)[0];
-    resultado[diaSemana] = [];
-
-    for (const periodo in dia[diaSemana]) {
-      const { open, close } = dia[diaSemana][periodo];
-      const [horaInicio, minutoInicio] = open.split(':').map(Number);
-      const [horaFim, minutoFim] = close.split(':').map(Number);
-
-      const minutosInicio = horaInicio * 60 + minutoInicio;
-      const minutosFim = horaFim * 60 + minutoFim - 30; // Subtrai 30 minutos do horário de fechamento
-
-      for (let minutos = minutosInicio; minutos <= minutosFim; minutos += 30) {
-        const hora = Math.floor(minutos / 60).toString().padStart(2, '0');
-        const minuto = (minutos % 60).toString().padStart(2, '0');
-        resultado[diaSemana].push(`${hora}:${minuto}`);
-      }
-    }
-  });
-
-  return resultado;
-  }
-
 export {
-    dataServicesTest,
-    dividirHorariosEmIntervalos
+    dataServicesTest
 };
