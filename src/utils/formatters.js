@@ -6,20 +6,10 @@ const getDateToday = () => {
     let month = today.getMonth() + 1;
     let year = today.getFullYear();
 
-    if(day < 10 && month < 10){
-        return `0${day}-0${month}-${year}`;
+    day = (day < 10) ? `0${day}` : `${day}`;
+    month = (month < 10) ? `0${month}` : `${month}`;
 
-    }
-    if(day < 10 && month > 10){
-        return `0${day}-${month}-${year}`;
-
-    }
-    if(day > 10 && month < 10){
-        return `${day}-0${month}-${year}`;
-        
-    }
     return `${day}-${month}-${year}`;
-   
     
 }
 const verifySchedulesAvailable = (dateReservation, schedules) => {

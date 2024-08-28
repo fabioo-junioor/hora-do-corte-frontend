@@ -59,7 +59,7 @@ const dataServicesTest = [
                 tue: {
                     manha: { open: '', close: '' },
                     tarde: { open: '', close: '' },
-                    noite: { open: '', close: '' }
+                    noite: { open: '17:00', close: '23:30' }
                 }
             }
         ]
