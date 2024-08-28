@@ -57,6 +57,18 @@ const checkScheduleTime = (data) => {
     emit('checkScheduleTime', data);
 
 };
+const verifyTimeBeforeToday = (timeSchedule) => {
+    let today = new Date();
+    let hours = today.getHours();
+    let minutes = today.getMinutes();
+
+    if(timeSchedule <= `${hours}:${minutes}`){
+        return false;
+
+    }
+    return true;
+
+};
 watch(date, () => {
     emit('checkScheduleDate', date.value);
 
@@ -103,11 +115,11 @@ onMounted(() => {
                     <q-separator class="q-my-md" color="white" />
                     <div class="calendar-schedules-times">
                         <TimeSchedule
-                            @click="checkScheduleTime(i)"
+                            @click="!verifyTimeBeforeToday(i) || checkScheduleTime(i)"
                             v-for='i in props.timesAvailable' :key='i'
                             :time='i'
                             v-model:timeCheck='timeCheck'
-                            :isAvailable='true' />
+                            :isAvailable='verifyTimeBeforeToday(i)' />
                     </div>
                 </q-tab-panel>
             </q-tab-panels>    
@@ -123,7 +135,7 @@ onMounted(() => {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        gap: .2rem;
+        gap: .5rem;
 
     }
     .q-date, .q-tab-panels{
