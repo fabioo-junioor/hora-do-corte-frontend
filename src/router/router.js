@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { Home, LoginUser, CadUser, HomeUser } from '../pages';
+import { Home, LoginUser, CadUser, HomeUser, EditUser } from '../pages';
 
 const routes = [
     {
@@ -23,7 +23,7 @@ const routes = [
         }
     },
     {
-        path: '/:nameUser/loginUser',
+        path: '/loginUser',
         name: 'loginUser',
         component: LoginUser,
         beforeEnter: (_, __, next) => {
@@ -33,9 +33,19 @@ const routes = [
         }
     },
     {
-        path: '/:nameUser/cadUser',
+        path: '/cadUser',
         name: 'cadUser',
         component: CadUser,
+        beforeEnter: (_, __, next) => {
+            next();
+            return;
+
+        }
+    },
+    {
+        path: '/editUser',
+        name: 'editUser',
+        component: EditUser,
         beforeEnter: (_, __, next) => {
             next();
             return;
