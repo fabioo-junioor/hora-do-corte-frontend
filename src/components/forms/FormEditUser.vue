@@ -28,9 +28,9 @@ const onSubmit = () => {
                     color="white"
                     bg-color="brown-8"
                     max-files="1">
-                        <template v-if="imageProfile" v-slot:append>
+                        <template v-if="dataEditUser.image" v-slot:append>
                             <q-icon name="cancel" 
-                                @click.stop.prevent="imageProfile = null"
+                                @click.stop.prevent="dataEditUser.image = null"
                                 class="cursor-pointer" />
                         </template>
                         <template v-slot:prepend>
