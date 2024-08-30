@@ -1,17 +1,35 @@
 <script setup>
 import { reactive, ref } from 'vue';
-import { FormDialogAddProfessional } from '../../components';
+import { FormDialogAddProfessional, CardProfessionalList } from '../../components';
 import userDefault from '../../assets/user/userDefault2.jpg';
 
 const isDialogAdd = ref(false);
+const dataProfessionais = reactive([
+    { name: 'fabio', image: null, instagram: 'teste' },
+    { name: 'maria', image: 'https://cdn.quasar.dev/img/mountains.jpg', instagram: '' },
+    { name: 'joao', image: null, instagram: '' },
+]);
 const dataEditProfessional = reactive({
+    name: '',
+    image: null,
+    instagram: ''
     
 });
 const addProfessional = () => {
     isDialogAdd.value = true;
 
 };
+const saveFormProfessional = () => {
+    console.log(dataEditProfessional);
 
+};
+const editFormProfessional = (data) => {
+    dataEditProfessional.name = data.name;
+    dataEditProfessional.image = data.image;
+    dataEditProfessional.instagram = data.instagram;
+    addProfessional();
+
+};
 </script>
 <template>
     <div id="edit-professional">
@@ -27,8 +45,16 @@ const addProfessional = () => {
                     icon="person_add" 
                     label="Adicionar" />
             </div>
+            <div class="edit-professional-list q-my-md">
+                <CardProfessionalList
+                    v-for="i in dataProfessionais" :key="i"
+                    :dataProfessional='i'
+                    @editFormProfessional='editFormProfessional' />
+            </div>
             <FormDialogAddProfessional
-                v-model:isDialogAdd="isDialogAdd" />
+                v-model:isDialogAdd='isDialogAdd'
+                v-model:dataEditProfessional='dataEditProfessional'
+                @saveFormProfessional='saveFormProfessional' />
         </div>
     </div>
 </template>
@@ -56,6 +82,15 @@ const addProfessional = () => {
             display: flex;
             justify-content: space-between;
             border-bottom: 2px solid $darkColorSecondary;
+
+        }
+        .edit-professional-list{
+            width: 100%;
+            display: flex;
+            justify-content: space-evenly;
+            gap: 1rem;
+            flex-wrap: wrap;
+
         }
 
     }
