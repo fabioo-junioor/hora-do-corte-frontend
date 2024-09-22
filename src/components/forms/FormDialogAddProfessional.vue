@@ -1,7 +1,7 @@
 <script setup>
 import { reactive } from 'vue';
 import { fielsRequired } from '../../utils/inputValidators.js';
-import userDefault from '../../assets/user/userDefault.png';
+import userDefault from '../../assets/imgsDefault/user.png';
 
 const emit = defineEmits(['saveFormProfessional']);
 const isDialogAdd = defineModel('isDialogAdd');
@@ -44,7 +44,7 @@ const onSubmit = () => {
                 filled
                 class="q-mb-md"
                 v-model="dataEditProfessional.image"
-                label="Adicionar nova imagem:"
+                label="Adicionar nova imagem"
                 color="white"
                 bg-color="brown-8"
                 hint="A nova imagem aparecerá após salvar!"
@@ -69,7 +69,7 @@ const onSubmit = () => {
                 bg-color="brown-8"
                 v-model="dataEditProfessional.name"
                 type="text"
-                label="Nome do profissional:"
+                label="Nome do profissional"
                 lazy-rules
                 :rules="[rulesUser.required]" >
                 <template v-slot:prepend>
@@ -86,7 +86,7 @@ const onSubmit = () => {
                 bg-color="brown-8"
                 v-model="dataEditProfessional.instagram"
                 type="text"
-                label="Link do instagram:"
+                label="Link do instagram"
                 lazy-rules>
                 <template v-slot:prepend>
                   <i class='bx bxl-instagram' />

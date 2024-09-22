@@ -1,9 +1,10 @@
 <script setup>
-import { reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { fielsRequired, phoneValidator } from '../../utils/inputValidators.js';
 
 const emit = defineEmits(['saveFormUser']);
 const dataEditUser = defineModel('dataEditUser');
+const url = ref('');
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório',
     phone: v => phoneValidator(v) || 'Numero incorreto'
@@ -13,7 +14,10 @@ const onSubmit = () => {
     emit('saveFormUser');
 
 }
+onMounted(() => {
+    url.value = 'https://horadocorte.netlify.app/';
 
+});
 </script>
 <template>
     <div id="form-edit-user">
@@ -27,6 +31,7 @@ const onSubmit = () => {
                     label="Adicionar nova imagem"
                     color="white"
                     bg-color="brown-8"
+                    hint="A nova imagem aparecerá após salvar!"
                     max-files="1">
                         <template v-if="dataEditUser.image" v-slot:append>
                             <q-icon name="cancel" 
@@ -47,7 +52,7 @@ const onSubmit = () => {
                     bg-color="brown-8"
                     v-model="dataEditUser.name"
                     type="text"
-                    label="Nome do estabelecimento:"
+                    label="Nome do estabelecimento"
                     lazy-rules
                     :rules="[rulesUser.required]">
                     <template v-slot:prepend>
@@ -64,9 +69,9 @@ const onSubmit = () => {
                     bg-color="brown-8"
                     v-model="dataEditUser.slug"
                     type="text"
-                    label="Nome de usuário:"
+                    label="Nome de usuário"
                     lazy-rules
-                    :hint="dataEditUser.slug"
+                    :hint="!dataEditUser.slug ? null : url + dataEditUser.slug"
                     :rules="[rulesUser.required]">
                     <template v-slot:prepend>
                         <q-icon name="attribution" color="white" />
@@ -82,7 +87,7 @@ const onSubmit = () => {
                     bg-color="brown-8"
                     v-model="dataEditUser.phone"
                     type="tel"
-                    label="Seu telefone:"
+                    label="Seu telefone"
                     lazy-rules
                     mask="(##) ####-#####"
                     :rules="[rulesUser.required, rulesUser.phone]">

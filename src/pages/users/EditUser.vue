@@ -1,7 +1,7 @@
 <script setup>
 import { reactive } from 'vue';
 import { FormEditUser } from '../../components';
-import userDefault from '../../assets/user/userDefault2.jpg';
+import userDefault from '../../assets/imgsDefault/user.png';
 
 const dataEditUser = reactive({
     name: '',
