@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { FormDialogAddProfessional, CardProfessionalList } from '../../components';
-import userDefault from '../../assets/user/userDefault2.jpg';
+import userDefault from '../../assets/imgsDefault/user2.jpg';
 
 const isDialogAdd = ref(false);
 const dataProfessionais = reactive([
@@ -30,6 +30,14 @@ const editFormProfessional = (data) => {
     addProfessional();
 
 };
+const editScheduleProfessional = (schedule) => {
+    console.log(schedule);
+
+};
+const editServicesProfessional = (services) => {
+    console.log(services);
+
+};
 </script>
 <template>
     <div id="edit-professional">
@@ -49,7 +57,9 @@ const editFormProfessional = (data) => {
                 <CardProfessionalList
                     v-for="i in dataProfessionais" :key="i"
                     :dataProfessional='i'
-                    @editFormProfessional='editFormProfessional' />
+                    @editFormProfessional='editFormProfessional'
+                    @editScheduleProfessional='editScheduleProfessional'
+                    @editServicesProfessional='editServicesProfessional' />
             </div>
             <FormDialogAddProfessional
                 v-model:isDialogAdd='isDialogAdd'
