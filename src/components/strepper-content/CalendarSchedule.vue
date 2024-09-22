@@ -62,8 +62,12 @@ const verifyTimeBeforeToday = (timeSchedule) => {
     let hours = today.getHours();
     let minutes = today.getMinutes();
 
-    if(timeSchedule <= `${hours}:${minutes}`){
-        return false;
+    if(date.value == getDateToday()){
+        if(timeSchedule <= `${hours}:${minutes}`){
+            return false;
+
+        }
+        return true;
 
     }
     return true;
@@ -71,6 +75,7 @@ const verifyTimeBeforeToday = (timeSchedule) => {
 };
 watch(date, () => {
     emit('checkScheduleDate', date.value);
+    checkScheduleTime('');
 
 });
 onMounted(() => {
