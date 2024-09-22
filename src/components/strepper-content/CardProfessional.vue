@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import userDefault from '../../assets/user/userDefault.png';
+import userDefault from '../../assets/imgsDefault/user.png';
 import { formatString } from '../../utils/formatters.js';
 
 const props = defineProps(['dataServices']);
