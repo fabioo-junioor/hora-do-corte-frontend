@@ -1,12 +1,21 @@
 <script setup>
 const props = defineProps(['dataPricing']);
+const emit = defineEmits(['buyPlan']);
 
+const buyPlan = () => {
+  emit('buyPlan', props.dataPricing.id);
+
+};
 </script>
 <template>
   <div id="card-pricing">
     <q-card dark class="my-card q-pa-sm">
       <q-card-section class="flex-column items-center">
         <div class="pricing-about">
+            <q-badge
+              v-if="props.dataPricing.name != 'Prata'"
+              class="badge-discount q-pa-sm"
+              color="red-8">-10%</q-badge>
             <div class="text-h4 q-mb-sm">{{ props.dataPricing.name }}</div>
             <div class="text-subtitle2 q-my-xs">{{ props.dataPricing.about }}</div>
             <div class="text-h5 q-my-md">R$ {{ props.dataPricing.price }}</div>
@@ -14,7 +23,8 @@ const props = defineProps(['dataPricing']);
         <q-separator inset size=".1rem" spaced="1.5rem" color="white" />
         <q-btn
             push
-            class="full-width"
+            @click="buyPlan"
+            class="full-width q-mb-md"
             size="lg"
             label="Teste 30 dias gratis"
             color="brown-6"
@@ -22,7 +32,7 @@ const props = defineProps(['dataPricing']);
         <div class="pricing-details">
             <div class="pricing-detail flex items-center q-my-md"
                 v-for="i in props.dataPricing.benefits" :key="i" >
-                <q-icon class="q-mr-sm" name="check" />
+                <q-icon class="q-mr-sm" size="xs" name="check_circle" />
                 <p class="q-ma-none">{{ i }}</p>
             </div>
         </div>
@@ -38,6 +48,18 @@ const props = defineProps(['dataPricing']);
         width: 25rem;
         border-radius: 10px;
         background-color: $brown-8;
+
+        .pricing-about{
+          position: relative;
+
+          .badge-discount{
+            position: absolute;
+            top: -25%;
+            right: -8%;
+            font-size: 1rem;
+
+          }
+        }
     }
 }
 /* Breakpoints - response*/
