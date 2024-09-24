@@ -1,9 +1,9 @@
 <script setup>
 import { reactive } from 'vue';
 import { fielsRequired } from '../../utils/inputValidators.js';
-import userDefault from '../../assets/imgsDefault/user.png';
 
-const emit = defineEmits(['saveFormProfessional']);
+const emit = defineEmits(['saveFormProfessional', 'previewImage']);
+const props = defineProps(['imageProfile']);
 const isDialogAdd = defineModel('isDialogAdd');
 const dataEditProfessional = defineModel('dataEditProfessional');
 const rulesUser = reactive({
@@ -13,7 +13,11 @@ const rulesUser = reactive({
 const onSubmit = () => {
     emit('saveFormProfessional');
 
-}
+};
+const previewImage = (event) => {
+    emit('previewImage', event);
+
+};
 </script>
 <template>
   <div id="form-dialog-add-professional">
@@ -33,7 +37,7 @@ const onSubmit = () => {
         <q-card-section>
           <div class="edit-professional-image q-my-md row justify-center">
             <q-avatar style="width: 10rem; height: 10rem">
-              <q-img :src="dataEditProfessional.image || userDefault"
+              <q-img :src="props.imageProfile"
                 fit="cover" :ratio="1" />
             </q-avatar>
           </div>
@@ -43,11 +47,11 @@ const onSubmit = () => {
                 dark
                 filled
                 class="q-mb-md"
+                @input="previewImage"
                 v-model="dataEditProfessional.image"
                 label="Adicionar nova imagem"
                 color="white"
                 bg-color="brown-8"
-                hint="A nova imagem aparecerá após salvar!"
                 max-files="1">
                 <template v-if="dataEditProfessional.image" v-slot:append>
                   <q-icon

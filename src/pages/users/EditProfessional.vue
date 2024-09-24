@@ -1,21 +1,25 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { FormDialogAddProfessional, CardProfessionalList } from '../../components';
-import userDefault from '../../assets/imgsDefault/user2.jpg';
+import userDefault from '../../assets/imgsDefault/user.png';
 
 const isDialogAdd = ref(false);
-const dataProfessionais = reactive([
-    { name: 'fabio', image: null, instagram: 'teste' },
-    { name: 'maria', image: 'https://cdn.quasar.dev/img/mountains.jpg', instagram: '' },
-    { name: 'joao', image: null, instagram: '' },
-]);
+const imageProfile = ref(null);
 const dataEditProfessional = reactive({
     name: '',
     image: null,
     instagram: ''
     
 });
+const dataProfessionais = reactive([
+    { name: 'fabio', image: null, instagram: 'teste' },
+    { name: 'maria', image: 'https://cdn.quasar.dev/img/mountains.jpg', instagram: '' },
+    { name: 'joao', image: null, instagram: '' },
+]);
 const addProfessional = () => {
+    dataEditProfessional.name = '';
+    dataEditProfessional.image = '';
+    dataEditProfessional.instagram = '';
     isDialogAdd.value = true;
 
 };
@@ -27,7 +31,7 @@ const editFormProfessional = (data) => {
     dataEditProfessional.name = data.name;
     dataEditProfessional.image = data.image;
     dataEditProfessional.instagram = data.instagram;
-    addProfessional();
+    isDialogAdd.value = true;
 
 };
 const editScheduleProfessional = (schedule) => {
@@ -38,6 +42,22 @@ const editServicesProfessional = (services) => {
     console.log(services);
 
 };
+const previewImage = (event) => {
+    var input = event.target;
+    if(input.files && input.files[0]){
+        var render = new FileReader();
+        render.onload = (e) => {
+            imageProfile.value = e.target.result;
+            
+        }
+        render.readAsDataURL(input.files[0]);
+
+    }    
+};
+watch(() => dataEditProfessional.image, () => {
+    imageProfile.value = !dataEditProfessional.image ? userDefault : imageProfile.value;
+
+});
 </script>
 <template>
     <div id="edit-professional">
@@ -64,7 +84,9 @@ const editServicesProfessional = (services) => {
             <FormDialogAddProfessional
                 v-model:isDialogAdd='isDialogAdd'
                 v-model:dataEditProfessional='dataEditProfessional'
-                @saveFormProfessional='saveFormProfessional' />
+                :imageProfile='imageProfile || userDefault'
+                @saveFormProfessional='saveFormProfessional'
+                @previewImage='previewImage' />
         </div>
     </div>
 </template>

@@ -1,8 +1,8 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { fielsRequired, phoneValidator } from '../../utils/inputValidators.js';
 
-const emit = defineEmits(['saveFormUser']);
+const emit = defineEmits(['saveFormUser', 'previewImage']);
 const dataEditUser = defineModel('dataEditUser');
 const url = ref('');
 const rulesUser = reactive({
@@ -14,6 +14,10 @@ const onSubmit = () => {
     emit('saveFormUser');
 
 }
+const previewImage = (event) => {
+    emit('previewImage', event);
+
+};
 onMounted(() => {
     url.value = 'https://horadocorte.netlify.app/';
 
@@ -27,11 +31,11 @@ onMounted(() => {
                     dark
                     filled
                     class="q-mb-md"
+                    @input="previewImage"
                     v-model="dataEditUser.image"
                     label="Adicionar nova imagem"
                     color="white"
                     bg-color="brown-8"
-                    hint="A nova imagem aparecerá após salvar!"
                     max-files="1">
                         <template v-if="dataEditUser.image" v-slot:append>
                             <q-icon name="cancel" 
