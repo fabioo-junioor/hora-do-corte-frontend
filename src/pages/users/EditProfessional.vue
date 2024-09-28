@@ -1,6 +1,9 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { FormDialogAddProfessional, FormDialogAddServices, CardProfessionalList } from '../../components';
+import { FormDialogAddProfessional, 
+        FormDialogAddServices, 
+        FormDialogAddSchedules, 
+        CardProfessionalList } from '../../components';
 import userDefault from '../../assets/imgsDefault/user.png';
 
 const isDialogAdd = ref(false);
@@ -19,6 +22,22 @@ const dataEditServices = reactive({
     time: null
     
 });
+const dataEditSchedules = reactive([
+    {
+        mon: {
+            morning: { open: '08:00', close: '12:00' },
+            afternoon: { open: '14:00', close: '17:00' },
+            night: { open: '19:00', close: '22:00' }
+        }
+    },
+    {
+        tue: {
+            morning: { open: '07:00', close: '12:00' },
+            afternoon: { open: '13:00', close: '17:00' },
+            night: { open: '19:00', close: '23:00' }
+        }
+    }
+]);
 const servicesByProfesional = reactive([]);
 const dataProfessionais = reactive([
     { name: 'fabio', image: null, instagram: 'teste' },
@@ -41,6 +60,10 @@ const saveFormServices = () => {
     console.log(servicesByProfesional);
 
 };
+const saveFormSchedules = () => {
+    console.log(dataEditSchedules);
+
+};
 const addService = () => {
     servicesByProfesional.push({name: dataEditServices.name, price: dataEditServices.price, time: dataEditServices.time});
 
@@ -58,7 +81,7 @@ const editFormProfessional = (data) => {
 
 };
 const editScheduleProfessional = (schedule) => {
-    console.log(schedule);
+    isDialogSchedules.value = true;
 
 };
 const editServicesProfessional = (services) => {
@@ -117,6 +140,10 @@ watch(() => dataEditProfessional.image, () => {
                 @addService='addService'
                 @deleteService='deleteService'
                 @saveFormServices='saveFormServices' />
+            <FormDialogAddSchedules
+                v-model:isDialogSchedules='isDialogSchedules'
+                v-model:dataEditSchedules='dataEditSchedules'
+                @saveFormSchedules='saveFormSchedules' />
         </div>
     </div>
 </template>
