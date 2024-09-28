@@ -5,11 +5,15 @@ import userDefault from '../../assets/imgsDefault/user.png';
 
 const imageProfile = ref(null);
 const dataEditUser = reactive({
+    image: null,
     name: '',
     slug: '',
-    phone: '',
-    image: null,
-    instagram: ''
+    whatsapp: '',
+    instagram: '',
+    state: '',
+    city: '',
+    street: '',
+    number: ''
 });
 const previewImage = (event) => {
     var input = event.target;
@@ -31,7 +35,7 @@ watch(() => dataEditUser.image, () => {
 <template>
     <div id="edit-user">
         <div class="edit-user q-pa-md text-white">
-            <h4>Editar informações</h4>
+            <h4>Informações do estabelecimento</h4>
             <div class="edit-user-image q-mb-md">
                 <q-avatar>
                     <img :src="imageProfile || userDefault">
