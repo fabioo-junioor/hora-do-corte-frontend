@@ -8,7 +8,8 @@ const isDialogServices = defineModel('isDialogServices');
 const dataEditServices = defineModel('dataEditServices');
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório',
-    requiredNumber: v => v > 0 || 'Campo obrigatório'
+    requiredNumber: v => v > 0 || 'Campo obrigatório',
+    isInteger: v => (v % 1 === 0) || 'Numero deve ser inteiro!'
     
 });
 const saveFormServices = () => {
@@ -86,7 +87,7 @@ const onSubmit = () => {
                   label="Duração *"
                   lazy-rules
                   hint="Em minutos!"
-                  :rules="[rulesUser.requiredNumber]">
+                  :rules="[rulesUser.requiredNumber, rulesUser.isInteger]">
                   <template v-slot:prepend>
                     <q-icon name="timer" color="white" />
                   </template>
