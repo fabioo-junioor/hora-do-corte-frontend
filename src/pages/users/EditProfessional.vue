@@ -1,9 +1,11 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { FormDialogAddProfessional, CardProfessionalList } from '../../components';
+import { FormDialogAddProfessional, FormDialogAddServices, CardProfessionalList } from '../../components';
 import userDefault from '../../assets/imgsDefault/user.png';
 
 const isDialogAdd = ref(false);
+const isDialogSchedules = ref(false);
+const isDialogServices = ref(false);
 const imageProfile = ref(null);
 const dataEditProfessional = reactive({
     name: '',
@@ -11,10 +13,18 @@ const dataEditProfessional = reactive({
     instagram: ''
     
 });
+const dataEditServices = reactive({
+    name: '',
+    price: null,
+    time: null
+    
+});
+const servicesByProfesional = reactive([]);
 const dataProfessionais = reactive([
     { name: 'fabio', image: null, instagram: 'teste' },
     { name: 'maria', image: 'https://cdn.quasar.dev/img/mountains.jpg', instagram: '' },
-    { name: 'joao', image: null, instagram: '' },
+    { name: 'joao', image: null, instagram: '' }
+
 ]);
 const addProfessional = () => {
     dataEditProfessional.name = '';
@@ -27,6 +37,19 @@ const saveFormProfessional = () => {
     console.log(dataEditProfessional);
 
 };
+const saveFormServices = () => {
+    console.log(servicesByProfesional);
+
+};
+const addService = () => {
+    servicesByProfesional.push({name: dataEditServices.name, price: dataEditServices.price, time: dataEditServices.time});
+
+};
+const deleteService = (data) => {
+    let indice = servicesByProfesional.findIndex(obj => obj.name === data);
+    servicesByProfesional.splice(indice, 1);
+
+}
 const editFormProfessional = (data) => {
     dataEditProfessional.name = data.name;
     dataEditProfessional.image = data.image;
@@ -39,7 +62,7 @@ const editScheduleProfessional = (schedule) => {
 
 };
 const editServicesProfessional = (services) => {
-    console.log(services);
+    isDialogServices.value = true;
 
 };
 const previewImage = (event) => {
@@ -87,6 +110,13 @@ watch(() => dataEditProfessional.image, () => {
                 :imageProfile='imageProfile || userDefault'
                 @saveFormProfessional='saveFormProfessional'
                 @previewImage='previewImage' />
+            <FormDialogAddServices
+                v-model:isDialogServices='isDialogServices'
+                v-model:dataEditServices='dataEditServices'
+                :servicesByProfesional='servicesByProfesional'
+                @addService='addService'
+                @deleteService='deleteService'
+                @saveFormServices='saveFormServices' />
         </div>
     </div>
 </template>
