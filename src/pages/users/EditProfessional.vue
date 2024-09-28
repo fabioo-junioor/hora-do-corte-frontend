@@ -25,16 +25,16 @@ const dataEditServices = reactive({
 const dataEditSchedules = reactive([
     {
         mon: {
-            morning: { open: '08:00', close: '12:00' },
-            afternoon: { open: '14:00', close: '17:00' },
-            night: { open: '19:00', close: '22:00' }
+            morning: { open: null, close: null },
+            afternoon: { open: null, close: null },
+            night: { open: null, close: null }
         }
     },
     {
         tue: {
-            morning: { open: '07:00', close: '12:00' },
-            afternoon: { open: '13:00', close: '17:00' },
-            night: { open: '19:00', close: '23:00' }
+            morning: { open: null, close: null },
+            afternoon: { open: null, close: null },
+            night: { open: null, close: null }
         }
     }
 ]);
