@@ -46,7 +46,6 @@ const onSubmit = () => {
                 <q-input
                   dark
                   filled
-                  class="q-mb-sm"
                   color="white"
                   bg-color="brown-8"
                   v-model="dataEditServices.name"
@@ -64,7 +63,6 @@ const onSubmit = () => {
                 <q-input
                   dark
                   filled
-                  class="q-mb-sm"
                   color="white"
                   bg-color="brown-8"
                   v-model="dataEditServices.price"
@@ -81,7 +79,6 @@ const onSubmit = () => {
                 <q-input
                   dark
                   filled
-                  class="q-mb-sm"
                   color="white"
                   bg-color="brown-8"
                   v-model="dataEditServices.time"
@@ -98,7 +95,7 @@ const onSubmit = () => {
               <div class="form-edit-services-input">
                 <q-btn
                   round
-                  class="q-ma-xs"
+                  class="q-mx-xs q-my-sm"
                   color="brown-9"
                   icon="add"
                   type="submit" />    
