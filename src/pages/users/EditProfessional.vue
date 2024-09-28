@@ -1,21 +1,35 @@
 <script setup>
-import { reactive, ref } from 'vue';
-import { FormDialogAddProfessional, CardProfessionalList } from '../../components';
-import userDefault from '../../assets/imgsDefault/user2.jpg';
+import { onMounted, reactive, ref, watch } from 'vue';
+import { FormDialogAddProfessional, FormDialogAddServices, CardProfessionalList } from '../../components';
+import userDefault from '../../assets/imgsDefault/user.png';
 
 const isDialogAdd = ref(false);
-const dataProfessionais = reactive([
-    { name: 'fabio', image: null, instagram: 'teste' },
-    { name: 'maria', image: 'https://cdn.quasar.dev/img/mountains.jpg', instagram: '' },
-    { name: 'joao', image: null, instagram: '' },
-]);
+const isDialogSchedules = ref(false);
+const isDialogServices = ref(false);
+const imageProfile = ref(null);
 const dataEditProfessional = reactive({
     name: '',
     image: null,
     instagram: ''
     
 });
+const dataEditServices = reactive({
+    name: '',
+    price: null,
+    time: null
+    
+});
+const servicesByProfesional = reactive([]);
+const dataProfessionais = reactive([
+    { name: 'fabio', image: null, instagram: 'teste' },
+    { name: 'maria', image: 'https://cdn.quasar.dev/img/mountains.jpg', instagram: '' },
+    { name: 'joao', image: null, instagram: '' }
+
+]);
 const addProfessional = () => {
+    dataEditProfessional.name = '';
+    dataEditProfessional.image = '';
+    dataEditProfessional.instagram = '';
     isDialogAdd.value = true;
 
 };
@@ -23,11 +37,24 @@ const saveFormProfessional = () => {
     console.log(dataEditProfessional);
 
 };
+const saveFormServices = () => {
+    console.log(servicesByProfesional);
+
+};
+const addService = () => {
+    servicesByProfesional.push({name: dataEditServices.name, price: dataEditServices.price, time: dataEditServices.time});
+
+};
+const deleteService = (data) => {
+    let indice = servicesByProfesional.findIndex(obj => obj.name === data);
+    servicesByProfesional.splice(indice, 1);
+
+}
 const editFormProfessional = (data) => {
     dataEditProfessional.name = data.name;
     dataEditProfessional.image = data.image;
     dataEditProfessional.instagram = data.instagram;
-    addProfessional();
+    isDialogAdd.value = true;
 
 };
 const editScheduleProfessional = (schedule) => {
@@ -35,9 +62,25 @@ const editScheduleProfessional = (schedule) => {
 
 };
 const editServicesProfessional = (services) => {
-    console.log(services);
+    isDialogServices.value = true;
 
 };
+const previewImage = (event) => {
+    var input = event.target;
+    if(input.files && input.files[0]){
+        var render = new FileReader();
+        render.onload = (e) => {
+            imageProfile.value = e.target.result;
+            
+        }
+        render.readAsDataURL(input.files[0]);
+
+    }    
+};
+watch(() => dataEditProfessional.image, () => {
+    imageProfile.value = !dataEditProfessional.image ? userDefault : imageProfile.value;
+
+});
 </script>
 <template>
     <div id="edit-professional">
@@ -64,7 +107,16 @@ const editServicesProfessional = (services) => {
             <FormDialogAddProfessional
                 v-model:isDialogAdd='isDialogAdd'
                 v-model:dataEditProfessional='dataEditProfessional'
-                @saveFormProfessional='saveFormProfessional' />
+                :imageProfile='imageProfile || userDefault'
+                @saveFormProfessional='saveFormProfessional'
+                @previewImage='previewImage' />
+            <FormDialogAddServices
+                v-model:isDialogServices='isDialogServices'
+                v-model:dataEditServices='dataEditServices'
+                :servicesByProfesional='servicesByProfesional'
+                @addService='addService'
+                @deleteService='deleteService'
+                @saveFormServices='saveFormServices' />
         </div>
     </div>
 </template>

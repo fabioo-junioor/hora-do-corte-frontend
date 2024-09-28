@@ -1,19 +1,24 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
-import { fielsRequired, phoneValidator } from '../../utils/inputValidators.js';
+import { onMounted, reactive, ref, watch } from 'vue';
+import { fielsRequired, phoneValidator, charactersAndSpaces } from '../../utils/inputValidators.js';
 
-const emit = defineEmits(['saveFormUser']);
+const emit = defineEmits(['saveFormUser', 'previewImage']);
 const dataEditUser = defineModel('dataEditUser');
 const url = ref('');
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório',
-    phone: v => phoneValidator(v) || 'Numero incorreto'
+    phone: v => phoneValidator(v) || 'Numero incorreto',
+    slug: v => !charactersAndSpaces(v) || 'Campo inválido'
     
 });
 const onSubmit = () => {
     emit('saveFormUser');
 
 }
+const previewImage = (event) => {
+    emit('previewImage', event);
+
+};
 onMounted(() => {
     url.value = 'https://horadocorte.netlify.app/';
 
@@ -27,11 +32,11 @@ onMounted(() => {
                     dark
                     filled
                     class="q-mb-md"
+                    @input="previewImage"
                     v-model="dataEditUser.image"
                     label="Adicionar nova imagem"
                     color="white"
                     bg-color="brown-8"
-                    hint="A nova imagem aparecerá após salvar!"
                     max-files="1">
                         <template v-if="dataEditUser.image" v-slot:append>
                             <q-icon name="cancel" 
@@ -52,7 +57,7 @@ onMounted(() => {
                     bg-color="brown-8"
                     v-model="dataEditUser.name"
                     type="text"
-                    label="Nome do estabelecimento"
+                    label="Nome do estabelecimento *"
                     lazy-rules
                     :rules="[rulesUser.required]">
                     <template v-slot:prepend>
@@ -69,12 +74,12 @@ onMounted(() => {
                     bg-color="brown-8"
                     v-model="dataEditUser.slug"
                     type="text"
-                    label="Nome de usuário"
+                    label="Nome do estabelecimento (link da url) *"
                     lazy-rules
-                    :hint="!dataEditUser.slug ? null : url + dataEditUser.slug"
-                    :rules="[rulesUser.required]">
+                    :hint="!!dataEditUser.slug ? url + dataEditUser.slug : 'Definir o nome sem [espaços, caracteres]!'"
+                    :rules="[rulesUser.required, rulesUser.slug]">
                     <template v-slot:prepend>
-                        <q-icon name="attribution" color="white" />
+                        <q-icon name="person_search" color="white" />
                     </template>
                 </q-input>
             </div>
@@ -85,14 +90,14 @@ onMounted(() => {
                     class="q-mb-sm"
                     color="white"
                     bg-color="brown-8"
-                    v-model="dataEditUser.phone"
+                    v-model="dataEditUser.whatsapp"
                     type="tel"
-                    label="Seu telefone"
+                    label="Whatsapp *"
                     lazy-rules
                     mask="(##) ####-#####"
                     :rules="[rulesUser.required, rulesUser.phone]">
                     <template v-slot:prepend>
-                        <q-icon name="phone_iphone" color="white" />
+                        <i class='bx bxl-whatsapp text-white' />
                     </template>    
                 </q-input>
             </div>
@@ -105,11 +110,80 @@ onMounted(() => {
                     bg-color="brown-8"
                     v-model="dataEditUser.instagram"
                     type="text"
-                    label="Link do instagram:"
+                    label="Link do instagram"
                     lazy-rules>
                     <template v-slot:prepend>
-                        <i class='bx bxl-instagram-alt' />
+                        <i class='bx bxl-instagram-alt text-white' />
                     </template>
+                </q-input>
+            </div>
+            <q-separator dark class="q-ma-lg" color="white" />
+            <div class="form-edit-user-inputs">
+                <q-input
+                    dark
+                    filled
+                    class="q-mb-sm"
+                    color="white"
+                    bg-color="brown-8"
+                    v-model="dataEditUser.state"
+                    type="text"
+                    label="Estado *"
+                    lazy-rules
+                    :rules="[rulesUser.required]">
+                    <template v-slot:prepend>
+                        <q-icon name="public" color="white" />
+                    </template>    
+                </q-input>
+            </div>
+            <div class="form-edit-user-inputs">
+                <q-input
+                    dark
+                    filled
+                    class="q-mb-sm"
+                    color="white"
+                    bg-color="brown-8"
+                    v-model="dataEditUser.city"
+                    type="text"
+                    label="Cidade *"
+                    lazy-rules
+                    :rules="[rulesUser.required]">
+                    <template v-slot:prepend>
+                        <q-icon name="location_on" color="white" />
+                    </template>    
+                </q-input>
+            </div>
+            <div class="form-edit-user-inputs">
+                <q-input
+                    dark
+                    filled
+                    class="q-mb-sm"
+                    color="white"
+                    bg-color="brown-8"
+                    v-model="dataEditUser.street"
+                    type="text"
+                    label="Logradouro *"
+                    lazy-rules
+                    :rules="[rulesUser.required]">
+                    <template v-slot:prepend>
+                        <q-icon name="signpost" color="white" />
+                    </template>    
+                </q-input>
+            </div>
+            <div class="form-edit-user-inputs">
+                <q-input
+                    dark
+                    filled
+                    class="q-mb-sm"
+                    color="white"
+                    bg-color="brown-8"
+                    v-model="dataEditUser.number"
+                    type="text"
+                    label="Numero *"
+                    lazy-rules
+                    :rules="[rulesUser.required]">
+                    <template v-slot:prepend>
+                        <q-icon name="123" color="white" />
+                    </template>    
                 </q-input>
             </div>
             <q-btn

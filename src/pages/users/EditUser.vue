@@ -1,28 +1,49 @@
 <script setup>
-import { reactive } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { FormEditUser } from '../../components';
 import userDefault from '../../assets/imgsDefault/user.png';
 
+const imageProfile = ref(null);
 const dataEditUser = reactive({
+    image: null,
     name: '',
     slug: '',
-    phone: '',
-    image: null,
-    instagram: ''
+    whatsapp: '',
+    instagram: '',
+    state: '',
+    city: '',
+    street: '',
+    number: ''
 });
+const previewImage = (event) => {
+    var input = event.target;
+    if(input.files && input.files[0]){
+        var render = new FileReader();
+        render.onload = (e) => {
+            imageProfile.value = e.target.result;
+            
+        }
+        render.readAsDataURL(input.files[0]);
 
+    }    
+};
+watch(() => dataEditUser.image, () => {
+    imageProfile.value = !dataEditUser.image ? userDefault : imageProfile.value;
+
+});
 </script>
 <template>
     <div id="edit-user">
         <div class="edit-user q-pa-md text-white">
-            <h4>Editar informações</h4>
+            <h4>Informações do estabelecimento</h4>
             <div class="edit-user-image q-mb-md">
                 <q-avatar>
-                    <img :src="dataEditUser.image || userDefault">
+                    <img :src="imageProfile || userDefault">
                 </q-avatar>
             </div>
             <FormEditUser
-                v-model:dataEditUser="dataEditUser" />
+                v-model:dataEditUser="dataEditUser"
+                @previewImage='previewImage' />
         </div>
     </div>
 </template>
