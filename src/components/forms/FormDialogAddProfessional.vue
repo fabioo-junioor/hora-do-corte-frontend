@@ -29,7 +29,7 @@ const previewImage = (event) => {
         class="bg-brown-6 text-white full-height"
         style="width: 50%; max-width: 80%;">
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Adicionar profissional</div>
+          <div class="text-h6">EDITAR PROFISSIONAL</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>

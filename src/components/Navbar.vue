@@ -1,40 +1,73 @@
 <script setup>
-import { ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
-const route = useRoute();
-const isPageUser = ref(false);
-const getPageLogin = () => {
-  if(route.params.nameUser){
-    router.push({ path: `/${route.params.nameUser}/loginUser` });
-    console.log(route.params.nameUser, isPageUser.value);
-    return;
+const isUserLogin = ref(false);
 
-    };
+const checkLoginUser = () => {
+  isUserLogin.value = true;
+
 };
+const getLogin = () => {
+   router.push({ path: '/loginUser' });
+   
+};
+const getEditUser = () => {
+   router.push({ path: '/editUser' });
+
+};
+const getEditProfessional = () => {
+   router.push({ path: '/editProfessional' });
+
+};
+const getReservations = () => {
+   
+};
+onMounted(() => {
+  //checkLoginUser();
+
+});
 </script>
 <template>
   <div id="navbar">
     <q-layout view="hHh lpR fFf">
       <q-header elevated class="q-px-md q-py-xs">
-        <q-toolbar class="q-py-sm">
-          <router-link class="q-pa-xs" :to="route.params.nameUser ? `/${route.params.nameUser}` : '/'">
+        <q-toolbar>
+          <router-link to="/">
             <q-toolbar-title>
-              <i class='bx bx-calendar q-px-sm' />
-              Hora do corte    
+              <q-img src="../assets/logo/logo.png" height="4rem" width="4rem" />
             </q-toolbar-title>
           </router-link>
-        <div class="btn-area-user"
-          v-if="route.params.nameUser">
-            <q-btn 
-                outline 
-                color="brown-10"
-                @click="getPageLogin" >
-                <i class='bx bx-log-in q-px-sm' />
-                Área do cliente
-            </q-btn>
-        </div>
+          <div class="btn-area-user"
+            v-if="isUserLogin">
+              <q-btn 
+                  outline
+                  @click="getLogin"
+                  color="brown-10"
+                  icon="login"
+                  label="Área do usuário" />
+          </div>
+          <div v-else class="btn-area-user">
+              <q-btn 
+                  outline
+                  @click="getReservations"
+                  color="brown-10"
+                  icon="event_available"
+                  label="Agendamentos" />
+              <q-btn 
+                  outline
+                  @click="getEditUser"
+                  color="brown-10"
+                  icon="settings"
+                  label="Configuração" />
+              <q-btn 
+                  outline
+                  @click="getEditProfessional"
+                  color="brown-10"
+                  icon="manage_accounts"
+                  label="Profissionais" />
+          </div>
         </q-toolbar>
       </q-header>
 
@@ -48,43 +81,35 @@ const getPageLogin = () => {
 <style lang="scss" scoped>
 #navbar{
     .q-header{
+      height: 5rem;
+      display: flex;
       background-color: $darkColorSecondary;
 
       .q-toolbar{
         display: flex;
         justify-content: space-between;
-
+        
         a{
           text-decoration: none;
-          color: $brown-10;
+          border: 2px solid $brown-5;
+          border-radius: 5px;
 
-          .q-toolbar__title{
-              display: flex;
-
-              i{
-                  font-size: 2rem;
-                  color: $brown-10;
-
-              }
-          }
           &:hover{
-            background-color: rgba(255, 255, 255, .3);
-            border-radius: 5px;
+            border: 2px solid $brown-10;
 
           }
         }
       }
         .btn-area-user{
+          height: 4rem;
+          display: flex;
+          gap: .5rem;
+          
           .q-btn:hover{
             background-color: $brown-10 !important;
             color: $whiteColorPrimary !important;
 
           }
-            i{
-                font-size: 1.5rem;
-
-
-            }
         }
     }
 }

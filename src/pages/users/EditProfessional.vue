@@ -1,6 +1,9 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { FormDialogAddProfessional, FormDialogAddServices, CardProfessionalList } from '../../components';
+import { FormDialogAddProfessional, 
+        FormDialogAddServices, 
+        FormDialogAddSchedules, 
+        CardProfessionalList } from '../../components';
 import userDefault from '../../assets/imgsDefault/user.png';
 
 const isDialogAdd = ref(false);
@@ -19,6 +22,57 @@ const dataEditServices = reactive({
     time: null
     
 });
+const dataEditSchedules = reactive([
+    {
+        mon: {
+            morning: { open: null, close: null },
+            afternoon: { open: null, close: null },
+            night: { open: null, close: null }
+        }
+    },
+    {
+        tue: {
+            morning: { open: null, close: null },
+            afternoon: { open: null, close: null },
+            night: { open: null, close: null }
+        }
+    },
+    {
+        wed: {
+            morning: { open: null, close: null },
+            afternoon: { open: null, close: null },
+            night: { open: null, close: null }
+        }
+    },
+    {
+        thu: {
+            morning: { open: null, close: null },
+            afternoon: { open: null, close: null },
+            night: { open: null, close: null }
+        }
+    },
+    {
+        fri: {
+            morning: { open: null, close: null },
+            afternoon: { open: null, close: null },
+            night: { open: null, close: null }
+        }
+    },
+    {
+        sat: {
+            morning: { open: null, close: null },
+            afternoon: { open: null, close: null },
+            night: { open: null, close: null }
+        }
+    },
+    {
+        sun: {
+            morning: { open: null, close: null },
+            afternoon: { open: null, close: null },
+            night: { open: null, close: null }
+        }
+    }
+]);
 const servicesByProfesional = reactive([]);
 const dataProfessionais = reactive([
     { name: 'fabio', image: null, instagram: 'teste' },
@@ -41,6 +95,10 @@ const saveFormServices = () => {
     console.log(servicesByProfesional);
 
 };
+const saveFormSchedules = () => {
+    console.log(dataEditSchedules);
+
+};
 const addService = () => {
     servicesByProfesional.push({name: dataEditServices.name, price: dataEditServices.price, time: dataEditServices.time});
 
@@ -58,7 +116,7 @@ const editFormProfessional = (data) => {
 
 };
 const editScheduleProfessional = (schedule) => {
-    console.log(schedule);
+    isDialogSchedules.value = true;
 
 };
 const editServicesProfessional = (services) => {
@@ -84,7 +142,7 @@ watch(() => dataEditProfessional.image, () => {
 </script>
 <template>
     <div id="edit-professional">
-        <div class="edit-professional q-ma-md">
+        <div class="edit-professional q-mt-xl">
             <div class="edit-professional-add text-white q-pa-xs">
                 <h5 class="q-ma-none">Adicionar profissional</h5>
                 <q-btn
@@ -117,6 +175,10 @@ watch(() => dataEditProfessional.image, () => {
                 @addService='addService'
                 @deleteService='deleteService'
                 @saveFormServices='saveFormServices' />
+            <FormDialogAddSchedules
+                v-model:isDialogSchedules='isDialogSchedules'
+                v-model:dataEditSchedules='dataEditSchedules'
+                @saveFormSchedules='saveFormSchedules' />
         </div>
     </div>
 </template>
@@ -126,7 +188,7 @@ watch(() => dataEditProfessional.image, () => {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    min-height: calc(100vh - 4rem);
+    min-height: calc(100vh - 5rem);
     font-family: "Fredoka", sans-serif;
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .05)),
       url("../../assets/background/background-wave.png") no-repeat

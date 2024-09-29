@@ -8,7 +8,8 @@ const isDialogServices = defineModel('isDialogServices');
 const dataEditServices = defineModel('dataEditServices');
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório',
-    requiredNumber: v => v > 0 || 'Campo obrigatório'
+    requiredNumber: v => v > 0 || 'Campo obrigatório',
+    isInteger: v => (v % 1 === 0) || 'Numero deve ser inteiro!'
     
 });
 const saveFormServices = () => {
@@ -34,7 +35,7 @@ const onSubmit = () => {
         class="bg-brown-6 text-white full-height"
         style="width: 50%; max-width: 80%;">
         <q-card-section class="row items-center q-pb-none">
-          <div class="text-h6">Adicionar serviços</div>
+          <div class="text-h6">EDITAR SERVIÇOS</div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -46,7 +47,6 @@ const onSubmit = () => {
                 <q-input
                   dark
                   filled
-                  class="q-mb-sm"
                   color="white"
                   bg-color="brown-8"
                   v-model="dataEditServices.name"
@@ -64,7 +64,6 @@ const onSubmit = () => {
                 <q-input
                   dark
                   filled
-                  class="q-mb-sm"
                   color="white"
                   bg-color="brown-8"
                   v-model="dataEditServices.price"
@@ -81,7 +80,6 @@ const onSubmit = () => {
                 <q-input
                   dark
                   filled
-                  class="q-mb-sm"
                   color="white"
                   bg-color="brown-8"
                   v-model="dataEditServices.time"
@@ -89,7 +87,7 @@ const onSubmit = () => {
                   label="Duração *"
                   lazy-rules
                   hint="Em minutos!"
-                  :rules="[rulesUser.requiredNumber]">
+                  :rules="[rulesUser.requiredNumber, rulesUser.isInteger]">
                   <template v-slot:prepend>
                     <q-icon name="timer" color="white" />
                   </template>
@@ -98,7 +96,7 @@ const onSubmit = () => {
               <div class="form-edit-services-input">
                 <q-btn
                   round
-                  class="q-ma-xs"
+                  class="q-mx-xs q-my-sm"
                   color="brown-9"
                   icon="add"
                   type="submit" />    

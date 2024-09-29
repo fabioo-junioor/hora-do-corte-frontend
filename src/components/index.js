@@ -5,6 +5,7 @@ import FormReservation from './forms/FormReservation.vue';
 import FormEditUser from './forms/FormEditUser.vue';
 import FormDialogAddProfessional from './forms/FormDialogAddProfessional.vue';
 import FormDialogAddServices from './forms/FormDialogAddServices.vue';
+import FormDialogAddSchedules from './forms/FormDialogAddSchedules.vue';
 
 import CardProfessionalList from './cards/CardProfessionalList.vue';
 import CardPricing from './cards/CardPricing.vue';
@@ -20,6 +21,7 @@ export {
     FormEditUser,
     FormDialogAddProfessional,
     FormDialogAddServices,
+    FormDialogAddSchedules,
     CardProfessionalList,
     CardPricing,
     CardProfessional,

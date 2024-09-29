@@ -34,9 +34,9 @@ watch(() => dataEditUser.image, () => {
 </script>
 <template>
     <div id="edit-user">
-        <div class="edit-user q-pa-md text-white">
-            <h4>Informações do estabelecimento</h4>
-            <div class="edit-user-image q-mb-md">
+        <div class="edit-user q-mt-xl text-white">
+            <h4 class="q-ma-none">Informações do estabelecimento</h4>
+            <div class="edit-user-image q-my-md">
                 <q-avatar>
                     <img :src="imageProfile || userDefault">
                 </q-avatar>
@@ -53,7 +53,7 @@ watch(() => dataEditUser.image, () => {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    min-height: calc(100vh - 4rem);
+    min-height: calc(100vh - 5rem);
     font-family: "Fredoka", sans-serif;
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .05)),
       url("../../assets/background/background-wave.png") no-repeat
@@ -61,7 +61,7 @@ watch(() => dataEditUser.image, () => {
     background-size: cover;
 
     .edit-user{
-        width: 70%;
+        width: 60%;
         display: flex;
         flex-direction: column;
         align-items: center;
