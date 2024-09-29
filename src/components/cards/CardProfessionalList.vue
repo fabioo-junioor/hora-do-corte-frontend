@@ -18,9 +18,13 @@ const editServicesProfessional = () => {
 </script>
 <template>
   <div id="card-professional-list">
-    <q-card dark bordered class="my-card bg-brown-9 text-white">
-       <q-img height="15rem" width="15rem" :src="props.dataProfessional.image || userDefault" />
-      <q-card-section class="row justify-between items-center">
+    <q-card
+      dark
+      bordered 
+      style="width: 20rem;"
+      class="my-card bg-brown-9 text-white column items-center">
+       <q-img class="q-ma-md" height="15rem" width="15rem" :src="props.dataProfessional.image || userDefault" />
+      <q-card-section class="row justify-between items-center full-width">
         <div class="row items-center">
           <q-icon class="q-mr-sm" name="person" size="1.5rem" color="white" />
           <div class="text-h6">{{ props.dataProfessional.name }}</div>
@@ -32,16 +36,7 @@ const editServicesProfessional = () => {
         </a>
       </q-card-section>
 
-      <q-separator dark color="white" />
-
-      <q-card-actions class="column itens-stretch">
-        <!--
-        <a
-          v-if="!!props.dataProfessional.instagram" 
-          :href="props.dataProfessional.instagram"
-          target="_blank" >
-          <i class='bx bxl-instagram' />
-        </a> -->
+      <q-card-actions class="column full-width">
         <q-btn 
           @click="editFormProfessional"
           class="full-width q-mb-sm"

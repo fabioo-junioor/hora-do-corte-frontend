@@ -65,7 +65,7 @@ onMounted(() => {
                   outline
                   @click="getEditProfessional"
                   color="brown-10"
-                  icon="person_add"
+                  icon="manage_accounts"
                   label="Profissionais" />
           </div>
         </q-toolbar>

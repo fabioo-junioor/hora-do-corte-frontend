@@ -142,7 +142,7 @@ watch(() => dataEditProfessional.image, () => {
 </script>
 <template>
     <div id="edit-professional">
-        <div class="edit-professional q-ma-md">
+        <div class="edit-professional q-mt-xl">
             <div class="edit-professional-add text-white q-pa-xs">
                 <h5 class="q-ma-none">Adicionar profissional</h5>
                 <q-btn
@@ -188,7 +188,7 @@ watch(() => dataEditProfessional.image, () => {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    min-height: calc(100vh - 4rem);
+    min-height: calc(100vh - 5rem);
     font-family: "Fredoka", sans-serif;
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .05)),
       url("../../assets/background/background-wave.png") no-repeat
