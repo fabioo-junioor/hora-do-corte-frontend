@@ -9,7 +9,7 @@ const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório'
     
 });
-const onSubmit = () => {
+const saveFormSchedules = () => {
   emit('saveFormSchedules');
 
 };
@@ -22,7 +22,7 @@ const onSubmit = () => {
       backdrop-filter="blur(1px)">
       <q-card 
         class="bg-brown-6 text-white full-height"
-        style="width: 50%; max-width: 80%;">
+        style="width: 70%; max-width: 80%;">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">Adicionar horários</div>
           <q-space />
@@ -30,9 +30,9 @@ const onSubmit = () => {
         </q-card-section>
 
         <q-card-section>
-          <q-form @submit="onSubmit">
+          <q-form>
             <div class="form-edit-schedules-inputs">
-              <h6 class="q-my-xs">Segunda</h6>
+              <h6 class="q-my-xs">Segunda-feira</h6>
               <div class="row">
                 <div class="col q-pa-xs bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Manha</p>
@@ -45,7 +45,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[0]['mon']['morning']['open']"
                       mask="time"
-                      label="Abre"
+                      label="Abrir"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -71,7 +71,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[0]['mon']['morning']['close']"
                       mask="time"
-                      label="Fecha"
+                      label="Fechar"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -102,7 +102,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[0]['mon']['afternoon']['open']"
                       mask="time"
-                      label="Abre"
+                      label="Abrir"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -128,7 +128,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[0]['mon']['afternoon']['close']"
                       mask="time"
-                      label="Fecha"
+                      label="Fechar"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -159,7 +159,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[0]['mon']['night']['open']"
                       mask="time"
-                      label="Abre"
+                      label="Abrir"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -185,7 +185,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[0]['mon']['night']['close']"
                       mask="time"
-                      label="Fecha"
+                      label="Fechar"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -208,7 +208,7 @@ const onSubmit = () => {
               </div>  
             </div>
             <div class="form-edit-schedules-inputs">
-              <h6 class="q-my-xs">Terça</h6>
+              <h6 class="q-my-xs">Terça-feira</h6>
               <div class="row">
                 <div class="col q-pa-xs bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Manha</p>
@@ -221,7 +221,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[1]['tue']['morning']['open']"
                       mask="time"
-                      label="Abre"
+                      label="Abrir"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -247,7 +247,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[1]['tue']['morning']['close']"
                       mask="time"
-                      label="Fecha"
+                      label="Fechar"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -278,7 +278,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[1]['tue']['afternoon']['open']"
                       mask="time"
-                      label="Abre"
+                      label="Abrir"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -304,7 +304,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[1]['tue']['afternoon']['close']"
                       mask="time"
-                      label="Fecha"
+                      label="Fechar"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -335,7 +335,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[1]['tue']['night']['open']"
                       mask="time"
-                      label="Abre"
+                      label="Abrir"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -361,7 +361,7 @@ const onSubmit = () => {
                       bg-color="brown-8"
                       v-model="dataEditSchedules[1]['tue']['night']['close']"
                       mask="time"
-                      label="Fecha"
+                      label="Fechar"
                       :rules="['time']" >
                       <template v-slot:append>
                         <q-icon name="access_time" class="cursor-pointer" color="white">
@@ -383,12 +383,892 @@ const onSubmit = () => {
                 </div>
               </div>  
             </div>
+            <div class="form-edit-schedules-inputs">
+              <h6 class="q-my-xs">Quarta-feira</h6>
+              <div class="row">
+                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Manha</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[2]['wed']['morning']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[2]['wed']['morning']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[2]['wed']['morning']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[2]['wed']['morning']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Tarde</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[2]['wed']['afternoon']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[2]['wed']['afternoon']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[2]['wed']['afternoon']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark
+                              format24h  
+                              v-model="dataEditSchedules[2]['wed']['afternoon']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Noite</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[2]['wed']['night']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[2]['wed']['night']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[2]['wed']['night']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark 
+                              format24h 
+                              v-model="dataEditSchedules[2]['wed']['night']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+              </div>  
+            </div>
+            <div class="form-edit-schedules-inputs">
+              <h6 class="q-my-xs">Quinta-feira</h6>
+              <div class="row">
+                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Manha</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[3]['thu']['morning']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[3]['thu']['morning']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[3]['thu']['morning']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[3]['thu']['morning']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Tarde</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[3]['thu']['afternoon']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[3]['thu']['afternoon']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[3]['thu']['afternoon']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark
+                              format24h  
+                              v-model="dataEditSchedules[3]['thu']['afternoon']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Noite</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[3]['thu']['night']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[3]['thu']['night']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[3]['thu']['night']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark 
+                              format24h 
+                              v-model="dataEditSchedules[3]['thu']['night']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+              </div>  
+            </div>
+            <div class="form-edit-schedules-inputs">
+              <h6 class="q-my-xs">Sexta-feira</h6>
+              <div class="row">
+                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Manha</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[4]['fri']['morning']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[4]['fri']['morning']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[4]['fri']['morning']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[4]['fri']['morning']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Tarde</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[4]['fri']['afternoon']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[4]['fri']['afternoon']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[4]['fri']['afternoon']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark
+                              format24h  
+                              v-model="dataEditSchedules[4]['fri']['afternoon']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Noite</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[4]['fri']['night']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[4]['fri']['night']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[4]['fri']['night']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark 
+                              format24h 
+                              v-model="dataEditSchedules[4]['fri']['night']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+              </div>  
+            </div>
+            <div class="form-edit-schedules-inputs">
+              <h6 class="q-my-xs">Sábado</h6>
+              <div class="row">
+                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Manha</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[5]['sat']['morning']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[5]['sat']['morning']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[5]['sat']['morning']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[5]['sat']['morning']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Tarde</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[5]['sat']['afternoon']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[5]['sat']['afternoon']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[5]['sat']['afternoon']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark
+                              format24h  
+                              v-model="dataEditSchedules[5]['sat']['afternoon']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Noite</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[5]['sat']['night']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[5]['sat']['night']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[5]['sat']['night']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark 
+                              format24h 
+                              v-model="dataEditSchedules[5]['sat']['night']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+              </div>  
+            </div>
+            <div class="form-edit-schedules-inputs">
+              <h6 class="q-my-xs">Domingo</h6>
+              <div class="row">
+                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Manha</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[6]['sun']['morning']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[6]['sun']['morning']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[6]['sun']['morning']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[6]['sun']['morning']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Tarde</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[6]['sun']['afternoon']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[6]['sun']['afternoon']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[6]['sun']['afternoon']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark
+                              format24h  
+                              v-model="dataEditSchedules[6]['sun']['afternoon']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                  <p class="q-ma-none">Noite</p>
+                  <div class="row">
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[6]['sun']['night']['open']"
+                      mask="time"
+                      label="Abrir"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time
+                              dark
+                              format24h 
+                              v-model="dataEditSchedules[6]['sun']['night']['open']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                    <q-input
+                      dark
+                      filled
+                      class="col q-mx-xs"
+                      color="white"
+                      bg-color="brown-8"
+                      v-model="dataEditSchedules[6]['sun']['night']['close']"
+                      mask="time"
+                      label="Fechar"
+                      :rules="['time']" >
+                      <template v-slot:append>
+                        <q-icon name="access_time" class="cursor-pointer" color="white">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-time 
+                              dark 
+                              format24h 
+                              v-model="dataEditSchedules[6]['sun']['night']['close']"
+                              color="brown-9">
+                              <div class="row items-center justify-end">
+                                <q-btn flat v-close-popup label="Fechar" color="white" />
+                              </div>
+                            </q-time>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+              </div>  
+            </div>
             <q-btn
-              class="q-my-lg full-width"
+              @click="saveFormSchedules"
+              class="q-my-xl full-width"
               size="lg"
               color="brown-9"
-              label="Salvar alterações"
-              type="submit" />
+              label="Salvar alterações" />
           </q-form>
         </q-card-section>
       </q-card>
