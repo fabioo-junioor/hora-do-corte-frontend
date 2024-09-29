@@ -87,10 +87,10 @@ onMounted(() => {
                 type="submit" />
             <div class="links-type-form-user q-pa-sm">
                 <a v-if="typeFormUser" href="#">
-                    <router-link :to="`/${route.params.nameUser}/cadUser`">Não tem uma conta?</router-link>
+                    <router-link to="/cadUser">Não tem uma conta?</router-link>
                 </a>
                 <a v-else href="#">
-                    <router-link :to="`/${route.params.nameUser}/loginUser`">Já tem uma conta?</router-link>
+                    <router-link to="/loginUser">Já tem uma conta?</router-link>
                 </a>
             </div>
         </q-form>

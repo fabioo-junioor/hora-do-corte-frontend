@@ -41,7 +41,7 @@ const createUser = () => {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 4rem);
+    height: calc(100vh - 5rem);
     font-family: "Fredoka", sans-serif;
 
     .cad-user{
