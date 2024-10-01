@@ -3,6 +3,7 @@ import Navbar from './Navbar.vue';
 import FormUser from './forms/FormUser.vue';
 import FormReservation from './forms/FormReservation.vue';
 import FormEditUser from './forms/FormEditUser.vue';
+import FormEditPasswordUser from './forms/FormEditPasswordUser.vue';
 import FormDialogAddProfessional from './forms/FormDialogAddProfessional.vue';
 import FormDialogAddServices from './forms/FormDialogAddServices.vue';
 import FormDialogAddSchedules from './forms/FormDialogAddSchedules.vue';
@@ -19,6 +20,7 @@ export {
     FormUser,
     FormReservation,
     FormEditUser,
+    FormEditPasswordUser,
     FormDialogAddProfessional,
     FormDialogAddServices,
     FormDialogAddSchedules,

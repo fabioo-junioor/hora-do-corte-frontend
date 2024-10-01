@@ -22,7 +22,7 @@ const getEditUser = () => {
 
 };
 const getEditPassword = () => {
-   console.log('senha');
+  router.push({ path: '/editPasswordUser' });
 
 };
 const getEditProfessional = () => {

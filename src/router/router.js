@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { Home, LoginUser, 
         CadUser, HomeUser, 
-        EditUser, EditProfessional } from '../pages';
+        EditUser, EditPasswordUser,
+        EditProfessional } from '../pages';
 
 const routes = [
     {
@@ -48,6 +49,16 @@ const routes = [
         path: '/editUser',
         name: 'editUser',
         component: EditUser,
+        beforeEnter: (_, __, next) => {
+            next();
+            return;
+
+        }
+    },
+    {
+        path: '/editPasswordUser',
+        name: 'editPasswordUser',
+        component: EditPasswordUser,
         beforeEnter: (_, __, next) => {
             next();
             return;
