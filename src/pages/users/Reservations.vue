@@ -1,8 +1,7 @@
 <script setup>
 import { reactive } from 'vue';
-import { CardReservation, CardReservationBack } from '../../components';
+import { CardReservation } from '../../components';
 
-const selectedId = reactive([]);
 const dataCustomerReservation = reactive([
     { 
         id: 1,
@@ -29,7 +28,7 @@ const dataCustomerReservation = reactive([
     {
         id: 3,
         image: null,
-        name: 'Maria',
+        name: 'Carla',
         professional: 'Sousa',
         week: 'sun',
         date: '15/10/2025',
@@ -42,38 +41,30 @@ const cancelReservation = (data) => {
     console.log(data);
 
 };
-const orderByDate = (array) => {
+const orderbyDate = (array) => {
     return array.sort((a, b) => {
         const dataA = new Date(a.date.split('/').reverse().join('-'));
         const dataB = new Date(b.date.split('/').reverse().join('-'));
+        
         return dataA - dataB;
     });
 };
-const getId = (id) => {
-    for(let i in selectedId){
-        if(selectedId[i] === id){
-            return false;
+const groupByDate = (array) => {
+    return array.reduce((grupo, item) => {
+        (grupo[item.date] = grupo[item.date] || []).push(item);
+        
+        return grupo;
 
-        }
-    }
-    selectedId.push(id);
-    return true;
+    }, {});
 };
-const groupByDate = (array, date) => {
-   
-    return array;
-}
 </script>
 <template>
-    <div id="reservations">
-        <CardReservationBack
-            v-for="i in orderByDate(dataCustomerReservation)" :key="i"
-            :dateTime='i.date'>
-            <CardReservation
-                v-for="j in groupByDate(dataCustomerReservation, i.date)" :key="j"
-                :dataCustomerReservation='j'
-                @cancelReservation='cancelReservation' />
-        </CardReservationBack>
+    <div id="reservations" class="column items-center">
+        <h4 class="text-white q-my-lg">Lista de agendamentos</h4>
+        <CardReservation
+            v-for="i in groupByDate(orderbyDate(dataCustomerReservation))" :key="i"
+            :dataCustomerReservation='i'
+            @cancelReservation='cancelReservation' />
     </div>
 </template>
 <style lang="scss" scoped>
