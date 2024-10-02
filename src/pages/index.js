@@ -6,6 +6,7 @@ import HomeUser from './users/HomeUser.vue';
 import EditUser from './users/EditUser.vue';
 import EditPasswordUser from './users/EditPasswordUser.vue';
 import EditProfessional from './users/EditProfessional.vue';
+import Reservations from './users/Reservations.vue';
 
 export {
     Home,
@@ -14,5 +15,6 @@ export {
     HomeUser,
     EditUser,
     EditPasswordUser,
-    EditProfessional
+    EditProfessional,
+    Reservations
 };

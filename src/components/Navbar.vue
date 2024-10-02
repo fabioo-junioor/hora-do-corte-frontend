@@ -30,6 +30,7 @@ const getEditProfessional = () => {
 
 };
 const getReservations = () => {
+  router.push({ path: '/reservations' });
    
 };
 onMounted(() => {
