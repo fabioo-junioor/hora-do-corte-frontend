@@ -42,18 +42,18 @@ onMounted(() => {
   <div id="navbar">
     <q-layout view="hHh lpR fFf">
       <q-header elevated class="q-px-md q-py-xs">
-        <q-toolbar>
-          <div class="navbar-logo">
+        <q-toolbar class="row justify-center">
+          <div class="navbar-logo col-1">
             <router-link to="/">
               <q-toolbar-title>
                 <q-img src="../assets/logo/logo.png" height="4rem" width="4rem" />
               </q-toolbar-title>
             </router-link>
           </div>
-          <div class="navbar-area-user">
+          <div class="navbar-area-user col-11">
             <div
               v-if="isUserLogin" 
-              class="navbar-area-user-login">
+              class="navbar-area-user-login row justify-end">
               <q-btn 
                   outline
                   @click="getLogin"
@@ -62,52 +62,51 @@ onMounted(() => {
                   label="Área do usuário" />
             </div>
             <div v-else class="navbar-area-user-notLogin row">
-              <div class="col" />
-              <div class="col">
+              <div class="col-11 row justify-center">
                 <q-btn 
                   outline
                   @click="getReservations"
                   color="brown-10"
                   icon="event_available"
                   label="Agendamentos" />
-              <q-btn-dropdown
-                  outline
-                  color="brown-10"
-                  icon="settings"
-                  label="Configuração">
-                  <q-list class="bg-brown-5">
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="getEditUser">
-                      <q-item-section avatar>
-                        <q-icon name="settings_applications" size="md" color="white"/>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="text-white text-h6">Estabelecimento</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item
-                      clickable
-                      v-close-popup
-                      @click="getEditPassword">
-                      <q-item-section avatar>
-                        <q-icon name="password" size="md" color="white"/>
-                      </q-item-section>
-                      <q-item-section>
-                        <q-item-label class="text-white text-h6">Alterar senha</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>  
-                </q-btn-dropdown>
-              <q-btn 
-                  outline
-                  @click="getEditProfessional"
-                  color="brown-10"
-                  icon="manage_accounts"
-                  label="Profissionais" />
+                <q-btn-dropdown
+                    outline
+                    color="brown-10"
+                    icon="settings"
+                    label="Configuração">
+                    <q-list class="bg-brown-5">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="getEditUser">
+                        <q-item-section avatar>
+                          <q-icon name="settings_applications" size="md" color="white"/>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label class="text-white text-h6">Estabelecimento</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item
+                        clickable
+                        v-close-popup
+                        @click="getEditPassword">
+                        <q-item-section avatar>
+                          <q-icon name="password" size="md" color="white"/>
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label class="text-white text-h6">Alterar senha</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>  
+                  </q-btn-dropdown>
+                  <q-btn 
+                      outline
+                      @click="getEditProfessional"
+                      color="brown-10"
+                      icon="manage_accounts"
+                      label="Profissionais" />
               </div>
-              <div class="col">
+              <div class="col-1 row justify-center">
                 <q-btn 
                   outline
                   @click="getLogout"
@@ -135,12 +134,8 @@ onMounted(() => {
       background-color: $darkColorSecondary;
 
       .q-toolbar{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
 
         .navbar-logo{
-          height: 100%;
           width: 4.5rem;
           display: flex;
           justify-content: center;
@@ -148,41 +143,26 @@ onMounted(() => {
 
         }
         .navbar-area-user{
-          height: 100%;
-          display: flex;
-          width: calc(100% - 5rem);
+          height: 4rem;
 
           .navbar-area-user-login{
-            width: 100%;
-            display: flex;
-            justify-content: flex-end;
+            height: 4rem;
 
           }
           .navbar-area-user-notLogin{
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: 4rem;
 
             div{
-              height: 100%;
+              gap: .5rem;
 
-              .q-btn{
-                height: 100%;
-
-              }
             }
           }
           .navbar-area-user-notLogin div:nth-child(2){
-           display: flex;
-           gap: .5rem;
+           
 
           }
           .navbar-area-user-notLogin div:nth-child(3){
-           display: flex;
-           justify-content: flex-end;      
-
+           
           }
           .q-btn:hover{
             background-color: $brown-5 !important;
@@ -191,11 +171,9 @@ onMounted(() => {
         }        
         a{
           text-decoration: none;
-          border: 2px solid $brown-5;
-          border-radius: 5px;
 
           &:hover{
-            border: 2px solid $brown-10;
+            border: 1px solid $brown-10;
 
           }
         }

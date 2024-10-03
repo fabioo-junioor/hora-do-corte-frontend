@@ -4,8 +4,8 @@ const isNotice = defineModel('isNotice');
 
 </script>
 <template>
-  <div id="card-notice" class="full-width">
-    <q-card dark class="my-card row q-ma-sm q-pa-xs bg-red-10">
+  <div id="card-notice">
+    <q-card dark class="my-card row q-pa-xs bg-red-10">
         <q-card-section
             class="col-11 q-pa-none column">
             <div v-for="i in props.noticeList" :key="i"

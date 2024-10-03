@@ -208,21 +208,29 @@ onMounted(() => {
 
                     <template v-slot:message>
                         <div class="reservation-content-messages">
-                            <q-banner v-if="step === 1" class="messages-banner-info bg-brown-10 text-white q-px-md">
-                                <p class="q-ma-none q-py-md">
-                                    Escolha um Profissional específico para realizar seu serviço!
+                            <q-banner v-if="step === 1" class="messages-banner-info bg-brown-10 text-white q-px-ms">
+                                <p class="q-ma-none q-py-sm">
+                                    1. Escolha um Profissional para realizar seu serviço!
+                                </p>
+                                <p class="q-ma-none q-py-sm">
+                                    2. Cada profissional pode realizar diferentes serviços!
                                 </p>
                             </q-banner>
-                            <q-banner v-if="step === 2" class="messages-banner-info bg-brown-10 text-white q-px-md">
+                            <q-banner v-if="step === 2" class="messages-banner-info bg-brown-10 text-white q-px-sm">
                                 <p 
                                     v-if="dataReservation.idProfessional != null"
-                                    class="q-ma-none q-py-md">
-                                    Escolha um ou mais serviços. Os serviços estão relacionados com o profissional anteriormente definido!
+                                    class="q-ma-none q-py-sm">
+                                    1. Escolha um ou mais serviços!
+                                </p>
+                                <p 
+                                    v-if="dataReservation.idProfessional != null"
+                                    class="q-ma-none q-py-sm">
+                                    2. Os serviços estão relacionados com o profissional anteriormente definido!
                                 </p>
                                 <p
-                                    v-else
-                                    class="q-ma-none q-py-md">
-                                    Volte e escolha um profissional para que os serviços sejam visiveis!
+                                    v-if="dataFormReservation.idProfessional == null"
+                                    class="q-ma-none q-py-sm">
+                                    Volte e escolha um profissional para que os serviços!
                                 </p>
                             </q-banner>
                             <q-banner v-if="step === 3" class="messages-banner-info bg-brown-10 text-white q-px-md">

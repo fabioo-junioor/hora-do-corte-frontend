@@ -59,7 +59,7 @@ const groupByDate = (array) => {
 };
 </script>
 <template>
-    <div id="reservations" class="column items-center">
+    <div id="reservations" class="column items-center q-mt-md">
         <h4 class="text-white q-my-lg">Lista de agendamentos</h4>
         <CardReservation
             v-for="i in groupByDate(orderbyDate(dataCustomerReservation))" :key="i"
