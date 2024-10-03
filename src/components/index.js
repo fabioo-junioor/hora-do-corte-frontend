@@ -11,6 +11,7 @@ import FormDialogAddSchedules from './forms/FormDialogAddSchedules.vue';
 import CardProfessionalList from './cards/CardProfessionalList.vue';
 import CardPricing from './cards/CardPricing.vue';
 import CardReservation from './cards/CardReservation.vue';
+import CardNotice from './cards/CardNotice.vue';
 
 import CardProfessional from './strepper-content/CardProfessional.vue';
 import CalendarSchedule from './strepper-content/CalendarSchedule.vue';
@@ -29,6 +30,7 @@ export {
     CardPricing,
     CardProfessional,
     CardReservation,
+    CardNotice,
     CalendarSchedule,
     TimeSchedule
 }
