@@ -1,8 +1,9 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { FormEditUser } from '../../components';
+import { FormEditUser, CardNotice } from '../../components';
 import userDefault from '../../assets/imgsDefault/user.png';
 
+const isNotice = ref(false);
 const imageProfile = ref(null);
 const dataEditUser = reactive({
     image: null,
@@ -15,6 +16,9 @@ const dataEditUser = reactive({
     street: '',
     number: ''
 });
+const noticeList = reactive([
+    'Campos com (*) são obrigatórios!'
+]);
 const previewImage = (event) => {
     var input = event.target;
     if(input.files && input.files[0]){
@@ -31,9 +35,17 @@ watch(() => dataEditUser.image, () => {
     imageProfile.value = !dataEditUser.image ? userDefault : imageProfile.value;
 
 });
+onMounted(() => {
+    isNotice.value = noticeList.length != 0 || false;
+    
+});
 </script>
 <template>
     <div id="edit-user">
+        <CardNotice
+            v-if="isNotice"
+            v-model:isNotice="isNotice"
+            :noticeList='noticeList' />
         <div class="edit-user q-mt-xl text-white">
             <h4 class="q-ma-none">Informações do estabelecimento</h4>
             <div class="edit-user-image q-my-md">
@@ -51,8 +63,8 @@ watch(() => dataEditUser.image, () => {
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 #edit-user{
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: column;
+    align-items: center;
     min-height: calc(100vh - 5rem);
     font-family: "Fredoka", sans-serif;
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .05)),

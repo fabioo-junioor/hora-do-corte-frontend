@@ -13,8 +13,8 @@ const isPwd1 = ref(true);
 const isPwd2 = ref(true);
 const typeFormUser = ref(true);
 const rulesUser = reactive({
-    required: v => fielsRequired(v) || 'Campo obrigatório',
-    email: v => emailValidator(v) || 'Email inválido'
+    required: v => fielsRequired(v) || 'Campo obrigatório!',
+    email: v => emailValidator(v) || 'Email inválido!'
 
 })
 const onSubmit = () => {
@@ -38,16 +38,20 @@ onMounted(() => {
             <q-input
                 dark
                 class="q-mb-md"
-                color="brown-8"
+                color="white"
                 v-model="emailUser"
                 type="text"
                 label="Seu e-mail:"
                 lazy-rules
-                :rules="[rulesUser.email]" />
+                :rules="[rulesUser.email]">
+                <template v-slot:prepend>
+                    <q-icon name="person" color="white" />
+                </template>
+            </q-input>
             <q-input
                 dark
                 class="q-mb-md"
-                color="brown-8"
+                color="white"
                 v-model="passwordUser"
                 :type="isPwd1 ? 'password' : 'text'"
                 label="Sua senha:"
@@ -58,12 +62,15 @@ onMounted(() => {
                         class="cursor-pointer"
                         @click="isPwd1 = !isPwd1" />
                 </template>
+                <template v-slot:prepend>
+                    <q-icon name="password" color="white" />
+                </template>
             </q-input>
             <q-input
                 dark
                 v-if="!typeFormUser"
                 class="q-mb-md"
-                color="brown-8"
+                color="white"
                 v-model="repeatPasswordUser"
                 :type="isPwd2 ? 'password' : 'text'"
                 label="Repita a senha:"
@@ -74,15 +81,20 @@ onMounted(() => {
                         class="cursor-pointer"
                         @click="isPwd2 = !isPwd2" />
                 </template>
+                <template v-slot:prepend>
+                    <q-icon name="password" color="white" />
+                </template>
             </q-input>
             <q-btn
                 v-if="typeFormUser"
                 class="q-mb-md"
+                color="brown-14"
                 label="Entrar"
                 type="submit" />
             <q-btn
                 v-else
                 class="q-mb-md"
+                color="brown-14"
                 label="Cadastrar-se"
                 type="submit" />
             <div class="links-type-form-user q-pa-sm">
@@ -119,10 +131,10 @@ onMounted(() => {
             a{
                 text-decoration: underline;
                 color: $whiteColorPrimary;
-                font-size: .9rem;
+                font-size: 1rem;
                 
                 &:hover{
-                    color: $brown-8;
+                    color: $brown-3;
 
                 }
             }
