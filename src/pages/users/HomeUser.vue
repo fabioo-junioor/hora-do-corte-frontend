@@ -71,27 +71,43 @@ const veriryReservationComplete = () => {
     if(dataReservation.professional == ''){
         return;
 
-    }
+    };
     if(dataReservation.services.length == 0){
         return;
 
-    }
+    };
     if(dataReservation.dateReservation == ''){
         return;
 
-    }
+    };
     if(dataReservation.timeReservation == ''){
         return;
 
-    }
+    };
     if(dataFormReservation.name == ''){
         return;
 
-    }
+    };
     if(dataFormReservation.phone == ''){
         return;
 
-    }
+    };
+
+};
+const checkCustomerChoice = (step) => {
+    if((step === 1) && (dataReservation.idProfessional != null)){
+        return true;
+
+    };
+    if((step === 2) && (dataReservation.services.length != 0)){
+        return true;
+
+    };
+    if((step === 3) && (dataReservation.dateReservation != '')){
+        return true;
+
+    };
+    return false;
 
 };
 onMounted(() => {
@@ -191,6 +207,7 @@ onMounted(() => {
                                 label="Agendar" />
                             <q-btn
                                 v-else
+                                :disable='!checkCustomerChoice(step)'
                                 @click="$refs.stepper.next()"
                                 icon-right="arrow_forward"
                                 color="brown-10"
@@ -208,7 +225,7 @@ onMounted(() => {
 
                     <template v-slot:message>
                         <div class="reservation-content-messages">
-                            <q-banner v-if="step === 1" class="messages-banner-info bg-brown-10 text-white q-px-ms">
+                            <q-banner v-if="step === 1" class="messages-banner-info bg-brown-10 text-white q-px-sm">
                                 <p class="q-ma-none q-py-sm">
                                     1. Escolha um Profissional para realizar seu serviço!
                                 </p>
@@ -217,25 +234,19 @@ onMounted(() => {
                                 </p>
                             </q-banner>
                             <q-banner v-if="step === 2" class="messages-banner-info bg-brown-10 text-white q-px-sm">
-                                <p 
-                                    v-if="dataReservation.idProfessional != null"
-                                    class="q-ma-none q-py-sm">
+                                <p class="q-ma-none q-py-sm">
                                     1. Escolha um ou mais serviços!
                                 </p>
-                                <p 
-                                    v-if="dataReservation.idProfessional != null"
-                                    class="q-ma-none q-py-sm">
+                                <p class="q-ma-none q-py-sm">
                                     2. Os serviços estão relacionados com o profissional anteriormente definido!
                                 </p>
-                                <p
-                                    v-if="dataFormReservation.idProfessional == null"
-                                    class="q-ma-none q-py-sm">
-                                    Volte e escolha um profissional para que os serviços!
-                                </p>
                             </q-banner>
-                            <q-banner v-if="step === 3" class="messages-banner-info bg-brown-10 text-white q-px-md">
-                                <p class="q-ma-none q-py-md">
-                                    Defina o dia e horário que estão disponiveis!
+                            <q-banner v-if="step === 3" class="messages-banner-info bg-brown-10 text-white q-px-sm">
+                                <p class="q-ma-none q-py-sm">
+                                    1. Defina um dia que estiver disponiveis!
+                                </p>
+                                <p class="q-ma-none q-py-sm">
+                                    2. Defina um horário que estiver disponiveis!
                                 </p>
                             </q-banner>
                             <q-banner v-if="step === 4" class="messages-banner-info bg-brown-10 text-white q-px-md">
