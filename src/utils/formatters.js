@@ -19,7 +19,13 @@ const verifySchedulesAvailable = (dateReservation, schedules) => {
     dayWeek = dayWeek.toLowerCase();
     
     for(let i = 0; i < schedules.length; i++){
-        if(String(Object.keys(schedules[i])) === dayWeek){
+        if(((String(Object.keys(schedules[i])) === dayWeek)) && (
+            (schedules[i][dayWeek]['morning']['open'] !== null) ||
+            (schedules[i][dayWeek]['morning']['close'] !== null) ||
+            (schedules[i][dayWeek]['afternoon']['open'] !== null) ||
+            (schedules[i][dayWeek]['afternoon']['close'] !== null) ||
+            (schedules[i][dayWeek]['night']['open'] !== null) || 
+            (schedules[i][dayWeek]['night']['close'] !== null))){
             return true;
 
         }
@@ -28,29 +34,34 @@ const verifySchedulesAvailable = (dateReservation, schedules) => {
 
 }
 const divideHoursIntoIntervals = (schedules, time) => {
-    const result = {};
+  const result = {};
 
   schedules.forEach(day => {
-    const dayWeek = Object.keys(day)[0];
-    result[dayWeek] = [];
-    for (const period in day[dayWeek]) {
-      const { open, close } = day[dayWeek][period];
-      const [startTime, startMinute] = open.split(':').map(Number);
-      const [endTime, endMinute] = close.split(':').map(Number);
+      const dayWeek = Object.keys(day)[0];
+      result[dayWeek] = [];
 
-      const startMinutes = startTime * 60 + startMinute;
-      const endMinutes = endTime * 60 + endMinute - time; // Subtrai 30 minutos do horário de fechamento
+      for (const period in day[dayWeek]) {
+          const { open, close } = day[dayWeek][period];
 
-      for (let minutes = startMinutes; minutes <= endMinutes; minutes += time) {
-        const time = Math.floor(minutes / 60).toString().padStart(2, '0');
-        const minute = (minutes % 60).toString().padStart(2, '0');
-        result[dayWeek].push(`${time}:${minute}`);
+          // Verificar se 'open' e 'close' não são null
+          if (open && close) {
+              const [startTime, startMinute] = open.split(':').map(Number);
+              const [endTime, endMinute] = close.split(':').map(Number);
+
+              const startMinutes = startTime * 60 + startMinute;
+              const endMinutes = endTime * 60 + endMinute - time; // Subtrai 'time' minutos do horário de fechamento
+
+              for (let minutes = startMinutes; minutes <= endMinutes; minutes += time) {
+                  const hour = Math.floor(minutes / 60).toString().padStart(2, '0');
+                  const minute = (minutes % 60).toString().padStart(2, '0');
+                  result[dayWeek].push(`${hour}:${minute}`);
+              }
+          }
       }
-    }
   });
 
   return result;
-}
+} 
 
 export {
     verifySchedulesAvailable,

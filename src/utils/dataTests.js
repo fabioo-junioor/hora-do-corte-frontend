@@ -9,24 +9,52 @@ const dataServicesTest = [
         ],
         schedules: [
             {
-                sun: {
-                    manha: { open: '10:00', close: '14:00' },
-                    tarde: { open: '17:00', close: '19:00' },
-                    noite: { open: '19:00', close: '22:00' }
+                mon: {
+                    morning: { open: '09:00', close: '12:00' },
+                    afternoon: { open: '14:00', close: '17:00' },
+                    night: { open: '19:00', close: '22:00' }
                 }
             },
             {
-                mon: {
-                    manha: { open: '08:00', close: '12:00' },
-                    tarde: { open: '14:00', close: '17:00' },
-                    noite: { open: '19:00', close: '23:00' }
+                tue: {
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
+                }
+            },
+            {
+                wed: {
+                    morning: { open: '09:00', close: '12:00' },
+                    afternoon: { open: '12:00', close: '17:00' },
+                    night: { open: null, close: null }
+                }
+            },
+            {
+                thu: {
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
+                }
+            },
+            {
+                fri: {
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: '17:00', close: '23:00' }
                 }
             },
             {
                 sat: {
-                    manha: { open: '08:00', close: '11:00' },
-                    tarde: { open: '13:00', close: '14:00' },
-                    noite: { open: '19:00', close: '23:00' }
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
+                }
+            },
+            {
+                sun: {
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
                 }
             }
         ]
@@ -42,24 +70,52 @@ const dataServicesTest = [
         ],
         schedules: [
             {
-                sun: {
-                    manha: { open: '10:00', close: '14:00' },
-                    tarde: { open: '17:00', close: '19:00' },
-                    noite: { open: '19:00', close: '22:00' }
-                }
-            },
-            {
                 mon: {
-                    manha: { open: '08:00', close: '12:00' },
-                    tarde: { open: '14:00', close: '17:00' },
-                    noite: { open: '19:00', close: '23:00' }
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
                 }
             },
             {
                 tue: {
-                    manha: { open: '', close: '' },
-                    tarde: { open: '', close: '' },
-                    noite: { open: '17:00', close: '23:30' }
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
+                }
+            },
+            {
+                wed: {
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
+                }
+            },
+            {
+                thu: {
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
+                }
+            },
+            {
+                fri: {
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
+                }
+            },
+            {
+                sat: {
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
+                }
+            },
+            {
+                sun: {
+                    morning: { open: null, close: null },
+                    afternoon: { open: null, close: null },
+                    night: { open: null, close: null }
                 }
             }
         ]

@@ -39,7 +39,7 @@ const checkScheduleDate = (date) => {
         let totalMinutes = sumMinutes(dataReservation.services);
         dataReservation.duration = totalMinutes;
         dataTimesFromWeek.push(...divideHoursIntoIntervals(schedulesProfessional, totalMinutes)[dayWeek]);
-                
+        
     }
 };
 const checkScheduleTime = (data) => {

@@ -23,8 +23,8 @@ const verifySchedules = () => {
     let day = today.getDate();
     let month = today.getMonth() + 1;
     let year = today.getFullYear();
-    day = (day < 10) ? Number(`0${day}`) : Number(`${day}`); 
-
+    day = (day < 10) ? `0${day}` : `${day}`;
+    
     for(let i = 1; i <= 31; i++){
         if(i < 10 && month < 10){
             if(verifySchedulesAvailable(`${year}/0${month}/0${i}`, props.schedules) && `${year}/0${month}/0${i}` >= `${year}/0${month}/${day}`){
