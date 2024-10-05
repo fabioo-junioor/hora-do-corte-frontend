@@ -75,9 +75,9 @@ const dataEditSchedules = reactive([
 ]);
 const servicesByProfesional = reactive([]);
 const dataProfessionais = reactive([
-    { name: 'fabio', image: null, instagram: 'teste' },
-    { name: 'maria', image: 'https://cdn.quasar.dev/img/mountains.jpg', instagram: '' },
-    { name: 'joao', image: null, instagram: '' }
+    {id: 1, name: 'fabio', image: null, instagram: 'teste' },
+    {id: 2, name: 'maria', image: 'https://cdn.quasar.dev/img/mountains.jpg', instagram: '' },
+    {id: 3, name: 'joao', image: null, instagram: '' }
 
 ]);
 const addProfessional = () => {
@@ -123,6 +123,10 @@ const editServicesProfessional = (services) => {
     isDialogServices.value = true;
 
 };
+const deleteProfessional = (data) => {
+    console.log(data);
+
+};
 const previewImage = (event) => {
     var input = event.target;
     if(input.files && input.files[0]){
@@ -154,10 +158,11 @@ watch(() => dataEditProfessional.image, () => {
                     icon="person_add" 
                     label="Adicionar" />
             </div>
-            <div class="edit-professional-list q-my-md">
+            <div class="edit-professional-list q-my-lg">
                 <CardProfessionalList
                     v-for="i in dataProfessionais" :key="i"
                     :dataProfessional='i'
+                    @deleteProfessional='deleteProfessional'
                     @editFormProfessional='editFormProfessional'
                     @editScheduleProfessional='editScheduleProfessional'
                     @editServicesProfessional='editServicesProfessional' />
@@ -205,7 +210,7 @@ watch(() => dataEditProfessional.image, () => {
             width: 100%;
             display: flex;
             justify-content: space-between;
-            border-bottom: 2px solid $darkColorSecondary;
+            border-bottom: 2px solid $brown-9;
 
         }
         .edit-professional-list{

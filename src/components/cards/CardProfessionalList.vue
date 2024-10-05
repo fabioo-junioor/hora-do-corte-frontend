@@ -1,5 +1,5 @@
 <script setup>
-const emit = defineEmits(['editFormProfessional', 'editScheduleProfessional', 'editServicesProfessional']);
+const emit = defineEmits(['editFormProfessional', 'editScheduleProfessional', 'editServicesProfessional', 'deleteProfessional']);
 const props = defineProps(['dataProfessional']);
 import userDefault from '../../assets/imgsDefault/user.png';
 
@@ -13,6 +13,10 @@ const editScheduleProfessional = () => {
 };
 const editServicesProfessional = () => {
   emit('editServicesProfessional', props.dataProfessional);
+
+};
+const deleteProfessional = (idProfessional) => {
+  emit('deleteProfessional', idProfessional);
 
 };
 </script>
@@ -37,42 +41,62 @@ const editServicesProfessional = () => {
       </q-card-section>
 
       <q-card-actions class="column full-width">
-        <q-btn 
+        <q-btn
+          push
           @click="editFormProfessional"
           class="full-width q-mb-sm"
           icon="person"
           label="Editar usuário"
           color="brown-5" /> 
-        <q-btn 
+        <q-btn
+          push 
           @click="editScheduleProfessional"
           class="full-width q-mb-sm"
           icon="schedule"
           label="Editar horários"
           color="brown-5" />
-        <q-btn 
+        <q-btn
+          push 
           @click="editServicesProfessional"
           class="full-width"
           icon="content_cut"
           label="Editar serviços"
           color="brown-5" />
       </q-card-actions>
+      <q-btn
+        dark round push
+        @click="deleteProfessional(props.dataProfessional.id)"
+        class="card-professional-list-btn-delete-professional"
+        size="md"
+        color="brown-5"
+        icon="delete" />
     </q-card>
   </div>
 </template>
 <style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
-#card-professional-list{  
-  a{
-    text-decoration: none;
+#card-professional-list{
+  .my-card{
+    position: relative;
+    
+    a{
+      text-decoration: none;
 
-    i{
-      color: $whiteColorPrimary;
-      font-size: 2rem;
+      i{
+        color: $whiteColorPrimary;
+        font-size: 2rem;
 
+      }
+      &:hover i{
+        color: $brown-4;
+
+      }
     }
-    &:hover i{
-      color: $brown-4;
+    .card-professional-list-btn-delete-professional{
+      position: absolute;
+      top: -.5rem;
+      right: -1rem;
 
     }
   }
