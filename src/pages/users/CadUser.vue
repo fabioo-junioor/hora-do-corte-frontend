@@ -18,9 +18,8 @@ const createUser = () => {
         <div class="cad-user-img">
             <q-img 
                 src="../../assets/logo/logo.png"
-                height="80%"
-                width="80%"
-                fit="contain" />
+                height="70%"
+                width="70%" />
         </div>
         <div class="cad-user-forms q-px-sm">
             <FormUser
@@ -40,12 +39,12 @@ const createUser = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: calc(100vh - 5rem);
+    min-height: calc(100vh - 5rem);
     font-family: "Fredoka", sans-serif;
 
     .cad-user-img{
         width: 50%;
-        height: 100%;
+        min-height: calc(100vh - 5rem);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -53,9 +52,11 @@ const createUser = () => {
 
     }
     .cad-user-forms{
+        width: 50%;
+        min-height: calc(100vh - 5rem);
         display: flex;
         justify-content: center;
-        width: 50%;
+        align-items: center;
         height: 100%;
 
         .form-user{

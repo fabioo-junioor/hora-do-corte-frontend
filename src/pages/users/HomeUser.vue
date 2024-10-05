@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import { CardProfessional, CalendarSchedule, FormReservation } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
 import { divideHoursIntoIntervals, formatString } from '../../utils/formatters.js';
+import { phoneValidator, fielsCheckSize } from '../../utils/inputValidators.js';
 
 const route = useRoute();
 const isReservation = ref(true);
@@ -39,7 +40,7 @@ const checkScheduleDate = (date) => {
         let totalMinutes = sumMinutes(dataReservation.services);
         dataReservation.duration = totalMinutes;
         dataTimesFromWeek.push(...divideHoursIntoIntervals(schedulesProfessional, totalMinutes)[dayWeek]);
-                
+        
     }
 };
 const checkScheduleTime = (data) => {
@@ -67,31 +68,35 @@ const sumMinutes = (data) => {
 
 };
 const veriryReservationComplete = () => {
-    console.log('reservou!', dataReservation, dataFormReservation);
-    if(dataReservation.professional == ''){
+    if(fielsCheckSize(dataFormReservation.name) && phoneValidator(dataFormReservation.phone)){
+        console.log('reservou!', dataReservation, dataFormReservation);
         return;
 
-    }
-    if(dataReservation.services.length == 0){
-        return;
+    };
+};
+const checkCustomerChoice = (step) => {
+    if((step === 1) && (dataReservation.idProfessional != null)){
+        return true;
 
-    }
-    if(dataReservation.dateReservation == ''){
-        return;
+    };
+    if((step === 2) && (dataReservation.services.length != 0)){
+        return true;
 
-    }
-    if(dataReservation.timeReservation == ''){
-        return;
+    };
+    if((step === 3) && (dataReservation.dateReservation != '') && (dataReservation.timeReservation != '')){
+        return true;
 
-    }
-    if(dataFormReservation.name == ''){
-        return;
+    };
+    if((step === 4) && (dataReservation.idProfessional != null) &&
+        (dataReservation.services.length != 0) &&
+        (dataReservation.dateReservation != '') && 
+        (dataReservation.timeReservation != '') &&
+        (dataFormReservation.name != '') &&
+        (dataFormReservation.phone != '')){
+        return true;
 
-    }
-    if(dataFormReservation.phone == ''){
-        return;
-
-    }
+    };
+    return false;
 
 };
 onMounted(() => {
@@ -104,6 +109,7 @@ onMounted(() => {
         <div class="home-user q-pa-xs">
             <h5 class="text-white q-py-md q-my-md">Bem vindo!</h5>
             <q-btn
+                push
                 v-if="!isReservation"
                 outline
                 size="lg"
@@ -184,14 +190,18 @@ onMounted(() => {
                     <template v-slot:navigation>
                         <q-stepper-navigation>
                             <q-btn
+                                push
                                 v-if="step === 4"
                                 @click="veriryReservationComplete"
+                                :disable='!checkCustomerChoice(step)'
                                 icon="check_circle"
                                 color="brown-10"
                                 label="Agendar" />
                             <q-btn
+                                push
                                 v-else
                                 @click="$refs.stepper.next()"
+                                :disable='!checkCustomerChoice(step)'
                                 icon-right="arrow_forward"
                                 color="brown-10"
                                 label="Proxima etapa" />
@@ -208,26 +218,28 @@ onMounted(() => {
 
                     <template v-slot:message>
                         <div class="reservation-content-messages">
-                            <q-banner v-if="step === 1" class="messages-banner-info bg-brown-10 text-white q-px-md">
-                                <p class="q-ma-none q-py-md">
-                                    Escolha um Profissional específico para realizar seu serviço!
+                            <q-banner v-if="step === 1" class="messages-banner-info bg-brown-10 text-white q-px-sm">
+                                <p class="q-ma-none q-py-sm">
+                                    1. Escolha um Profissional para realizar seu serviço!
+                                </p>
+                                <p class="q-ma-none q-py-sm">
+                                    2. Cada profissional pode realizar diferentes serviços!
                                 </p>
                             </q-banner>
-                            <q-banner v-if="step === 2" class="messages-banner-info bg-brown-10 text-white q-px-md">
-                                <p 
-                                    v-if="dataReservation.idProfessional != null"
-                                    class="q-ma-none q-py-md">
-                                    Escolha um ou mais serviços. Os serviços estão relacionados com o profissional anteriormente definido!
+                            <q-banner v-if="step === 2" class="messages-banner-info bg-brown-10 text-white q-px-sm">
+                                <p class="q-ma-none q-py-sm">
+                                    1. Escolha um ou mais serviços!
                                 </p>
-                                <p
-                                    v-else
-                                    class="q-ma-none q-py-md">
-                                    Volte e escolha um profissional para que os serviços sejam visiveis!
+                                <p class="q-ma-none q-py-sm">
+                                    2. Os serviços estão relacionados com o profissional anteriormente definido!
                                 </p>
                             </q-banner>
-                            <q-banner v-if="step === 3" class="messages-banner-info bg-brown-10 text-white q-px-md">
-                                <p class="q-ma-none q-py-md">
-                                    Defina o dia e horário que estão disponiveis!
+                            <q-banner v-if="step === 3" class="messages-banner-info bg-brown-10 text-white q-px-sm">
+                                <p class="q-ma-none q-py-sm">
+                                    1. Defina um dia que estiver disponiveis!
+                                </p>
+                                <p class="q-ma-none q-py-sm">
+                                    2. Defina um horário que estiver disponiveis!
                                 </p>
                             </q-banner>
                             <q-banner v-if="step === 4" class="messages-banner-info bg-brown-10 text-white q-px-md">

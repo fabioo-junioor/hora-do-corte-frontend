@@ -1,14 +1,15 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { fielsRequired, phoneValidator, charactersAndSpaces } from '../../utils/inputValidators.js';
+import { fielsRequired, phoneValidator, charactersAndSpaces, fielsCheckSize } from '../../utils/inputValidators.js';
 
 const emit = defineEmits(['saveFormUser', 'previewImage']);
 const dataEditUser = defineModel('dataEditUser');
 const url = ref('');
 const rulesUser = reactive({
-    required: v => fielsRequired(v) || 'Campo obrigatório',
-    phone: v => phoneValidator(v) || 'Numero incorreto',
-    slug: v => !charactersAndSpaces(v) || 'Campo inválido'
+    required: v => fielsRequired(v) || 'Campo obrigatório!',
+    phone: v => phoneValidator(v) || 'Numero incorreto!',
+    slug: v => !charactersAndSpaces(v) || 'Campo inválido!',
+    fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!'
     
 });
 const onSubmit = () => {
@@ -59,7 +60,7 @@ onMounted(() => {
                     type="text"
                     label="Nome do estabelecimento *"
                     lazy-rules
-                    :rules="[rulesUser.required]">
+                    :rules="[rulesUser.required, rulesUser.fielsSize]">
                     <template v-slot:prepend>
                         <q-icon name="person" color="white" />
                     </template>
@@ -77,7 +78,7 @@ onMounted(() => {
                     label="Nome do estabelecimento (link da url) *"
                     lazy-rules
                     :hint="!!dataEditUser.slug ? url + dataEditUser.slug : 'Definir o nome sem [espaços, caracteres]!'"
-                    :rules="[rulesUser.required, rulesUser.slug]">
+                    :rules="[rulesUser.required, rulesUser.fielsSize, rulesUser.slug]">
                     <template v-slot:prepend>
                         <q-icon name="person_search" color="white" />
                     </template>
@@ -187,6 +188,7 @@ onMounted(() => {
                 </q-input>
             </div>
             <q-btn
+                push
                 class="q-my-lg"
                 color="brown-9"
                 label="Salvar"

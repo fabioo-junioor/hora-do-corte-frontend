@@ -14,7 +14,8 @@ const isPwd2 = ref(true);
 const typeFormUser = ref(true);
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório!',
-    email: v => emailValidator(v) || 'Email inválido!'
+    email: v => emailValidator(v) || 'Email inválido!',
+    sizePassword: v => (v.length >= 8) || 'Senha deve conter no minimo 8 caracteres!'
 
 })
 const onSubmit = () => {
@@ -41,9 +42,9 @@ onMounted(() => {
                 color="white"
                 v-model="emailUser"
                 type="text"
-                label="Seu e-mail:"
+                label="Seu e-mail *"
                 lazy-rules
-                :rules="[rulesUser.email]">
+                :rules="[rulesUser.required, rulesUser.email]">
                 <template v-slot:prepend>
                     <q-icon name="person" color="white" />
                 </template>
@@ -54,9 +55,9 @@ onMounted(() => {
                 color="white"
                 v-model="passwordUser"
                 :type="isPwd1 ? 'password' : 'text'"
-                label="Sua senha:"
+                label="Sua senha *"
                 lazy-rules
-                :rules="[rulesUser.required]">
+                :rules="[rulesUser.required, rulesUser.sizePassword]">
                 <template v-slot:append>
                     <q-icon :name="isPwd1 ? 'visibility_off' : 'visibility'"
                         class="cursor-pointer"
@@ -73,9 +74,9 @@ onMounted(() => {
                 color="white"
                 v-model="repeatPasswordUser"
                 :type="isPwd2 ? 'password' : 'text'"
-                label="Repita a senha:"
+                label="Repita a senha *"
                 lazy-rules
-                :rules="[rulesUser.required, v => (v === passwordUser) || 'Senhas diferentes']">
+                :rules="[rulesUser.required, rulesUser.sizePassword, v => (v === passwordUser) || 'Senhas são diferentes!']">
                 <template v-slot:append>
                     <q-icon :name="isPwd2 ? 'visibility_off' : 'visibility'"
                         class="cursor-pointer"
@@ -86,12 +87,14 @@ onMounted(() => {
                 </template>
             </q-input>
             <q-btn
+                push
                 v-if="typeFormUser"
                 class="q-mb-md"
                 color="brown-14"
                 label="Entrar"
                 type="submit" />
             <q-btn
+                push
                 v-else
                 class="q-mb-md"
                 color="brown-14"

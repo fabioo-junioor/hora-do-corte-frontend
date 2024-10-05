@@ -14,15 +14,18 @@ const cancelReservation = (idReservation) => {
       <q-card-section class="section-date column q-pa-none">
         <div class="text-h6 q-mt-md q-ml-sm">{{props.dataCustomerReservation[0]?.date}}</div>
         <q-card-section class="section-user row q-ma-md" v-for="i in props.dataCustomerReservation" :key="i">
-            <div class="card-reservation-details col-10 row justify-between items-center">
-                <div class="col">
-                    <q-avatar size="4rem">
-                        <img :src="i.image ? i.image : userDefault">
-                    </q-avatar>
-                </div>
+            <div class="card-reservation-details col-11 row justify-between items-center">
                 <div class="col">
                     <div class="text-subtitle1">Cliente</div>
                     <div class="text-subtitle2 text-grey-4">{{ i.name }}</div>
+                </div>
+                <div class="col">
+                    <div class="text-subtitle1">Telefone</div>
+                    <div class="text-subtitle2 text-grey-4">{{ i.phone }}</div>
+                </div>
+                <div v-if="!!i.email" class="col">
+                    <div class="text-subtitle1">Email</div>
+                    <div class="text-subtitle2 text-grey-4">{{ i.email }}</div>
                 </div>
                 <div class="col">
                     <div class="text-subtitle1">Data e horário</div>
@@ -41,13 +44,17 @@ const cancelReservation = (idReservation) => {
                     <div class="text-subtitle1">Valor</div>
                     <div class="text-subtitle2 text-grey-4">R$: {{ i.price }}</div>
                 </div>
+                <div v-if="!!i.observation" class="col">
+                    <div class="text-subtitle1">Observações</div>
+                    <div class="text-subtitle2 text-grey-4 q-pr-sm">R$: {{ i.observation }}</div>
+                </div>
             </div>
-            <div class="card-reservation-btn col-2 row justify-center items-center">
+            <div class="card-reservation-btn col-1 row justify-center items-center">
                 <q-btn
-                    dark
+                    dark stack push
                     @click="cancelReservation(i.id)"
                     class="full-height"
-                    size=".9rem"
+                    size=".8rem"
                     color="brown-5"
                     icon="delete"
                     label="Cancelar reserva" />

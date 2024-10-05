@@ -17,8 +17,8 @@ const loginUser = () => {
         <div class="login-user-img">
             <q-img 
                 src="../../assets/logo/logo.png"
-                height="80%"
-                width="80%"
+                height="70%"
+                width="70%"
                 fit="contain" /> 
         </div>
         <div class="login-user-forms">
@@ -38,12 +38,11 @@ const loginUser = () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 5rem);
     font-family: "Fredoka", sans-serif;
 
     .login-user-img{
         width: 50%;
-        height: 100%;
+        min-height: calc(100vh - 5rem);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -51,10 +50,11 @@ const loginUser = () => {
 
     }
     .login-user-forms{
+        width: 50%;
+        min-height: calc(100vh - 5rem);
         display: flex;
         justify-content: center;
-        width: 50%;
-        height: 100%;
+        align-items: center;
 
         .form-user{
             height: 100%;

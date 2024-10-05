@@ -1,13 +1,14 @@
 <script setup>
 import { reactive } from 'vue';
-import { fielsRequired } from '../../utils/inputValidators.js';
+import { fielsRequired, fielsCheckSize } from '../../utils/inputValidators.js';
 
 const emit = defineEmits(['saveFormProfessional', 'previewImage']);
 const props = defineProps(['imageProfile']);
 const isDialogAdd = defineModel('isDialogAdd');
 const dataEditProfessional = defineModel('dataEditProfessional');
 const rulesUser = reactive({
-    required: v => fielsRequired(v) || 'Campo obrigatório'
+    required: v => fielsRequired(v) || 'Campo obrigatório!',
+    fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!'
     
 });
 const onSubmit = () => {
@@ -73,9 +74,9 @@ const previewImage = (event) => {
                 bg-color="brown-8"
                 v-model="dataEditProfessional.name"
                 type="text"
-                label="Nome do profissional"
+                label="Nome do profissional *"
                 lazy-rules
-                :rules="[rulesUser.required]" >
+                :rules="[rulesUser.required, rulesUser.fielsSize]" >
                 <template v-slot:prepend>
                   <q-icon name="person" color="white" />
                 </template>
@@ -98,6 +99,7 @@ const previewImage = (event) => {
               </q-input>
             </div>
             <q-btn
+              push
               class="q-my-lg full-width"
               size="lg"
               color="brown-9"
