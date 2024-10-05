@@ -46,7 +46,9 @@ onMounted(() => {
           <div class="navbar-logo col-1">
             <router-link to="/">
               <q-toolbar-title>
-                <q-img src="../assets/logo/logo.png" height="4rem" width="4rem" />
+                <q-img
+                  style="border-radius: 5px;"
+                  src="../assets/logo/logo.png" height="4rem" width="4rem" />
               </q-toolbar-title>
             </router-link>
           </div>
@@ -55,7 +57,7 @@ onMounted(() => {
               v-if="isUserLogin" 
               class="navbar-area-user-login row justify-end">
               <q-btn 
-                  outline
+                  push
                   @click="getLogin"
                   color="brown-10"
                   icon="login"
@@ -64,14 +66,14 @@ onMounted(() => {
             <div v-else class="navbar-area-user-notLogin row">
               <div class="col-11 row justify-center">
                 <q-btn 
-                  outline
+                  push
                   @click="getReservations"
-                  color="brown-10"
+                  color="brown-8"
                   icon="event_available"
                   label="Agendamentos" />
                 <q-btn-dropdown
-                    outline
-                    color="brown-10"
+                    push
+                    color="brown-8"
                     icon="settings"
                     label="Configuração">
                     <q-list class="bg-brown-5">
@@ -100,15 +102,15 @@ onMounted(() => {
                     </q-list>  
                   </q-btn-dropdown>
                   <q-btn 
-                      outline
+                      push
                       @click="getEditProfessional"
-                      color="brown-10"
+                      color="brown-8"
                       icon="manage_accounts"
                       label="Profissionais" />
               </div>
               <div class="col-1 row justify-center">
                 <q-btn 
-                  outline
+                  push
                   @click="getLogout"
                   color="brown-10"
                   icon="logout"
@@ -157,23 +159,16 @@ onMounted(() => {
 
             }
           }
-          .navbar-area-user-notLogin div:nth-child(2){
-           
-
-          }
-          .navbar-area-user-notLogin div:nth-child(3){
-           
-          }
-          .q-btn:hover{
-            background-color: $brown-5 !important;
-
-          }
         }        
         a{
           text-decoration: none;
+          border: 1px solid $brown-6;
+          border-radius: 5px;
 
           &:hover{
             border: 1px solid $brown-10;
+            border-radius: 5px;
+            box-shadow: 1px 1px 0px 0px $brown-10;
 
           }
         }

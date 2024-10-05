@@ -137,7 +137,7 @@ const checkName = (name) => {
                   </q-item-section>
                   <q-item-section class="items-center">
                     <q-btn
-                      round
+                      round push
                       style="width: 1rem; height: 1rem;"
                       @click="deleteService(i.name)"
                       color="brown-9"
@@ -147,6 +147,7 @@ const checkName = (name) => {
               </q-list>
             </div>
             <q-btn
+              push
               :disable="props.servicesByProfesional.length == 0"
               @click="saveFormServices"
               class="q-my-lg full-width"

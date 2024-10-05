@@ -1270,6 +1270,7 @@ const saveFormSchedules = () => {
               </div>  
             </div>
             <q-btn
+              push
               @click="saveFormSchedules"
               class="q-my-xl full-width"
               size="lg"

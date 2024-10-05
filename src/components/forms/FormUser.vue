@@ -87,12 +87,14 @@ onMounted(() => {
                 </template>
             </q-input>
             <q-btn
+                push
                 v-if="typeFormUser"
                 class="q-mb-md"
                 color="brown-14"
                 label="Entrar"
                 type="submit" />
             <q-btn
+                push
                 v-else
                 class="q-mb-md"
                 color="brown-14"

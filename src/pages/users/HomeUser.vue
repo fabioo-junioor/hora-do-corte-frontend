@@ -71,7 +71,7 @@ const veriryReservationComplete = () => {
     if(fielsCheckSize(dataFormReservation.name) && phoneValidator(dataFormReservation.phone)){
         console.log('reservou!', dataReservation, dataFormReservation);
         return;
-        
+
     };
 };
 const checkCustomerChoice = (step) => {
@@ -109,6 +109,7 @@ onMounted(() => {
         <div class="home-user q-pa-xs">
             <h5 class="text-white q-py-md q-my-md">Bem vindo!</h5>
             <q-btn
+                push
                 v-if="!isReservation"
                 outline
                 size="lg"
@@ -189,6 +190,7 @@ onMounted(() => {
                     <template v-slot:navigation>
                         <q-stepper-navigation>
                             <q-btn
+                                push
                                 v-if="step === 4"
                                 @click="veriryReservationComplete"
                                 :disable='!checkCustomerChoice(step)'
@@ -196,6 +198,7 @@ onMounted(() => {
                                 color="brown-10"
                                 label="Agendar" />
                             <q-btn
+                                push
                                 v-else
                                 @click="$refs.stepper.next()"
                                 :disable='!checkCustomerChoice(step)'

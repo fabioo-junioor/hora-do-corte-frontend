@@ -99,6 +99,7 @@ const previewImage = (event) => {
               </q-input>
             </div>
             <q-btn
+              push
               class="q-my-lg full-width"
               size="lg"
               color="brown-9"

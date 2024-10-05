@@ -50,8 +50,8 @@ const register = () => {
         class="home-icon-maquina-cortar-cabelo" />
       
       <q-btn
-        @click="register"
         push
+        @click="register"
         class="q-my-xl"
         size="xl"
         color="brown-8"

@@ -188,6 +188,7 @@ onMounted(() => {
                 </q-input>
             </div>
             <q-btn
+                push
                 class="q-my-lg"
                 color="brown-9"
                 label="Salvar"
