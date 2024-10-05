@@ -1,16 +1,22 @@
 <script setup>
-import { reactive } from 'vue';
-import { fielsRequired } from '../../utils/inputValidators.js';
+import { reactive, ref } from 'vue';
+import { fielsRequired, isAnyShiftOpen } from '../../utils/inputValidators.js';
 
 const emit = defineEmits(['saveFormSchedules']);
 const isDialogSchedules = defineModel('isDialogSchedules');
 const dataEditSchedules = defineModel('dataEditSchedules');
+const isShiftOpen = ref(true);
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório'
     
 });
 const saveFormSchedules = () => {
-  emit('saveFormSchedules');
+  if(isAnyShiftOpen(dataEditSchedules.value)){
+    emit('saveFormSchedules');
+    return;
+
+  };
+  console.log('definir horarios');
 
 };
 </script>
@@ -35,7 +41,7 @@ const saveFormSchedules = () => {
               <h6 class="q-my-xs">Segunda-feira</h6>
               <div class="row">
                 <div class="col q-pa-xs bg-brown-5 rounded-borders">
-                  <p class="q-ma-none">Manha</p>
+                  <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
                       dark
@@ -211,7 +217,7 @@ const saveFormSchedules = () => {
               <h6 class="q-my-xs">Terça-feira</h6>
               <div class="row">
                 <div class="col q-pa-xs bg-brown-5 rounded-borders">
-                  <p class="q-ma-none">Manha</p>
+                  <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
                       dark
@@ -387,7 +393,7 @@ const saveFormSchedules = () => {
               <h6 class="q-my-xs">Quarta-feira</h6>
               <div class="row">
                 <div class="col q-pa-xs bg-brown-5 rounded-borders">
-                  <p class="q-ma-none">Manha</p>
+                  <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
                       dark
@@ -563,7 +569,7 @@ const saveFormSchedules = () => {
               <h6 class="q-my-xs">Quinta-feira</h6>
               <div class="row">
                 <div class="col q-pa-xs bg-brown-5 rounded-borders">
-                  <p class="q-ma-none">Manha</p>
+                  <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
                       dark
@@ -739,7 +745,7 @@ const saveFormSchedules = () => {
               <h6 class="q-my-xs">Sexta-feira</h6>
               <div class="row">
                 <div class="col q-pa-xs bg-brown-5 rounded-borders">
-                  <p class="q-ma-none">Manha</p>
+                  <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
                       dark
@@ -915,7 +921,7 @@ const saveFormSchedules = () => {
               <h6 class="q-my-xs">Sábado</h6>
               <div class="row">
                 <div class="col q-pa-xs bg-brown-5 rounded-borders">
-                  <p class="q-ma-none">Manha</p>
+                  <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
                       dark
@@ -1091,7 +1097,7 @@ const saveFormSchedules = () => {
               <h6 class="q-my-xs">Domingo</h6>
               <div class="row">
                 <div class="col q-pa-xs bg-brown-5 rounded-borders">
-                  <p class="q-ma-none">Manha</p>
+                  <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
                       dark

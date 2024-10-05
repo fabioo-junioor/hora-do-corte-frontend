@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router';
 import { CardProfessional, CalendarSchedule, FormReservation } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
 import { divideHoursIntoIntervals, formatString } from '../../utils/formatters.js';
+import { phoneValidator, fielsCheckSize } from '../../utils/inputValidators.js';
 
 const route = useRoute();
 const isReservation = ref(true);
@@ -67,32 +68,11 @@ const sumMinutes = (data) => {
 
 };
 const veriryReservationComplete = () => {
-    console.log('reservou!', dataReservation, dataFormReservation);
-    if(dataReservation.professional == ''){
+    if(fielsCheckSize(dataFormReservation.name) && phoneValidator(dataFormReservation.phone)){
+        console.log('reservou!', dataReservation, dataFormReservation);
         return;
-
+        
     };
-    if(dataReservation.services.length == 0){
-        return;
-
-    };
-    if(dataReservation.dateReservation == ''){
-        return;
-
-    };
-    if(dataReservation.timeReservation == ''){
-        return;
-
-    };
-    if(dataFormReservation.name == ''){
-        return;
-
-    };
-    if(dataFormReservation.phone == ''){
-        return;
-
-    };
-
 };
 const checkCustomerChoice = (step) => {
     if((step === 1) && (dataReservation.idProfessional != null)){
@@ -103,7 +83,16 @@ const checkCustomerChoice = (step) => {
         return true;
 
     };
-    if((step === 3) && (dataReservation.dateReservation != '')){
+    if((step === 3) && (dataReservation.dateReservation != '') && (dataReservation.timeReservation != '')){
+        return true;
+
+    };
+    if((step === 4) && (dataReservation.idProfessional != null) &&
+        (dataReservation.services.length != 0) &&
+        (dataReservation.dateReservation != '') && 
+        (dataReservation.timeReservation != '') &&
+        (dataFormReservation.name != '') &&
+        (dataFormReservation.phone != '')){
         return true;
 
     };
@@ -202,13 +191,14 @@ onMounted(() => {
                             <q-btn
                                 v-if="step === 4"
                                 @click="veriryReservationComplete"
+                                :disable='!checkCustomerChoice(step)'
                                 icon="check_circle"
                                 color="brown-10"
                                 label="Agendar" />
                             <q-btn
                                 v-else
-                                :disable='!checkCustomerChoice(step)'
                                 @click="$refs.stepper.next()"
+                                :disable='!checkCustomerChoice(step)'
                                 icon-right="arrow_forward"
                                 color="brown-10"
                                 label="Proxima etapa" />

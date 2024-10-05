@@ -1,12 +1,13 @@
 <script setup>
 import { reactive, ref } from 'vue';
-import { fielsRequired, emailValidator, phoneValidator } from '../../utils/inputValidators.js';
+import { fielsRequired, emailValidator, phoneValidator, fielsCheckSize } from '../../utils/inputValidators.js';
 
 const dataFormReservation = defineModel('dataFormReservation');
 const rulesUser = reactive({
-    required: v => fielsRequired(v) || 'Campo obrigatório',
-    email: v => emailValidator(v) || 'Email inválido',
-    phone: v => phoneValidator(v) || 'Telefone inválido'
+    required: v => fielsRequired(v) || 'Campo obrigatório!',
+    email: v => emailValidator(v) || 'Email inválido!',
+    phone: v => phoneValidator(v) || 'Telefone inválido!',
+    fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!'
 
 })
 </script>
@@ -21,9 +22,9 @@ const rulesUser = reactive({
                 bg-color="brown-8"
                 v-model="dataFormReservation.name"
                 type="text"
-                label="Nome completo: *"
+                label="Nome completo *"
                 lazy-rules
-                :rules="[rulesUser.required]">
+                :rules="[rulesUser.required, rulesUser.fielsSize]">
                 <template v-slot:prepend>
                     <q-icon name="person" color="white" />
                 </template>
@@ -36,7 +37,7 @@ const rulesUser = reactive({
                 bg-color="brown-8"
                 v-model="dataFormReservation.email"
                 type="text"
-                label="Seu email: "
+                label="Seu email "
                 lazy-rules
                 :rules="[rulesUser.email]">
                 <template v-slot:prepend>
@@ -51,7 +52,7 @@ const rulesUser = reactive({
                 bg-color="brown-8"
                 v-model="dataFormReservation.phone"
                 type="tel"
-                label="Seu telefone: *"
+                label="Seu telefone *"
                 mask="(##) #### - #####"
                 lazy-rules
                 :rules="[rulesUser.required, rulesUser.phone]">
@@ -67,7 +68,7 @@ const rulesUser = reactive({
                 bg-color="brown-8"
                 v-model="dataFormReservation.observation"
                 type="textarea"
-                label="Observações: " />
+                label="Observações " />
         </q-form>
     </div>
 </template>

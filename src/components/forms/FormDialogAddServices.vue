@@ -1,6 +1,6 @@
 <script setup>
 import { reactive } from 'vue';
-import { fielsRequired } from '../../utils/inputValidators.js';
+import { fielsRequired, fielsCheckSize } from '../../utils/inputValidators.js';
 
 const props = defineProps(['servicesByProfesional']);
 const emit = defineEmits(['saveFormServices', 'addService', 'deleteService']);
@@ -8,9 +8,10 @@ const isDialogServices = defineModel('isDialogServices');
 const dataEditServices = defineModel('dataEditServices');
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório',
-    requiredNumber: v => v > 0 || 'Campo obrigatório',
-    isInteger: v => (v % 1 === 0) || 'Numero deve ser inteiro!'
-    
+    requiredNumber: v => v > 0 || 'Campo obrigatório!',
+    isInteger: v => (v % 1 === 0) || 'Numero deve ser inteiro!',
+    fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!',
+    checkNameIquals: v => !checkName(v) || 'O nome já existe!'
 });
 const saveFormServices = () => {
     emit('saveFormServices');
@@ -22,6 +23,16 @@ const deleteService = (data) => {
 };
 const onSubmit = () => {
   emit('addService');
+
+};
+const checkName = (name) => {
+  for(let i in props.servicesByProfesional){
+    if(props.servicesByProfesional[i].name === name){
+      return true;
+
+    };
+  };
+  return false;
 
 };
 </script>
@@ -54,7 +65,7 @@ const onSubmit = () => {
                   label="Nome *"
                   lazy-rules
                   hint="Definir nomes diferentes para cada serviço!"
-                  :rules="[rulesUser.required]" >
+                  :rules="[rulesUser.required, rulesUser.fielsSize, rulesUser.checkNameIquals]" >
                   <template v-slot:prepend>
                     <q-icon name="content_cut" color="white" />
                   </template>
@@ -84,9 +95,8 @@ const onSubmit = () => {
                   bg-color="brown-8"
                   v-model="dataEditServices.time"
                   type="number"
-                  label="Duração *"
+                  label="Duração (em minutos) *"
                   lazy-rules
-                  hint="Em minutos!"
                   :rules="[rulesUser.requiredNumber, rulesUser.isInteger]">
                   <template v-slot:prepend>
                     <q-icon name="timer" color="white" />
@@ -152,6 +162,4 @@ const onSubmit = () => {
 <style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
-#form-dialog-add-services{
-  }
 </style>

@@ -8,7 +8,8 @@ const isPwd2 = ref(true);
 const isPwd3 = ref(true);
 const dataEditPasswordUser = defineModel('dataEditPasswordUser');
 const rulesUser = reactive({
-    required: v => fielsRequired(v) || 'Campo obrigatório!'
+    required: v => fielsRequired(v) || 'Campo obrigatório!',
+    sizePassword: v => (v.length >= 8) || 'Senha deve conter no minimo 8 caracteres!'
     
 });
 const onSubmit = () => {
@@ -30,7 +31,7 @@ const onSubmit = () => {
                     :type="isPwd1 ? 'password' : 'text'"
                     label="Sua senha atual *"
                     lazy-rules
-                    :rules="[rulesUser.required]">
+                    :rules="[rulesUser.required, rulesUser.sizePassword]">
                     <template v-slot:append>
                         <q-icon
                             @click="isPwd1 = !isPwd1"
@@ -54,7 +55,7 @@ const onSubmit = () => {
                     :type="isPwd2 ? 'password' : 'text'"
                     label="Sua nova senha *"
                     lazy-rules
-                    :rules="[rulesUser.required]">
+                    :rules="[rulesUser.required, rulesUser.sizePassword]">
                     <template v-slot:append>
                         <q-icon
                             @click="isPwd2 = !isPwd2"
@@ -78,7 +79,7 @@ const onSubmit = () => {
                     :type="isPwd3 ? 'password' : 'text'"
                     label="Confirmar sua nova senha *"
                     lazy-rules
-                    :rules="[rulesUser.required]">
+                    :rules="[rulesUser.required, rulesUser.sizePassword, v => (v === dataEditPasswordUser.newPassword) || 'Senhas são diferentes!']">
                     <template v-slot:append>
                         <q-icon
                             @click="isPwd3 = !isPwd3"
