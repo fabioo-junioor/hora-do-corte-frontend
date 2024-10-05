@@ -21,7 +21,9 @@ const dataEditUser = reactive({
     number: ''
 });
 const noticeList = reactive([
-    'Campos com (*) são obrigatórios!'
+    '1. Campos com (*) são obrigatórios!',
+    "2. O campo 'nome de usuário (link)' pode ser o mesmo nome do estabelecimento, porem sem [espaços e caracteres]!",
+    "2.1. O campo 'nome de usuário (link)' é como os clientes vão achar o seu estabelecimento!"
 ]);
 const previewImage = (event) => {
     var input = event.target;

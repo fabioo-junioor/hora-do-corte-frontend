@@ -4,7 +4,7 @@ import { fielsRequired, phoneValidator, cepValidator, charactersAndSpaces, fiels
 
 const emit = defineEmits(['saveFormUser', 'previewImage']);
 const dataEditUser = defineModel('dataEditUser');
-const url = ref('');
+const urlApp = ref('');
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório!',
     phone: v => phoneValidator(v) || 'Numero incorreto!',
@@ -22,7 +22,7 @@ const previewImage = (event) => {
 
 };
 onMounted(() => {
-    url.value = 'https://horadocorte.netlify.app/';
+    urlApp.value = import.meta.env.VITE_LINK_APP;
 
 });
 </script>
@@ -76,9 +76,9 @@ onMounted(() => {
                     bg-color="brown-8"
                     v-model="dataEditUser.slug"
                     type="text"
-                    label="Nome do estabelecimento (link da url) *"
+                    label="Nome de usuário (link) *"
                     lazy-rules
-                    :hint="!!dataEditUser.slug ? url + dataEditUser.slug : 'Definir o nome sem [espaços, caracteres]!'"
+                    :hint="!!dataEditUser.slug ? urlApp + dataEditUser.slug : ''"
                     :rules="[rulesUser.required, rulesUser.fielsSize, rulesUser.slug]">
                     <template v-slot:prepend>
                         <q-icon name="person_search" color="white" />

@@ -1,15 +1,25 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import { fielsRequired, isAnyShiftOpen } from '../../utils/inputValidators.js';
+import { CardNotice } from '../../components';
 
 const emit = defineEmits(['saveFormSchedules']);
 const isDialogSchedules = defineModel('isDialogSchedules');
 const dataEditSchedules = defineModel('dataEditSchedules');
 const isShiftOpen = ref(true);
+const isNotice = ref(false);
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório'
     
 });
+const noticeList = reactive([
+    '1. Pelo menos um turno de qualquer dia da semana deve ser preenchido!',
+    '1.1 Ex.: Terça-feira pela manhã [abrir: 08:00 | fechar: 12:00]!',
+    '2. Caso em alguma mudança de turno o estabelecimento não fechar, informar o horário de [abrir] o mesmo horádio de [fechar] do turno anterior!',
+    '2.1. Ex.: O estabelecimento não fecha nas quarta-feira ao meio dia. Definir horário como: Quarta-feira pela manhã [abrir: ... | fechar: 12:00], Quarta-feira pela tarde [abrir: 12:00 | fechar: ...]!',
+    '2.2. Essa regra vale para qualquer mudança de turno e em qualquer dia da semana!'
+
+]);
 const saveFormSchedules = () => {
   if(isAnyShiftOpen(dataEditSchedules.value)){
     emit('saveFormSchedules');
@@ -19,6 +29,10 @@ const saveFormSchedules = () => {
   console.log('definir horarios');
 
 };
+onMounted(() => {
+  isNotice.value = noticeList.length != 0 || false;
+
+});
 </script>
 <template>
   <div id="form-dialog-add-schedules">
@@ -34,6 +48,12 @@ const saveFormSchedules = () => {
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
+
+        <CardNotice
+            class="full-width q-pa-sm"
+            v-if="isNotice"
+            v-model:isNotice="isNotice"
+            :noticeList='noticeList' />
 
         <q-card-section>
           <q-form>

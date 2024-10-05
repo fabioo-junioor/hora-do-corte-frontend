@@ -1,18 +1,27 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import { fielsRequired, fielsCheckSize } from '../../utils/inputValidators.js';
+import { CardNotice } from '../../components';
 
 const props = defineProps(['servicesByProfesional']);
 const emit = defineEmits(['saveFormServices', 'addService', 'deleteService']);
 const isDialogServices = defineModel('isDialogServices');
 const dataEditServices = defineModel('dataEditServices');
+const isNotice = ref(false);
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório',
     requiredNumber: v => v > 0 || 'Campo obrigatório!',
     isInteger: v => (v % 1 === 0) || 'Numero deve ser inteiro!',
     fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!',
     checkNameIquals: v => !checkName(v) || 'O nome já existe!'
+
 });
+const noticeList = reactive([
+    '1. Campos com (*) são obrigatórios!',
+    '2. Definir nomes diferentes para cada serviço!',
+    '3. A duração do serviço deve ser informado em (minutos). Ex.: 1:30 é igual a 90min!'
+
+]);
 const saveFormServices = () => {
     emit('saveFormServices');
 
@@ -35,6 +44,10 @@ const checkName = (name) => {
   return false;
 
 };
+onMounted(() => {
+  isNotice.value = noticeList.length != 0 || false;
+
+});
 </script>
 <template>
   <div id="form-dialog-add-services">
@@ -50,7 +63,11 @@ const checkName = (name) => {
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
-
+          <CardNotice
+            class="full-width q-pa-sm"
+            v-if="isNotice"
+            v-model:isNotice="isNotice"
+            :noticeList='noticeList' />
         <q-card-section>
           <q-form @submit="onSubmit">
             <div class="form-edit-services-inputs row justify-between">
@@ -63,9 +80,8 @@ const checkName = (name) => {
                   v-model="dataEditServices.name"
                   type="text"
                   label="Nome *"
-                  lazy-rules
-                  hint="Definir nomes diferentes para cada serviço!"
-                  :rules="[rulesUser.required, rulesUser.fielsSize, rulesUser.checkNameIquals]" >
+                  :rules="[rulesUser.required, rulesUser.fielsSize, rulesUser.checkNameIquals]"
+                  lazy-rules >
                   <template v-slot:prepend>
                     <q-icon name="content_cut" color="white" />
                   </template>
@@ -95,7 +111,7 @@ const checkName = (name) => {
                   bg-color="brown-8"
                   v-model="dataEditServices.time"
                   type="number"
-                  label="Duração (em minutos) *"
+                  label="Duração *"
                   lazy-rules
                   :rules="[rulesUser.requiredNumber, rulesUser.isInteger]">
                   <template v-slot:prepend>

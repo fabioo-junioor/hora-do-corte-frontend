@@ -1,16 +1,22 @@
 <script setup>
-import { reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { fielsRequired, fielsCheckSize } from '../../utils/inputValidators.js';
+import { CardNotice } from '../../components';
 
 const emit = defineEmits(['saveFormProfessional', 'previewImage']);
 const props = defineProps(['imageProfile']);
 const isDialogAdd = defineModel('isDialogAdd');
 const dataEditProfessional = defineModel('dataEditProfessional');
+const isNotice = ref(false);
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório!',
     fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!'
     
 });
+const noticeList = reactive([
+    '1. Campos com (*) são obrigatórios!'
+
+]);
 const onSubmit = () => {
     emit('saveFormProfessional');
 
@@ -19,6 +25,10 @@ const previewImage = (event) => {
     emit('previewImage', event);
 
 };
+onMounted(() => {
+  isNotice.value = noticeList.length != 0 || false;
+
+});
 </script>
 <template>
   <div id="form-dialog-add-professional">
@@ -35,6 +45,12 @@ const previewImage = (event) => {
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
 
+        <CardNotice
+          class="full-width q-pa-sm"
+          v-if="isNotice"
+          v-model:isNotice="isNotice"
+          :noticeList='noticeList' />
+        
         <q-card-section>
           <div class="edit-professional-image q-my-md row justify-center">
             <q-avatar style="width: 10rem; height: 10rem">

@@ -9,8 +9,7 @@ const isNotice = defineModel('isNotice');
         <q-card-section
             class="col-11 q-pa-none column">
             <div v-for="i in props.noticeList" :key="i"
-                class="text-subtitle2 q-ma-sm">
-                <q-badge rounded class="q-mr-xs" color="white" />
+                class="text-subtitle2 q-my-xs q-ml-md">
                 {{ i }}
             </div>
         </q-card-section>
@@ -18,6 +17,7 @@ const isNotice = defineModel('isNotice');
             <q-btn
                 round
                 @click="isNotice = false"
+                size="md"
                 class="q-my-lg"
                 color="brown-9"
                 icon="close" />
