@@ -1,5 +1,10 @@
 const formatString = string => string[0].toUpperCase() + string.substring(1);
 
+const cleanSpecialCharacters = (string) => {
+    return string.replace(/\D/g, '');
+
+};
+
 const getDateToday = () => {
     let today = new Date();
     let day = today.getDate();
@@ -61,11 +66,12 @@ const divideHoursIntoIntervals = (schedules, time) => {
   });
 
   return result;
-} 
+};
 
 export {
+    formatString,
+    cleanSpecialCharacters,
     verifySchedulesAvailable,
     getDateToday,
-    divideHoursIntoIntervals,
-    formatString
+    divideHoursIntoIntervals
 };
