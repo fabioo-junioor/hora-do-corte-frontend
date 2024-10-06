@@ -98,7 +98,26 @@ const register = () => {
           height="9rem" width="9rem" 
           class="home-icon-escova-barbear" />
     </div>
-    <div class=""></div>
+    <div class="home-footer row full-width q-pa-md q-mt-xl">
+      <div class="col column justify-end">
+        <div class="col row items-end">
+          <i class='bx bxl-instagram' />
+        </div>
+        <div class="col text-subtitle1 row items-end">
+          Contato: contato@gmail.com
+        </div>
+        <div class="col text-subtitle2 row items-end">
+          Hora do Corte, 2024. All Rights Reserved.
+        </div>
+      </div>
+      <div class="col row justify-end">
+        <q-img
+          height="10rem"
+          width="10rem"
+          src="../assets/logo/logo.png"
+          fit="contain" />
+      </div>
+    </div>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -108,6 +127,7 @@ const register = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: calc(100vh - 5rem);
   font-family: "Fredoka", sans-serif;
   background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
       url("../assets/background/background-wave.png") no-repeat
@@ -223,6 +243,21 @@ const register = () => {
       right: 5%;
       opacity: .5;
 
+    }
+  }
+  .home-footer{
+    background-color: $darkColorSecondary;
+    border-top: 2px solid $brown-8;
+    box-shadow: 0px -1px 3px 1px $brown-7;
+
+    i{
+      font-size: 2.5rem;
+      color: $brown-10;
+
+      &:hover{
+        color: $brown-8;
+
+      }
     }
   }
 }
