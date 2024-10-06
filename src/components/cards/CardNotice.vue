@@ -13,12 +13,11 @@ const isNotice = defineModel('isNotice');
                 {{ i }}
             </div>
         </q-card-section>
-        <q-card-section class="col-1 row justify-center q-pa-none">
+        <q-card-section class="card-notice-btn-close col-1 row justify-end items-start q-pa-none">
             <q-btn
                 round
                 @click="isNotice = false"
-                size="md"
-                class="q-my-lg"
+                size="sm"
                 color="brown-9"
                 icon="close" />
         </q-card-section>

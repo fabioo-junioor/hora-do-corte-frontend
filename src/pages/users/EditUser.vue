@@ -64,7 +64,7 @@ onMounted(() => {
 <template>
     <div id="edit-user">
         <CardNotice
-            class="full-width q-pa-sm"
+            class="full-width q-pa-md"
             v-if="isNotice"
             v-model:isNotice="isNotice"
             :noticeList='noticeList' />
