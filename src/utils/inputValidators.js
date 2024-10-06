@@ -12,6 +12,9 @@ const emailValidator = email =>
 const phoneValidator = phone =>
     ((phone.replace(/\D/g, '')).length === 11) || false;
 
+const cepValidator = cep =>
+    ((cep.replace(/\D/g, '')).length === 8) || false;
+
 const charactersAndSpaces = (string) => {
     return regexCharactersSpaces.test(string);
 
@@ -28,6 +31,7 @@ export {
     fielsRequired,
     emailValidator,
     phoneValidator,
+    cepValidator,
     charactersAndSpaces,
     fielsCheckSize,
     isAnyShiftOpen

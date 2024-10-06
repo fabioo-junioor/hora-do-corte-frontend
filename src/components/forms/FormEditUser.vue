@@ -1,13 +1,14 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { fielsRequired, phoneValidator, charactersAndSpaces, fielsCheckSize } from '../../utils/inputValidators.js';
+import { fielsRequired, phoneValidator, cepValidator, charactersAndSpaces, fielsCheckSize } from '../../utils/inputValidators.js';
 
 const emit = defineEmits(['saveFormUser', 'previewImage']);
 const dataEditUser = defineModel('dataEditUser');
-const url = ref('');
+const urlApp = ref('');
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório!',
     phone: v => phoneValidator(v) || 'Numero incorreto!',
+    cep: v => cepValidator(v) || 'Numero incorreto!',
     slug: v => !charactersAndSpaces(v) || 'Campo inválido!',
     fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!'
     
@@ -21,7 +22,7 @@ const previewImage = (event) => {
 
 };
 onMounted(() => {
-    url.value = 'https://horadocorte.netlify.app/';
+    urlApp.value = import.meta.env.VITE_LINK_APP;
 
 });
 </script>
@@ -75,9 +76,9 @@ onMounted(() => {
                     bg-color="brown-8"
                     v-model="dataEditUser.slug"
                     type="text"
-                    label="Nome do estabelecimento (link da url) *"
+                    label="Nome de usuário (link) *"
                     lazy-rules
-                    :hint="!!dataEditUser.slug ? url + dataEditUser.slug : 'Definir o nome sem [espaços, caracteres]!'"
+                    :hint="!!dataEditUser.slug ? urlApp + dataEditUser.slug : ''"
                     :rules="[rulesUser.required, rulesUser.fielsSize, rulesUser.slug]">
                     <template v-slot:prepend>
                         <q-icon name="person_search" color="white" />
@@ -94,8 +95,8 @@ onMounted(() => {
                     v-model="dataEditUser.whatsapp"
                     type="tel"
                     label="Whatsapp *"
-                    lazy-rules
                     mask="(##) ####-#####"
+                    lazy-rules
                     :rules="[rulesUser.required, rulesUser.phone]">
                     <template v-slot:prepend>
                         <i class='bx bxl-whatsapp text-white' />
@@ -126,6 +127,25 @@ onMounted(() => {
                     class="q-mb-sm"
                     color="white"
                     bg-color="brown-8"
+                    v-model="dataEditUser.cep"
+                    type="text"
+                    label="Cep *"
+                    mask="##.###-###"
+                    lazy-rules
+                    :rules="[rulesUser.required, rulesUser.cep]">
+                    <template v-slot:prepend>
+                        <q-icon name="location_on" color="white" />
+                    </template>    
+                </q-input>
+            </div>
+            <div class="form-edit-user-inputs">
+                <q-input
+                    dark
+                    filled
+                    disable
+                    class="q-mb-sm"
+                    color="white"
+                    bg-color="brown-8"
                     v-model="dataEditUser.state"
                     type="text"
                     label="Estado *"
@@ -140,6 +160,7 @@ onMounted(() => {
                 <q-input
                     dark
                     filled
+                    disable
                     class="q-mb-sm"
                     color="white"
                     bg-color="brown-8"
@@ -149,7 +170,7 @@ onMounted(() => {
                     lazy-rules
                     :rules="[rulesUser.required]">
                     <template v-slot:prepend>
-                        <q-icon name="location_on" color="white" />
+                        <q-icon name="location_city" color="white" />
                     </template>    
                 </q-input>
             </div>

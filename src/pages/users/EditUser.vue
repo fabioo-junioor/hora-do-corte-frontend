@@ -1,6 +1,9 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
 import { FormEditUser, CardNotice } from '../../components';
+import { getCepUser } from '../../services/api/api.viacep.js';
+import { cepValidator } from '../../utils/inputValidators.js';
+import { cleanSpecialCharacters } from '../../utils/formatters.js';
 import userDefault from '../../assets/imgsDefault/user.png';
 
 const isNotice = ref(false);
@@ -11,13 +14,16 @@ const dataEditUser = reactive({
     slug: '',
     whatsapp: '',
     instagram: '',
+    cep: '',
     state: '',
     city: '',
     street: '',
     number: ''
 });
 const noticeList = reactive([
-    'Campos com (*) são obrigatórios!'
+    '1. Campos com (*) são obrigatórios!',
+    "2. O campo 'nome de usuário (link)' pode ser o mesmo nome do estabelecimento, porem sem [espaços e caracteres]!",
+    "2.1. O campo 'nome de usuário (link)' é como os clientes vão achar o seu estabelecimento!"
 ]);
 const previewImage = (event) => {
     var input = event.target;
@@ -35,15 +41,30 @@ watch(() => dataEditUser.image, () => {
     imageProfile.value = !dataEditUser.image ? userDefault : imageProfile.value;
 
 });
+watch(() => dataEditUser.cep, async (elem) => {
+    if(!cepValidator(elem)){
+        dataEditUser.state = '';
+        dataEditUser.city = '';
+        dataEditUser.street = '';
+        return;
+
+    }
+    let cleanString = cleanSpecialCharacters(elem);
+    let dataCep = await getCepUser(cleanString);
+    dataEditUser.state = dataCep.estado;
+    dataEditUser.city = dataCep.localidade;
+    dataEditUser.street = dataCep.logradouro;
+
+});
 onMounted(() => {
     isNotice.value = noticeList.length != 0 || false;
-    
+
 });
 </script>
 <template>
     <div id="edit-user">
         <CardNotice
-            class="full-width q-pa-sm"
+            class="full-width q-pa-md"
             v-if="isNotice"
             v-model:isNotice="isNotice"
             :noticeList='noticeList' />
