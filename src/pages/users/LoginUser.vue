@@ -1,16 +1,24 @@
 <script setup>
 import { reactive } from 'vue';
 import { FormUser } from '../../components';
+import { login } from '../../services/api/api.user.js';
 
 const dataFormUser = reactive({
-    email: '',
-    password: ''
+    email: 'fabio@bol.com',
+    password: 'teste2222'
 
 });
-const loginUser = () => {
-    console.log('login ', dataFormUser);
+const loginUser = async () => {
+    let datauser = await login(dataFormUser);
+    if(datauser.data.length === 0){
+        console.log(datauser);
+        return;
 
-}
+    };
+    console.log(datauser);
+    return;
+
+};
 </script>
 <template>
     <div id="login-user">

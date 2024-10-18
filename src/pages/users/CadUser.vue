@@ -1,17 +1,19 @@
 <script setup>
 import { reactive } from 'vue';
 import { FormUser } from '../../components';
+import { create } from '../../services/api/api.user.js';
 
 const dataFormUser = reactive({
-    email: '',
-    password: '',
-    repeatPassword: ''
+    email: 'fabio@bol.com',
+    password: '11111111',
+    confirmPassword: '11111111'
 
 });
-const createUser = () => {
-    console.log('cadastrar ', dataFormUser);
+const createUser = async () => {
+    let dataUser = await create(dataFormUser);
+    console.log(dataUser);
 
-}
+};
 </script>
 <template>
     <div id="cad-user">
@@ -27,7 +29,7 @@ const createUser = () => {
                 typeForm="cadUser"
                 v-model:email="dataFormUser.email"
                 v-model:password="dataFormUser.password"
-                v-model:repeatPassword="dataFormUser.repeatPassword"
+                v-model:confirmPassword="dataFormUser.confirmPassword"
                 @createUser="createUser" />
         </div>
     </div>

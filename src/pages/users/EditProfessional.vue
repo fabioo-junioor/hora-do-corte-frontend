@@ -5,12 +5,16 @@ import { FormDialogAddProfessional,
         FormDialogAddSchedules, 
         CardProfessionalList } from '../../components';
 import userDefault from '../../assets/imgsDefault/user.png';
+import { getAll, create, update, deleteProf } from '../../services/api/api.professional.js';
+import { getService, createService, updateService } from '../../services/api/api.services.js';
 
 const isDialogAdd = ref(false);
 const isDialogSchedules = ref(false);
 const isDialogServices = ref(false);
+const pkProfessional = ref(null);
 const imageProfile = ref(null);
 const dataEditProfessional = reactive({
+    pkProfessional: '',
     name: '',
     image: null,
     instagram: ''
@@ -73,26 +77,34 @@ const dataEditSchedules = reactive([
         }
     }
 ]);
-const servicesByProfesional = reactive([]);
-const dataProfessionais = reactive([
-    {id: 1, name: 'fabio', image: null, instagram: 'teste' },
-    {id: 2, name: 'maria', image: 'https://cdn.quasar.dev/img/mountains.jpg', instagram: '' },
-    {id: 3, name: 'joao', image: null, instagram: '' }
-
-]);
+const newServices = reactive([]);
+const dataProfessionals = reactive([]);
+const dataServices = reactive([]);
 const addProfessional = () => {
-    dataEditProfessional.name = '';
-    dataEditProfessional.image = '';
-    dataEditProfessional.instagram = '';
+    cleanFormProfessional();
     isDialogAdd.value = true;
 
 };
-const saveFormProfessional = () => {
-    console.log(dataEditProfessional);
+const saveFormProfessional = async () => {
+    let dataProfessional = await create(dataEditProfessional, 1);
+    console.log(dataProfessional);
 
 };
-const saveFormServices = () => {
-    console.log(servicesByProfesional);
+const saveFormEditProfessional = async () => {
+    let dataProfessional = await update(dataEditProfessional, dataEditProfessional.pkProfessional);
+    console.log(dataProfessional);
+
+};
+const saveFormServices = async () => {
+    if(!pkProfessional.value){
+        let dataService = await updateService(newServices, dataServices[0].pkProfessionalServices);
+        console.log('update', dataService);
+        return;
+
+    };
+    let dataService = await createService(newServices, pkProfessional.value);
+    console.log(dataService);
+    return;
 
 };
 const saveFormSchedules = () => {
@@ -100,15 +112,16 @@ const saveFormSchedules = () => {
 
 };
 const addService = () => {
-    servicesByProfesional.push({name: dataEditServices.name, price: dataEditServices.price, time: dataEditServices.time});
+    newServices.push({name: dataEditServices.name, price: dataEditServices.price, time: dataEditServices.time});
 
 };
 const deleteService = (data) => {
-    let indice = servicesByProfesional.findIndex(obj => obj.name === data);
-    servicesByProfesional.splice(indice, 1);
+    let indice = newServices.findIndex(obj => obj.name === data);
+    newServices.splice(indice, 1);
 
 }
 const editFormProfessional = (data) => {
+    dataEditProfessional.pkProfessional = data.pkProfessional;
     dataEditProfessional.name = data.name;
     dataEditProfessional.image = data.image;
     dataEditProfessional.instagram = data.instagram;
@@ -119,12 +132,28 @@ const editScheduleProfessional = (schedule) => {
     isDialogSchedules.value = true;
 
 };
-const editServicesProfessional = (services) => {
+const editServicesProfessional = async (services) => {
+    newServices.splice(0, newServices.length);
+    dataServices.splice(0, dataServices.length);
+    cleanDataEditServices();
+    let dataService = await getService(services.pkProfessional);
+    if(dataService.data?.length !== 0){
+        dataServices.push(...dataService.data);
+        newServices.push(...dataService.data[0].services);
+        pkProfessional.value = null;
+        isDialogServices.value = true;
+        return;
+        
+    };
+    console.log(dataService.message);
+    pkProfessional.value = services.pkProfessional;
     isDialogServices.value = true;
+    return;
 
 };
-const deleteProfessional = (data) => {
-    console.log(data);
+const deleteProfessional = async (pkProfessional) => {
+    let dataProfessional = await deleteProf(pkProfessional);
+    console.log(dataProfessional);
 
 };
 const previewImage = (event) => {
@@ -139,8 +168,25 @@ const previewImage = (event) => {
 
     }    
 };
+const cleanFormProfessional = () => {
+    dataEditProfessional.name = '';
+    dataEditProfessional.image = '';
+    dataEditProfessional.instagram = '';
+
+};
+const cleanDataEditServices = () => {
+    dataEditServices.name = '';
+    dataEditServices.price = null;
+    dataEditServices.time = null;
+
+};
 watch(() => dataEditProfessional.image, () => {
     imageProfile.value = !dataEditProfessional.image ? userDefault : imageProfile.value;
+
+});
+onMounted( async () => {
+    let dataProfessional = await getAll(1);
+    dataProfessionals.push(...dataProfessional.data);
 
 });
 </script>
@@ -160,7 +206,7 @@ watch(() => dataEditProfessional.image, () => {
             </div>
             <div class="edit-professional-list q-my-lg">
                 <CardProfessionalList
-                    v-for="i in dataProfessionais" :key="i"
+                    v-for="i in dataProfessionals" :key="i"
                     :dataProfessional='i'
                     @deleteProfessional='deleteProfessional'
                     @editFormProfessional='editFormProfessional'
@@ -172,11 +218,12 @@ watch(() => dataEditProfessional.image, () => {
                 v-model:dataEditProfessional='dataEditProfessional'
                 :imageProfile='imageProfile || userDefault'
                 @saveFormProfessional='saveFormProfessional'
+                @saveFormEditProfessional='saveFormEditProfessional'
                 @previewImage='previewImage' />
             <FormDialogAddServices
                 v-model:isDialogServices='isDialogServices'
                 v-model:dataEditServices='dataEditServices'
-                :servicesByProfesional='servicesByProfesional'
+                :newServices='newServices'
                 @addService='addService'
                 @deleteService='deleteService'
                 @saveFormServices='saveFormServices' />

@@ -1,15 +1,19 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
 import { FormEditPasswordUser } from '../../components';
+import { update } from '../../services/api/api.user.js';
 
 const dataEditPasswordUser = reactive({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: ''
-});
-const saveFormPasswordUser = () => {
-    console.log(dataEditPasswordUser);
+    password: 'teste2222',
+    newPassword: 'teste1010',
+    confirmPassword: 'teste1010'
 
+});
+const saveFormPasswordUser = async () => {
+    let dataUser = await update(dataEditPasswordUser);
+    console.log(dataUser);
+    return;
+    
 };
 </script>
 <template>
