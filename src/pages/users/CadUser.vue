@@ -1,8 +1,10 @@
 <script setup>
 import { reactive } from 'vue';
+import { useStore } from 'vuex';
 import { FormUser } from '../../components';
 import { create } from '../../services/api/api.user.js';
 
+const store = useStore();
 const dataFormUser = reactive({
     email: 'fabio@bol.com',
     password: '11111111',
@@ -11,7 +13,9 @@ const dataFormUser = reactive({
 });
 const createUser = async () => {
     let dataUser = await create(dataFormUser);
-    console.log(dataUser);
+    store.commit('setAlertConfig', {message: dataUser.message, type: 'info'});
+    //config type alert
+    //console.log(dataUser);
 
 };
 </script>
