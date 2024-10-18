@@ -1,21 +1,25 @@
 <script setup>
 import { reactive } from 'vue';
+import { useStore} from 'vuex';
 import { FormUser } from '../../components';
 import { login } from '../../services/api/api.user.js';
 
+const store = useStore();
 const dataFormUser = reactive({
     email: 'fabio@bol.com',
-    password: 'teste2222'
+    password: 'teste1010'
 
 });
 const loginUser = async () => {
     let datauser = await login(dataFormUser);
     if(datauser.data.length === 0){
-        console.log(datauser);
+        store.commit('setAlertConfig', {message: datauser.message, type: 'negative'});
+        //console.log(datauser);
         return;
 
     };
-    console.log(datauser);
+    store.commit('setAlertConfig', {message: datauser.message, type: 'positive'});
+    //console.log(datauser);
     return;
 
 };

@@ -1,7 +1,10 @@
 <script setup>
 import { onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import { AlertUser } from '../components';
 
+const store = useStore();
 const router = useRouter();
 const isUserLogin = ref(false);
 
@@ -124,6 +127,8 @@ onMounted(() => {
       <q-page-container>
         <router-view />
       </q-page-container>
+      <AlertUser
+        v-if="store.getters.getAlertConfig.isAlert" />
     </q-layout>
   </div>
 </template>
