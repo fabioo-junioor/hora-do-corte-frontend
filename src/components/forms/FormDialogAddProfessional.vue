@@ -3,7 +3,7 @@ import { ref, reactive, onMounted } from 'vue';
 import { fielsRequired, fielsCheckSize } from '../../utils/inputValidators.js';
 import { CardNotice } from '../../components';
 
-const emit = defineEmits(['saveFormProfessional', 'saveFormEditProfessional', 'previewImage']);
+const emit = defineEmits(['saveFormProfessional', 'previewImage']);
 const props = defineProps(['imageProfile']);
 const isDialogAdd = defineModel('isDialogAdd');
 const dataEditProfessional = defineModel('dataEditProfessional');
@@ -18,13 +18,7 @@ const noticeList = reactive([
 
 ]);
 const onSubmit = () => {
-  if(dataEditProfessional.value.name == ''){
-    emit('saveFormProfessional');
-    return;
-
-  };
-  emit('saveFormEditProfessional');
-  return;
+  emit('saveFormProfessional', dataEditProfessional.value.pkProfessional);
 
 };
 const previewImage = (event) => {

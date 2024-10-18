@@ -1,17 +1,23 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
+import { useStore } from 'vuex';
 import { FormDialogAddProfessional, 
         FormDialogAddServices, 
         FormDialogAddSchedules, 
         CardProfessionalList } from '../../components';
+import { isAnyShiftOpen } from '../../utils/inputValidators.js';
 import userDefault from '../../assets/imgsDefault/user.png';
 import { getAll, create, update, deleteProf } from '../../services/api/api.professional.js';
 import { getService, createService, updateService } from '../../services/api/api.services.js';
+import { getSchedules, createSchedules, updateSchedules } from '../../services/api/api.schedule.js';
 
+const store = useStore();
 const isDialogAdd = ref(false);
 const isDialogSchedules = ref(false);
 const isDialogServices = ref(false);
 const pkProfessional = ref(null);
+const pkProfessionalServices = ref(null);
+const pkProfessionalSchedule = ref(null);
 const imageProfile = ref(null);
 const dataEditProfessional = reactive({
     pkProfessional: '',
@@ -85,30 +91,51 @@ const addProfessional = () => {
     isDialogAdd.value = true;
 
 };
-const saveFormProfessional = async () => {
-    let dataProfessional = await create(dataEditProfessional, 1);
-    console.log(dataProfessional);
+const saveFormProfessional = async (pkProfessional) => {
+    if(pkProfessional == ''){
+        let dataProfessional = await create(dataEditProfessional, 4);
+        store.commit('setAlertConfig', {message: dataProfessional.message, type: 'positive'});
+        //console.log('create', pkProfessional);
+        return;
 
-};
-const saveFormEditProfessional = async () => {
-    let dataProfessional = await update(dataEditProfessional, dataEditProfessional.pkProfessional);
-    console.log(dataProfessional);
+    };
+    let dataProfessional = await update(dataEditProfessional, pkProfessional);
+    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'positive'});
+    //console.log('update');
+    return;
 
 };
 const saveFormServices = async () => {
-    if(!pkProfessional.value){
+    if(pkProfessionalServices.value){
         let dataService = await updateService(newServices, dataServices[0].pkProfessionalServices);
-        console.log('update', dataService);
+        store.commit('setAlertConfig', {message: dataService.message, type: 'positive'});
+        //console.log('update');
         return;
 
     };
     let dataService = await createService(newServices, pkProfessional.value);
-    console.log(dataService);
+    store.commit('setAlertConfig', {message: dataService.message, type: 'positive'});
+    //console.log('create');
     return;
 
 };
-const saveFormSchedules = () => {
-    console.log(dataEditSchedules);
+const saveFormSchedules = async () => {
+    if(!isAnyShiftOpen(dataEditSchedules)){
+        store.commit('setAlertConfig', {message: 'Preencher algum horário', type: 'warning'});
+        return;
+
+    };
+    if(pkProfessionalSchedule.value){
+        let dataSchedule = await updateSchedules(dataEditSchedules, pkProfessionalSchedule.value);
+        store.commit('setAlertConfig', {message: dataSchedule.message, type: 'positive'});
+        //console.log(dataSchedule, dataEditSchedules, pkProfessionalSchedule.value);
+        return;
+
+    };
+    let dataSchedule = await createSchedules(dataEditSchedules, pkProfessional.value);
+    store.commit('setAlertConfig', {message: dataSchedule.message, type: 'positive'});
+    //console.log(dataSchedule);
+    return;
 
 };
 const addService = () => {
@@ -128,8 +155,20 @@ const editFormProfessional = (data) => {
     isDialogAdd.value = true;
 
 };
-const editScheduleProfessional = (schedule) => {
+const editScheduleProfessional = async (data) => {
+    let dataSchedule = await getSchedules(data.pkProfessional);
+    pkProfessional.value = data.pkProfessional;
+    if(dataSchedule.statusCode === 200){
+        dataEditSchedules.splice(0, dataEditSchedules.length);
+        dataEditSchedules.push(...dataSchedule.data[0].schedules);
+        pkProfessionalSchedule.value = dataSchedule.data[0].pkProfessionalSchedules;
+        isDialogSchedules.value = true;
+        return;
+
+    };
+    pkProfessionalSchedule.value = null;
     isDialogSchedules.value = true;
+    return;
 
 };
 const editServicesProfessional = async (services) => {
@@ -137,16 +176,17 @@ const editServicesProfessional = async (services) => {
     dataServices.splice(0, dataServices.length);
     cleanDataEditServices();
     let dataService = await getService(services.pkProfessional);
+    pkProfessional.value = services.pkProfessional;
     if(dataService.data?.length !== 0){
         dataServices.push(...dataService.data);
         newServices.push(...dataService.data[0].services);
-        pkProfessional.value = null;
+        pkProfessionalServices.value = dataService.data[0].pkProfessionalServices;
         isDialogServices.value = true;
         return;
         
     };
     console.log(dataService.message);
-    pkProfessional.value = services.pkProfessional;
+    pkProfessionalServices.value = null;
     isDialogServices.value = true;
     return;
 
@@ -154,6 +194,8 @@ const editServicesProfessional = async (services) => {
 const deleteProfessional = async (pkProfessional) => {
     let dataProfessional = await deleteProf(pkProfessional);
     console.log(dataProfessional);
+    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'info'});
+    return;
 
 };
 const previewImage = (event) => {
@@ -184,10 +226,17 @@ watch(() => dataEditProfessional.image, () => {
     imageProfile.value = !dataEditProfessional.image ? userDefault : imageProfile.value;
 
 });
+watch(() => store.getters.getAlertConfig.isAlert, () => {
+    if(!store.getters.getAlertConfig.isAlert){
+        //console.log(store.getters.getAlertConfig.isAlert);
+        return location.reload();
+
+    };
+});
 onMounted( async () => {
     let dataProfessional = await getAll(1);
     dataProfessionals.push(...dataProfessional.data);
-
+    
 });
 </script>
 <template>
@@ -218,7 +267,6 @@ onMounted( async () => {
                 v-model:dataEditProfessional='dataEditProfessional'
                 :imageProfile='imageProfile || userDefault'
                 @saveFormProfessional='saveFormProfessional'
-                @saveFormEditProfessional='saveFormEditProfessional'
                 @previewImage='previewImage' />
             <FormDialogAddServices
                 v-model:isDialogServices='isDialogServices'

@@ -20,7 +20,7 @@ const store = createStore({
             setTimeout(() => {
                 state.alertConfig.isAlert = false;
 
-            });
+            }, 2500);
         }
     },
     getters: {
