@@ -1,18 +1,28 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { onMounted, reactive, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { CardProfessional, CalendarSchedule, FormReservation } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
-import { divideHoursIntoIntervals, formatString } from '../../utils/formatters.js';
+import { divideHoursIntoIntervals, formatString, orderSchedules } from '../../utils/formatters.js';
 import { phoneValidator, fielsCheckSize } from '../../utils/inputValidators.js';
+import { getUserDetailsBySlug } from '../../services/api/api.userDetails.js';
+import { getAll } from '../../services/api/api.professional.js';
+import { getService } from '../../services/api/api.services.js';
+import { getSchedules } from '../../services/api/api.schedule.js';
 
 const route = useRoute();
-const isReservation = ref(true);
+const router = useRouter();
+const isReservation = ref(false);
 const step = ref(1);
+
+const dataUser = reactive([]);
+const dataProfessionals = reactive([]);
 const dataServices = reactive([]);
+const dataSchedules = reactive([]);
+//const reservedTimes = reactive([]);
 const dataTimesFromWeek = reactive([]);
 const dataReservation = reactive({
-        idProfessional: null,
+        pkProfessional: null,
         professional: '',
         services: [],
         dateReservation: '',
@@ -25,21 +35,36 @@ const dataFormReservation = reactive({
     phone: '',
     observation: ''
 });
-const checkProfessional = (data) => {
-    dataReservation.idProfessional = data.idProfessional;
-    dataReservation.professional = data.professional;
-    dataReservation.services = [];
+const checkProfessional = async (data) => {
+    dataServices.splice(0, dataServices.length);
+    dataSchedules.splice(0, dataSchedules.length);
+
+    let dataService = await getService(data.pkProfessional);
+    let dataSchedule = await getSchedules(data.pkProfessional);
+    //console.log(dataService)
+    if(dataService.data.length === 0 || dataSchedule.data.length === 0){
+        console.log('prof nao completou o cadastro!');
+        return;
+        
+    };
+    dataReservation.pkProfessional = data.pkProfessional;
+    dataReservation.professional = data.name;
+    dataReservation.services = [];  
+    dataServices.push(...dataService.data[0].services);
+    let orderSchedule = orderSchedules(dataSchedule.data[0].schedules);
+    dataSchedules.push(...orderSchedule);
+    return;
     
 };
 const checkScheduleDate = (date) => {
     if(date){
         dataTimesFromWeek.splice(0);
         dataReservation.dateReservation = date;
-        let schedulesProfessional = dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].schedules;
+        //let schedulesProfessional = dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].schedules;
         let dayWeek = getDayWeekFromDate(date);
         let totalMinutes = sumMinutes(dataReservation.services);
         dataReservation.duration = totalMinutes;
-        dataTimesFromWeek.push(...divideHoursIntoIntervals(schedulesProfessional, totalMinutes)[dayWeek]);
+        dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes)[dayWeek]);
         
     }
 };
@@ -47,10 +72,12 @@ const checkScheduleTime = (data) => {
     dataReservation.timeReservation = data;
 
 };
+/*
 const verifyKeyByIdProfessional = (id) => {
     return dataServices.findIndex(elem => elem.idProfessional == id);
 
 };
+*/
 const getDayWeekFromDate = (date) => {
     let parts = date.split('-');
     date = new Date(parts[2], parts[1] - 1, parts[0]);
@@ -75,11 +102,11 @@ const veriryReservationComplete = () => {
     };
 };
 const checkCustomerChoice = (step) => {
-    if((step === 1) && (dataReservation.idProfessional != null)){
+    if((step === 1) && (dataReservation.pkProfessional != null)){
         return true;
 
     };
-    if((step === 2) && (dataReservation.services.length != 0)){
+    if((step === 2) && (dataReservation.services.length !== 0)){
         return true;
 
     };
@@ -87,7 +114,7 @@ const checkCustomerChoice = (step) => {
         return true;
 
     };
-    if((step === 4) && (dataReservation.idProfessional != null) &&
+    if((step === 4) && (dataReservation.pkProfessional != null) &&
         (dataReservation.services.length != 0) &&
         (dataReservation.dateReservation != '') && 
         (dataReservation.timeReservation != '') &&
@@ -99,9 +126,28 @@ const checkCustomerChoice = (step) => {
     return false;
 
 };
-onMounted(() => {
-    dataServices.push(...dataServicesTest);
+const btnReservation = async () => {
+    let dataProfessional = await getAll(dataUser[0].fkUser);
+    dataProfessionals.push(...dataProfessional.data);
+    //console.log(dataProfessionals);
+    isReservation.value = !isReservation.value;
 
+};
+const checkUserExists = async () => {
+    let dataU = await getUserDetailsBySlug(route.params.nameUser);
+    if(dataU.statusCode !== 200 || dataU.data.length === 0){
+        router.push({ name: 'notFoundUser' });
+        return;
+
+    };
+    //dataServices.push(...dataServicesTest);
+    dataUser.push(...dataU.data);
+    return;
+
+};
+onMounted(async () => {
+    await checkUserExists();
+        
 });
 </script>
 <template>
@@ -114,7 +160,7 @@ onMounted(() => {
                 outline
                 size="lg"
                 color="brown-10"
-                @click="isReservation = !isReservation" >
+                @click="btnReservation" >
                     <i class='bx bxs-hand-up q-px-sm' />
                     Agendar
             </q-btn>
@@ -137,9 +183,9 @@ onMounted(() => {
                         :done="step > 1">
                         <div class="reservation-content-step-card-professional q-my-md">
                             <CardProfessional
-                                v-for="i, index in dataServices" :key="i"
-                                :dataServices="dataServices[index]"
-                                v-model:idProfessional="dataReservation.idProfessional"
+                                v-for="i in dataProfessionals" :key="i"
+                                :dataProfessionals='i'
+                                v-model:pkProfessional='dataReservation.pkProfessional'
                                 @checkProfessional='checkProfessional' />
                         </div>
                     </q-step>
@@ -148,12 +194,12 @@ onMounted(() => {
                         title="Selecione o(s) serviço(s)"
                         icon="content_cut"
                         :done="step > 2">
-                        <div v-if="dataReservation.idProfessional != null"
+                        <div v-if="dataReservation.pkProfessional != null"
                             class="reservation-content-services q-my-md">
                             <q-checkbox
                                 dark
                                 class="reservation-content-service text-brown-10 q-py-xs q-px-md"
-                                v-for="i in dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].services" :key="i"
+                                v-for="i in dataServices" :key="i"
                                 v-model="dataReservation.services"
                                 color="brown-8"
                                 keep-color
@@ -171,7 +217,7 @@ onMounted(() => {
                         :done="step > 3">
                         <div class="reservation-content-schedules q-my-md">
                             <CalendarSchedule
-                                :schedules='dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].schedules'
+                                :schedules='dataSchedules'
                                 :timesAvailable='dataTimesFromWeek'
                                 @checkScheduleDate='checkScheduleDate'
                                 @checkScheduleTime='checkScheduleTime' />
