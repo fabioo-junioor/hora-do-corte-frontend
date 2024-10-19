@@ -3,12 +3,12 @@ import { ref } from 'vue';
 import userDefault from '../../assets/imgsDefault/user.png';
 import { formatString } from '../../utils/formatters.js';
 
-const props = defineProps(['dataServices']);
+const props = defineProps(['dataProfessionals']);
 const emit = defineEmits(['checkProfessional']);
-const idProfessional = defineModel('idProfessional');
+const pkProfessional = defineModel('pkProfessional');
 
 const onSubmit = () => {
-    emit('checkProfessional', props.dataServices);
+  emit('checkProfessional', props.dataProfessionals);
 
 };
 </script>
@@ -16,18 +16,18 @@ const onSubmit = () => {
   <div id="card-professional">
     <q-card
       bordered
-      :class="'my-card text-white bg-' + (idProfessional === props.dataServices.idProfessional ? 'brown-10' : 'brown-8')"
+      :class="'my-card text-white bg-' + (pkProfessional === props.dataProfessionals.pkProfessional ? 'brown-10' : 'brown-8')"
       @click="onSubmit" >
       <q-card-section>
         <q-avatar>
-          <img :src="props.dataServices.image || userDefault">
+          <img :src="props.dataProfessionals.image || userDefault">
         </q-avatar>
         <q-separator vertical class="q-mx-sm" color="white" />
-        <div class="text-h6">{{ formatString(props.dataServices.professional) }}</div>
+        <div class="text-h6">{{ formatString(props.dataProfessionals.name) }}</div>
       </q-card-section>
       <q-card-section>
         <q-icon
-          v-if="idProfessional === props.dataServices.idProfessional" 
+          v-if="pkProfessional === props.dataProfessionals.pkProfessional" 
           name="task_alt" size="1.5rem" />
       </q-card-section>
     </q-card>

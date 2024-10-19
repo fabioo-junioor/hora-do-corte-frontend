@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { Home, LoginUser, 
         CadUser, HomeUser, 
         EditUser, EditPasswordUser,
-        EditProfessional, Reservations } from '../pages';
+        EditProfessional, Reservations,
+        NotFound, NotFoundUser } from '../pages';
 
 const routes = [
     {
@@ -19,7 +20,7 @@ const routes = [
         path: '/:nameUser',
         name: 'homeUser',
         component: HomeUser,
-        beforeEnter: (_, __, next) => {
+        beforeEnter: async (_, __, next) => {
             next();
             return;
 
@@ -86,9 +87,19 @@ const routes = [
         }
     },
     {
+        path: '/notFoundUser',
+        name: 'notFoundUser',
+        component: NotFoundUser,
+        beforeEnter: (_, __, next) => {
+            next();
+            return;
+
+        }
+    },
+    {
         path: '/:pathMatch(.*)',
-        name: 'home',
-        component: Home,
+        name: 'notFound',
+        component: NotFound,
         beforeEnter: (_, __, next) => {
             next();
             return;
