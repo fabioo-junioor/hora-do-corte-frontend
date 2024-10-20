@@ -1,17 +1,32 @@
 <script setup>
 import { reactive } from 'vue';
+import { useStore } from 'vuex';
 import { FormUser } from '../../components';
+import { createUser } from '../../services/api/api.user.js';
 
+const store = useStore();
 const dataFormUser = reactive({
-    email: '',
-    password: '',
-    repeatPassword: ''
+    email: 'fabio@bol.com',
+    password: '11111111',
+    confirmPassword: '11111111'
 
 });
-const createUser = () => {
-    console.log('cadastrar ', dataFormUser);
+const create = async () => {
+    let dataUser = await createUser(dataFormUser);
+    if(dataUser.statusCode === 200){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'warning'});
+        return;
 
-}
+    };
+    if(dataUser.statusCode === 201){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'positive'});
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
+    return;
+
+};
 </script>
 <template>
     <div id="cad-user">
@@ -27,8 +42,8 @@ const createUser = () => {
                 typeForm="cadUser"
                 v-model:email="dataFormUser.email"
                 v-model:password="dataFormUser.password"
-                v-model:repeatPassword="dataFormUser.repeatPassword"
-                @createUser="createUser" />
+                v-model:confirmPassword="dataFormUser.confirmPassword"
+                @createUser="create" />
         </div>
     </div>
 </template>

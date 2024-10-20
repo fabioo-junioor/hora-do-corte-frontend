@@ -1,15 +1,31 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
+import { useStore } from 'vuex';
 import { FormEditPasswordUser } from '../../components';
+import { updateUser } from '../../services/api/api.user.js';
 
+const store = useStore();
 const dataEditPasswordUser = reactive({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: ''
-});
-const saveFormPasswordUser = () => {
-    console.log(dataEditPasswordUser);
+    password: 'teste2222',
+    newPassword: 'teste1010',
+    confirmPassword: 'teste1010'
 
+});
+const saveFormPasswordUser = async () => {
+    let dataUser = await updateUser(dataEditPasswordUser);
+    if(dataUser.statusCode === 200){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'warning'});
+        return;
+
+    };
+    if(dataUser.statusCode === 201){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'positive'});
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
+    return;
+    
 };
 </script>
 <template>

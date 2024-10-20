@@ -1,4 +1,5 @@
 import Navbar from './Navbar.vue';
+import AlertUser from './AlertUser.vue';
 
 import FormUser from './forms/FormUser.vue';
 import FormReservation from './forms/FormReservation.vue';
@@ -19,6 +20,7 @@ import TimeSchedule from './strepper-content/TimeSchedule.vue';
 
 export {
     Navbar,
+    AlertUser,
     FormUser,
     FormReservation,
     FormEditUser,

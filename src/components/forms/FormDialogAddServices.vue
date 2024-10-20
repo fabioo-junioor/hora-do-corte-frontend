@@ -3,7 +3,7 @@ import { reactive, ref, onMounted } from 'vue';
 import { fielsRequired, fielsCheckSize } from '../../utils/inputValidators.js';
 import { CardNotice } from '../../components';
 
-const props = defineProps(['servicesByProfesional']);
+const props = defineProps(['newServices']);
 const emit = defineEmits(['saveFormServices', 'addService', 'deleteService']);
 const isDialogServices = defineModel('isDialogServices');
 const dataEditServices = defineModel('dataEditServices');
@@ -23,8 +23,8 @@ const noticeList = reactive([
 
 ]);
 const saveFormServices = () => {
-    emit('saveFormServices');
-
+  emit('saveFormServices');
+    
 };
 const deleteService = (data) => {
     emit('deleteService', data)
@@ -35,8 +35,8 @@ const onSubmit = () => {
 
 };
 const checkName = (name) => {
-  for(let i in props.servicesByProfesional){
-    if(props.servicesByProfesional[i].name === name){
+  for(let i in props.newServices){
+    if(props.newServices[i].name === name){
       return true;
 
     };
@@ -132,7 +132,7 @@ onMounted(() => {
               <q-list dark separator>
                 <q-item
                   v-ripple
-                  v-for="i in props.servicesByProfesional" :key="i">
+                  v-for="i in props.newServices" :key="i">
                   <q-item-section>
                     <q-item-label>
                       <q-icon name="content_cut" color="grey-3" size="sm" />
@@ -164,8 +164,8 @@ onMounted(() => {
             </div>
             <q-btn
               push
-              :disable="props.servicesByProfesional.length == 0"
-              @click="saveFormServices"
+              :disable="props.newServices.length == 0"
+              @click="saveFormServices()"
               class="q-my-lg full-width"
               size="lg"
               color="brown-9"

@@ -1,16 +1,34 @@
 <script setup>
 import { reactive } from 'vue';
+import { useStore} from 'vuex';
 import { FormUser } from '../../components';
+import { loginUser } from '../../services/api/api.user.js';
+import { setDataUser } from '../../services/storage/settingSession.js';
 
+const store = useStore();
 const dataFormUser = reactive({
-    email: '',
-    password: ''
+    email: 'fabio@bol.com',
+    password: 'teste1010'
 
 });
-const loginUser = () => {
-    console.log('login ', dataFormUser);
+const login = async () => {
+    let dataUser = await loginUser(dataFormUser);
+    if(dataUser.data?.length === 0 && dataUser.statusCode === 200){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'warning'});
+        //console.log(datauser);
+        return;
 
-}
+    };
+    if(dataUser.data?.length !== 0 && dataUser.statusCode === 200){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'positive'});
+        setDataUser(dataUser.data);
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
+    return;
+
+};
 </script>
 <template>
     <div id="login-user">
@@ -27,7 +45,7 @@ const loginUser = () => {
                 typeForm="loginUser"
                 v-model:email="dataFormUser.email"
                 v-model:password="dataFormUser.password"
-                @loginUser="loginUser" />
+                @loginUser="login" />
         </div>
     </div>
 </template>

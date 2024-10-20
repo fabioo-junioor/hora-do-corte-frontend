@@ -67,11 +67,28 @@ const divideHoursIntoIntervals = (schedules, time) => {
 
   return result;
 };
+const orderSchedules = (schedules) => {
+    return schedules.map(schedule => {
+        const day = Object.keys(schedule)[0];
+        const shifts = schedule[day];
+        
+        // Define a ordem dos turnos
+        const orderedShifts = {
+            "morning": shifts.morning,
+            "afternoon": shifts.afternoon,
+            "night": shifts.night
+        };
+        
+        // Retorna o objeto reordenado
+        return { [day]: orderedShifts };
+    });
+};
 
 export {
     formatString,
     cleanSpecialCharacters,
     verifySchedulesAvailable,
     getDateToday,
-    divideHoursIntoIntervals
+    divideHoursIntoIntervals,
+    orderSchedules
 };

@@ -18,7 +18,7 @@ const noticeList = reactive([
 
 ]);
 const onSubmit = () => {
-    emit('saveFormProfessional');
+  emit('saveFormProfessional', dataEditProfessional.value.pkProfessional);
 
 };
 const previewImage = (event) => {

@@ -1,6 +1,6 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
-import { fielsRequired, isAnyShiftOpen } from '../../utils/inputValidators.js';
+import { fielsRequired } from '../../utils/inputValidators.js';
 import { CardNotice } from '../../components';
 
 const emit = defineEmits(['saveFormSchedules']);
@@ -21,12 +21,7 @@ const noticeList = reactive([
 
 ]);
 const saveFormSchedules = () => {
-  if(isAnyShiftOpen(dataEditSchedules.value)){
-    emit('saveFormSchedules');
-    return;
-
-  };
-  console.log('definir horarios');
+  emit('saveFormSchedules');
 
 };
 onMounted(() => {

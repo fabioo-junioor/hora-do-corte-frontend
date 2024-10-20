@@ -27,7 +27,7 @@ const onSubmit = () => {
                     class="q-mb-sm"
                     color="white"
                     bg-color="brown-8"
-                    v-model="dataEditPasswordUser.currentPassword"
+                    v-model="dataEditPasswordUser.password"
                     :type="isPwd1 ? 'password' : 'text'"
                     label="Sua senha atual *"
                     lazy-rules
@@ -75,7 +75,7 @@ const onSubmit = () => {
                     class="q-mb-sm"
                     color="white"
                     bg-color="brown-8"
-                    v-model="dataEditPasswordUser.confirmNewPassword"
+                    v-model="dataEditPasswordUser.confirmPassword"
                     :type="isPwd3 ? 'password' : 'text'"
                     label="Confirmar sua nova senha *"
                     lazy-rules

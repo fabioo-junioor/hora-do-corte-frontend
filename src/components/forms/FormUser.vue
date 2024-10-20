@@ -8,7 +8,7 @@ const emit = defineEmits(['loginUser', 'cadUser']);
 const props = defineProps(['typeForm']);
 const emailUser = defineModel('email');
 const passwordUser = defineModel('password');
-const repeatPasswordUser = defineModel('repeatPassword');
+const confirmPasswordUser = defineModel('confirmPassword');
 const isPwd1 = ref(true);
 const isPwd2 = ref(true);
 const typeFormUser = ref(true);
@@ -17,21 +17,21 @@ const rulesUser = reactive({
     email: v => emailValidator(v) || 'Email inválido!',
     sizePassword: v => (v.length >= 8) || 'Senha deve conter no minimo 8 caracteres!'
 
-})
+});
 const onSubmit = () => {
     if(props.typeForm == 'loginUser'){
         emit('loginUser');
         return;
 
-    }
-    emit('cadteUser');
+    };
+    emit('createUser');
     return;
     
-}
+};
 onMounted(() => {
     typeFormUser.value = (props.typeForm == 'loginUser') || false;
 
-})
+});
 </script>
 <template>
     <div id="form-user" class="q-ma-sm q-pa-sm">
@@ -72,7 +72,7 @@ onMounted(() => {
                 v-if="!typeFormUser"
                 class="q-mb-md"
                 color="white"
-                v-model="repeatPasswordUser"
+                v-model="confirmPasswordUser"
                 :type="isPwd2 ? 'password' : 'text'"
                 label="Repita a senha *"
                 lazy-rules

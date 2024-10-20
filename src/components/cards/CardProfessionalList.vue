@@ -15,8 +15,8 @@ const editServicesProfessional = () => {
   emit('editServicesProfessional', props.dataProfessional);
 
 };
-const deleteProfessional = (idProfessional) => {
-  emit('deleteProfessional', idProfessional);
+const deleteProfessional = (pkProfessional) => {
+  emit('deleteProfessional', pkProfessional);
 
 };
 </script>
@@ -65,7 +65,7 @@ const deleteProfessional = (idProfessional) => {
       </q-card-actions>
       <q-btn
         dark round push
-        @click="deleteProfessional(props.dataProfessional.id)"
+        @click="deleteProfessional(props.dataProfessional.pkProfessional)"
         class="card-professional-list-btn-delete-professional"
         size="md"
         color="brown-5"

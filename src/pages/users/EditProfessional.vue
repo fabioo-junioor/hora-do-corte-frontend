@@ -1,16 +1,26 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { FormDialogAddProfessional, 
-        FormDialogAddServices, 
-        FormDialogAddSchedules, 
-        CardProfessionalList } from '../../components';
+import { useStore } from 'vuex';
+import { FormDialogAddProfessional, FormDialogAddServices, 
+        FormDialogAddSchedules, CardProfessionalList } from '../../components';
+import { isAnyShiftOpen } from '../../utils/inputValidators.js';
+import { scheduleFormatter } from '../../utils/dataUtils.js';
 import userDefault from '../../assets/imgsDefault/user.png';
+import { getAll, create, update, deleteProf } from '../../services/api/api.professional.js';
+import { getService, createService, updateService } from '../../services/api/api.services.js';
+import { getSchedules, createSchedules, updateSchedules } from '../../services/api/api.schedule.js';
+import { getDataUser } from '../../services/storage/settingSession.js';
 
+const store = useStore();
 const isDialogAdd = ref(false);
 const isDialogSchedules = ref(false);
 const isDialogServices = ref(false);
+const pkProfessional = ref(null);
+const pkProfessionalServices = ref(null);
+const pkProfessionalSchedule = ref(null);
 const imageProfile = ref(null);
 const dataEditProfessional = reactive({
+    pkProfessional: '',
     name: '',
     image: null,
     instagram: ''
@@ -22,109 +32,162 @@ const dataEditServices = reactive({
     time: null
     
 });
-const dataEditSchedules = reactive([
-    {
-        mon: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        tue: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        wed: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        thu: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        fri: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        sat: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        sun: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    }
-]);
-const servicesByProfesional = reactive([]);
-const dataProfessionais = reactive([
-    {id: 1, name: 'fabio', image: null, instagram: 'teste' },
-    {id: 2, name: 'maria', image: 'https://cdn.quasar.dev/img/mountains.jpg', instagram: '' },
-    {id: 3, name: 'joao', image: null, instagram: '' }
-
-]);
+const dataEditSchedules = reactive([]);
+const newServices = reactive([]);
+const dataProfessionals = reactive([]);
+const dataServices = reactive([]);
 const addProfessional = () => {
-    dataEditProfessional.name = '';
-    dataEditProfessional.image = '';
-    dataEditProfessional.instagram = '';
+    cleanFormProfessional();
     isDialogAdd.value = true;
 
 };
-const saveFormProfessional = () => {
-    console.log(dataEditProfessional);
+const saveFormProfessional = async (pkProfessional) => {
+    if(pkProfessional == ''){
+        let dataProfessional = await create(dataEditProfessional, 4);
+        if(dataProfessional.statusCode !== 201){
+            store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
+            return;
+
+        }
+        store.commit('setAlertConfig', {message: dataProfessional.message, type: 'positive'});
+        reloadPage();
+        return;
+
+    };
+    let dataProfessional = await update(dataEditProfessional, pkProfessional);
+    if(dataProfessional.statusCode !== 201){
+        store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
+        return;
+
+    }
+    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'positive'});
+    reloadPage();
+    return;
 
 };
-const saveFormServices = () => {
-    console.log(servicesByProfesional);
+const saveFormServices = async () => {
+    if(pkProfessionalServices.value){
+        let dataService = await updateService(newServices, dataServices[0].pkProfessionalServices);
+        if(dataService.statusCode !== 201){
+            store.commit('setAlertConfig', {message: dataService.message, type: 'negative'});
+            return;
+            
+        };
+        store.commit('setAlertConfig', {message: dataService.message, type: 'positive'});
+        reloadPage();
+        return;
+
+    };
+    let dataService = await createService(newServices, pkProfessional.value);
+    if(dataService.statusCode === 201){
+        store.commit('setAlertConfig', {message: dataService.message, type: 'positive'});
+        reloadPage();
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataService.message, type: 'negative'});
+    return;
 
 };
-const saveFormSchedules = () => {
-    console.log(dataEditSchedules);
+const saveFormSchedules = async () => {
+    if(!isAnyShiftOpen(dataEditSchedules)){
+        store.commit('setAlertConfig', {message: 'Preencher pelo menos um turno!', type: 'warning'});
+        return;
+
+    };
+    if(pkProfessionalSchedule.value){
+        let dataSchedule = await updateSchedules(dataEditSchedules, pkProfessionalSchedule.value);
+        if(dataSchedule.statusCode !== 201){
+            store.commit('setAlertConfig', {message: dataSchedule.message, type: 'negative'});
+            return;
+
+        };
+        store.commit('setAlertConfig', {message: dataSchedule.message, type: 'positive'});
+        reloadPage();
+        return;
+
+    };
+    let dataSchedule = await createSchedules(dataEditSchedules, pkProfessional.value);
+    if(dataSchedule.statusCode !== 201){
+        store.commit('setAlertConfig', {message: dataSchedule.message, type: 'negative'});
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataSchedule.message, type: 'positive'});
+    reloadPage();
+    return;
 
 };
 const addService = () => {
-    servicesByProfesional.push({name: dataEditServices.name, price: dataEditServices.price, time: dataEditServices.time});
+    newServices.push({name: dataEditServices.name, price: dataEditServices.price, time: dataEditServices.time});
 
 };
 const deleteService = (data) => {
-    let indice = servicesByProfesional.findIndex(obj => obj.name === data);
-    servicesByProfesional.splice(indice, 1);
+    let indice = newServices.findIndex(obj => obj.name === data);
+    newServices.splice(indice, 1);
 
 }
 const editFormProfessional = (data) => {
+    dataEditProfessional.pkProfessional = data.pkProfessional;
     dataEditProfessional.name = data.name;
     dataEditProfessional.image = data.image;
     dataEditProfessional.instagram = data.instagram;
     isDialogAdd.value = true;
 
 };
-const editScheduleProfessional = (schedule) => {
-    isDialogSchedules.value = true;
+const editScheduleProfessional = async (data) => {
+    let dataSchedule = await getSchedules(data.pkProfessional);
+    pkProfessional.value = data.pkProfessional;
+    if(dataSchedule.statusCode === 200 && dataSchedule.data?.length !== 0){
+        dataEditSchedules.splice(0, dataEditSchedules.length);
+        dataEditSchedules.push(...dataSchedule.data[0].schedules);
+        pkProfessionalSchedule.value = dataSchedule.data[0].pkProfessionalSchedules;
+        isDialogSchedules.value = true;
+        return;
 
-};
-const editServicesProfessional = (services) => {
-    isDialogServices.value = true;
+    };
+    if(dataSchedule.statusCode === 200 && dataSchedule.data?.length === 0){
+        store.commit('setAlertConfig', {message: dataSchedule.message, type: 'info'});
+        dataEditSchedules.splice(0, dataEditSchedules.length);
+        dataEditSchedules.push(...scheduleFormatter);
+        pkProfessionalSchedule.value = null;
+        isDialogSchedules.value = true;
+        return;
 
+    };
 };
-const deleteProfessional = (data) => {
-    console.log(data);
+const editServicesProfessional = async (services) => {
+    newServices.splice(0, newServices.length);
+    dataServices.splice(0, dataServices.length);
+    cleanDataEditServices();
+    let dataService = await getService(services.pkProfessional);
+    pkProfessional.value = services.pkProfessional;
+    if(dataService.statusCode === 200 && dataService.data?.length !== 0){
+        dataServices.push(...dataService.data);
+        newServices.push(...dataService.data[0].services);
+        pkProfessionalServices.value = dataService.data[0].pkProfessionalServices;
+        isDialogServices.value = true;
+        return;
+        
+    };
+    if(dataService.statusCode === 200 && dataService.data?.length === 0){
+        store.commit('setAlertConfig', {message: dataService.message, type: 'info'});
+        pkProfessionalServices.value = null;
+        isDialogServices.value = true;
+        return;
+
+    };
+};
+const deleteProfessional = async (pkProfessional) => {
+    let dataProfessional = await deleteProf(pkProfessional);
+    if(dataProfessional.statusCode !== 200){
+        store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
+        return;
+
+    }
+    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'positive'});
+    reloadPage();
+    return;
 
 };
 const previewImage = (event) => {
@@ -139,9 +202,46 @@ const previewImage = (event) => {
 
     }    
 };
+const getAllProfessionals = async () => {
+    let dataUserStorage = getDataUser();
+    let dataProfessional = await getAll(dataUserStorage.pkUser);
+    if(dataProfessional.statusCode !== 200){
+        store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
+        return;
+
+    };
+    dataProfessionals.push(...dataProfessional.data);
+    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'info'});
+    return;
+
+};
+const cleanFormProfessional = () => {
+    dataEditProfessional.name = '';
+    dataEditProfessional.image = '';
+    dataEditProfessional.instagram = '';
+
+};
+const cleanDataEditServices = () => {
+    dataEditServices.name = '';
+    dataEditServices.price = null;
+    dataEditServices.time = null;
+
+};
+const reloadPage = () => {
+    setTimeout(() => {
+        location.reload();
+
+    }, 3000);
+
+};
 watch(() => dataEditProfessional.image, () => {
     imageProfile.value = !dataEditProfessional.image ? userDefault : imageProfile.value;
 
+});
+onMounted( async () => {
+    dataEditSchedules.push(...scheduleFormatter);
+    await getAllProfessionals();
+        
 });
 </script>
 <template>
@@ -160,7 +260,7 @@ watch(() => dataEditProfessional.image, () => {
             </div>
             <div class="edit-professional-list q-my-lg">
                 <CardProfessionalList
-                    v-for="i in dataProfessionais" :key="i"
+                    v-for="i in dataProfessionals" :key="i"
                     :dataProfessional='i'
                     @deleteProfessional='deleteProfessional'
                     @editFormProfessional='editFormProfessional'
@@ -176,7 +276,7 @@ watch(() => dataEditProfessional.image, () => {
             <FormDialogAddServices
                 v-model:isDialogServices='isDialogServices'
                 v-model:dataEditServices='dataEditServices'
-                :servicesByProfesional='servicesByProfesional'
+                :newServices='newServices'
                 @addService='addService'
                 @deleteService='deleteService'
                 @saveFormServices='saveFormServices' />

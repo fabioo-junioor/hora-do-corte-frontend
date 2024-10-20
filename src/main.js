@@ -4,6 +4,9 @@ import App from './App.vue';
 // Router
 import router from './router/router.js';
 
+// Vuex
+import store from './store/store.js';
+
 // Quasar
 import { Quasar, Notify } from 'quasar';
 import '@quasar/extras/material-icons/material-icons.css';
@@ -14,4 +17,5 @@ createApp(App)
         plugins: { Notify }
     })
     .use(router)
+    .use(store)
     .mount('#app');
