@@ -1,7 +1,7 @@
 const url = import.meta.env.VITE_ROOT_API;
 const header = { "Content-Type" : "application/json" };
 
-const login = async (dataUser) => {
+const loginUser = async (dataUser) => {
     try {
         const response = await fetch(url+'user/login', {
             headers: header,
@@ -20,7 +20,7 @@ const login = async (dataUser) => {
 
     };
 };
-const create = async (dataUser) => {
+const createUser = async (dataUser) => {
     try {
         const response = await fetch(url+'user/create', {
             headers: header,
@@ -40,7 +40,7 @@ const create = async (dataUser) => {
 
     };
 };
-const update = async (dataUser) => {
+const updateUser = async (dataUser) => {
     try {
         const response = await fetch(url+`user/${1}/update`, {
             headers: header,
@@ -62,8 +62,8 @@ const update = async (dataUser) => {
 };
 
 export {
-    login,
-    create,
-    update
+    loginUser,
+    createUser,
+    updateUser
 
 };

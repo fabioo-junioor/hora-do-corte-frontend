@@ -2,7 +2,7 @@
 import { reactive } from 'vue';
 import { useStore } from 'vuex';
 import { FormUser } from '../../components';
-import { create } from '../../services/api/api.user.js';
+import { createUser } from '../../services/api/api.user.js';
 
 const store = useStore();
 const dataFormUser = reactive({
@@ -11,11 +11,20 @@ const dataFormUser = reactive({
     confirmPassword: '11111111'
 
 });
-const createUser = async () => {
-    let dataUser = await create(dataFormUser);
-    store.commit('setAlertConfig', {message: dataUser.message, type: 'info'});
-    //config type alert
-    //console.log(dataUser);
+const create = async () => {
+    let dataUser = await createUser(dataFormUser);
+    if(dataUser.statusCode === 200){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'warning'});
+        return;
+
+    };
+    if(dataUser.statusCode === 201){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'positive'});
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
+    return;
 
 };
 </script>
@@ -34,7 +43,7 @@ const createUser = async () => {
                 v-model:email="dataFormUser.email"
                 v-model:password="dataFormUser.password"
                 v-model:confirmPassword="dataFormUser.confirmPassword"
-                @createUser="createUser" />
+                @createUser="create" />
         </div>
     </div>
 </template>

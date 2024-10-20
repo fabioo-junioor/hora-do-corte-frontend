@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { FormEditPasswordUser } from '../../components';
-import { update } from '../../services/api/api.user.js';
+import { updateUser } from '../../services/api/api.user.js';
 
 const store = useStore();
 const dataEditPasswordUser = reactive({
@@ -12,10 +12,18 @@ const dataEditPasswordUser = reactive({
 
 });
 const saveFormPasswordUser = async () => {
-    let dataUser = await update(dataEditPasswordUser);
-    store.commit('setAlertConfig', {message: dataUser.message, type: 'warning'});
-    //config type alert
-    //console.log(dataUser);
+    let dataUser = await updateUser(dataEditPasswordUser);
+    if(dataUser.statusCode === 200){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'warning'});
+        return;
+
+    };
+    if(dataUser.statusCode === 201){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'positive'});
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
     return;
     
 };

@@ -2,7 +2,8 @@
 import { reactive } from 'vue';
 import { useStore} from 'vuex';
 import { FormUser } from '../../components';
-import { login } from '../../services/api/api.user.js';
+import { loginUser } from '../../services/api/api.user.js';
+import { setDataUser } from '../../services/storage/settingSession.js';
 
 const store = useStore();
 const dataFormUser = reactive({
@@ -10,16 +11,21 @@ const dataFormUser = reactive({
     password: 'teste1010'
 
 });
-const loginUser = async () => {
-    let datauser = await login(dataFormUser);
-    if(datauser.data.length === 0){
-        store.commit('setAlertConfig', {message: datauser.message, type: 'negative'});
+const login = async () => {
+    let dataUser = await loginUser(dataFormUser);
+    if(dataUser.data?.length === 0 && dataUser.statusCode === 200){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'warning'});
         //console.log(datauser);
         return;
 
     };
-    store.commit('setAlertConfig', {message: datauser.message, type: 'positive'});
-    //console.log(datauser);
+    if(dataUser.data?.length !== 0 && dataUser.statusCode === 200){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'positive'});
+        setDataUser(dataUser.data);
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
     return;
 
 };
@@ -39,7 +45,7 @@ const loginUser = async () => {
                 typeForm="loginUser"
                 v-model:email="dataFormUser.email"
                 v-model:password="dataFormUser.password"
-                @loginUser="loginUser" />
+                @loginUser="login" />
         </div>
     </div>
 </template>
