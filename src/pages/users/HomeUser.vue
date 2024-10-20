@@ -13,6 +13,7 @@ import { getSchedules } from '../../services/api/api.schedule.js';
 const route = useRoute();
 const router = useRouter();
 const isReservation = ref(false);
+const isUserExistis = ref(false);
 const step = ref(1);
 
 const dataUser = reactive([]);
@@ -136,10 +137,12 @@ const btnReservation = async () => {
 const checkUserExists = async () => {
     let dataU = await getUserDetailsBySlug(route.params.nameUser);
     if(dataU.statusCode !== 200 || dataU.data.length === 0){
-        router.push({ name: 'notFoundUser' });
+        //router.push({ name: 'notFoundUser' });
+        isUserExistis.value = false;
         return;
 
     };
+    isUserExistis.value = true;
     //dataServices.push(...dataServicesTest);
     dataUser.push(...dataU.data);
     return;
@@ -152,21 +155,45 @@ onMounted(async () => {
 </script>
 <template>
     <div id="home-user">
-        <div class="home-user q-pa-xs">
-            <h5 class="text-white q-py-md q-my-md">Bem vindo!</h5>
-            <q-btn
-                push
-                v-if="!isReservation"
-                outline
-                size="lg"
-                color="brown-10"
-                @click="btnReservation" >
-                    <i class='bx bxs-hand-up q-px-sm' />
-                    Agendar
-            </q-btn>
-            <div
-                v-if="isReservation" 
+        <div v-if="!isUserExistis" class="home-user-404 column items-center">
+            <q-img
+                src="../../assets/imgsDefault/404.png"
+                style="filter: drop-shadow(1px 2px 3px white);"
+                width="30%" />
+            <h4 class="q-ma-md text-black">Opss! Esse usuário não existe.</h4>
+        </div>
+        <div v-else class="home-user">
+            <div class="home-user-details column justify-between" v-if="!isReservation">
+                <h4 class="text-white text-center q-pt-xl q-ma-none">Bem vindo!</h4>
+                <q-btn
+                    push
+                    size="xl"
+                    color="brown-10"
+                    @click="btnReservation" >
+                        <i class='bx bxs-hand-up q-px-sm' />
+                        Agendar
+                </q-btn>
+                <div class="row items-center justify-between q-pb-md">
+                    <div class=" home-user-details-contact column items-center">
+                        <div class="text-subtitle1">
+                            <i class='bx bxl-instagram-alt text-white q-ma-xs' />
+                        </div>
+                        <div class="text-subtitle1 text-grey-3 row items-center">
+                            <i class='bx bxl-whatsapp text-white q-ma-xs' />
+                            (11) 1111 - 55555
+                        </div>
+                    </div>
+                    <div class="home-user-details-adress column items-center">
+                        <div class="text-subtitle1 text-grey-3">Estado: </div>
+                        <div class="text-subtitle1 text-grey-3">Cidade: </div>
+                        <div class="text-subtitle1 text-grey-3">Rua: </div>
+                        <div class="text-subtitle1 text-grey-3">Numero: </div>
+                    </div>
+                </div>
+            </div>
+            <div v-else
                 class="reservation-content">
+                <h4 class="text-white text-center q-pa-none q-my-lg">Bem vindo!</h4>
                 <q-stepper
                     bordered
                     style="background-color: #A9907E;"
@@ -357,19 +384,45 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    min-height: calc(100vh - 4rem);
+    min-height: calc(100vh - 5rem);
     font-family: "Fredoka", sans-serif;
     background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .05)),
       url("../../assets/background/background-wave.png") no-repeat
         fixed bottom;
     background-size: cover;
 
+    .home-user-404{
+        min-height: calc(100vh - 5rem);
+        width: 100%;
+        
+        h4{
+            font-weight: 500;
+            filter: drop-shadow(2px 2px 3px white);
+
+        }
+    }
     .home-user{
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 85%;
+        min-height: calc(100vh - 5rem);
+        width: 90%;
 
+        .home-user-details{
+            min-height: calc(100vh - 5rem);
+            width: 70%;
+
+            .home-user-details-contact{
+                i{
+                    font-size: 2rem;
+                    color: $brown-10 !important;
+                    
+                }
+                .bxl-instagram-alt:hover{
+                    color: $brown-3 !important;
+                }
+            }
+        }
         .q-btn{
             i{
                 font-size: 2rem;
