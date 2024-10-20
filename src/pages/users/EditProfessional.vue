@@ -1,15 +1,15 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
 import { useStore } from 'vuex';
-import { FormDialogAddProfessional, 
-        FormDialogAddServices, 
-        FormDialogAddSchedules, 
-        CardProfessionalList } from '../../components';
+import { FormDialogAddProfessional, FormDialogAddServices, 
+        FormDialogAddSchedules, CardProfessionalList } from '../../components';
 import { isAnyShiftOpen } from '../../utils/inputValidators.js';
+import { scheduleFormatter } from '../../utils/dataUtils.js';
 import userDefault from '../../assets/imgsDefault/user.png';
 import { getAll, create, update, deleteProf } from '../../services/api/api.professional.js';
 import { getService, createService, updateService } from '../../services/api/api.services.js';
 import { getSchedules, createSchedules, updateSchedules } from '../../services/api/api.schedule.js';
+import { getDataUser } from '../../services/storage/settingSession.js';
 
 const store = useStore();
 const isDialogAdd = ref(false);
@@ -32,57 +32,7 @@ const dataEditServices = reactive({
     time: null
     
 });
-const dataEditSchedules = reactive([
-    {
-        mon: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        tue: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        wed: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        thu: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        fri: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        sat: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    },
-    {
-        sun: {
-            morning: { open: null, close: null },
-            afternoon: { open: null, close: null },
-            night: { open: null, close: null }
-        }
-    }
-]);
+const dataEditSchedules = reactive([]);
 const newServices = reactive([]);
 const dataProfessionals = reactive([]);
 const dataServices = reactive([]);
@@ -94,47 +44,77 @@ const addProfessional = () => {
 const saveFormProfessional = async (pkProfessional) => {
     if(pkProfessional == ''){
         let dataProfessional = await create(dataEditProfessional, 4);
+        if(dataProfessional.statusCode !== 201){
+            store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
+            return;
+
+        }
         store.commit('setAlertConfig', {message: dataProfessional.message, type: 'positive'});
-        //console.log('create', pkProfessional);
+        reloadPage();
         return;
 
     };
     let dataProfessional = await update(dataEditProfessional, pkProfessional);
+    if(dataProfessional.statusCode !== 201){
+        store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
+        return;
+
+    }
     store.commit('setAlertConfig', {message: dataProfessional.message, type: 'positive'});
-    //console.log('update');
+    reloadPage();
     return;
 
 };
 const saveFormServices = async () => {
     if(pkProfessionalServices.value){
         let dataService = await updateService(newServices, dataServices[0].pkProfessionalServices);
+        if(dataService.statusCode !== 201){
+            store.commit('setAlertConfig', {message: dataService.message, type: 'negative'});
+            return;
+            
+        };
         store.commit('setAlertConfig', {message: dataService.message, type: 'positive'});
-        //console.log('update');
+        reloadPage();
         return;
 
     };
     let dataService = await createService(newServices, pkProfessional.value);
-    store.commit('setAlertConfig', {message: dataService.message, type: 'positive'});
-    //console.log('create');
+    if(dataService.statusCode === 201){
+        store.commit('setAlertConfig', {message: dataService.message, type: 'positive'});
+        reloadPage();
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataService.message, type: 'negative'});
     return;
 
 };
 const saveFormSchedules = async () => {
     if(!isAnyShiftOpen(dataEditSchedules)){
-        store.commit('setAlertConfig', {message: 'Preencher algum horário', type: 'warning'});
+        store.commit('setAlertConfig', {message: 'Preencher pelo menos um turno!', type: 'warning'});
         return;
 
     };
     if(pkProfessionalSchedule.value){
         let dataSchedule = await updateSchedules(dataEditSchedules, pkProfessionalSchedule.value);
+        if(dataSchedule.statusCode !== 201){
+            store.commit('setAlertConfig', {message: dataSchedule.message, type: 'negative'});
+            return;
+
+        };
         store.commit('setAlertConfig', {message: dataSchedule.message, type: 'positive'});
-        //console.log(dataSchedule, dataEditSchedules, pkProfessionalSchedule.value);
+        reloadPage();
         return;
 
     };
     let dataSchedule = await createSchedules(dataEditSchedules, pkProfessional.value);
+    if(dataSchedule.statusCode !== 201){
+        store.commit('setAlertConfig', {message: dataSchedule.message, type: 'negative'});
+        return;
+
+    };
     store.commit('setAlertConfig', {message: dataSchedule.message, type: 'positive'});
-    //console.log(dataSchedule);
+    reloadPage();
     return;
 
 };
@@ -158,7 +138,7 @@ const editFormProfessional = (data) => {
 const editScheduleProfessional = async (data) => {
     let dataSchedule = await getSchedules(data.pkProfessional);
     pkProfessional.value = data.pkProfessional;
-    if(dataSchedule.statusCode === 200){
+    if(dataSchedule.statusCode === 200 && dataSchedule.data?.length !== 0){
         dataEditSchedules.splice(0, dataEditSchedules.length);
         dataEditSchedules.push(...dataSchedule.data[0].schedules);
         pkProfessionalSchedule.value = dataSchedule.data[0].pkProfessionalSchedules;
@@ -166,10 +146,15 @@ const editScheduleProfessional = async (data) => {
         return;
 
     };
-    pkProfessionalSchedule.value = null;
-    isDialogSchedules.value = true;
-    return;
+    if(dataSchedule.statusCode === 200 && dataSchedule.data?.length === 0){
+        store.commit('setAlertConfig', {message: dataSchedule.message, type: 'info'});
+        dataEditSchedules.splice(0, dataEditSchedules.length);
+        dataEditSchedules.push(...scheduleFormatter);
+        pkProfessionalSchedule.value = null;
+        isDialogSchedules.value = true;
+        return;
 
+    };
 };
 const editServicesProfessional = async (services) => {
     newServices.splice(0, newServices.length);
@@ -177,7 +162,7 @@ const editServicesProfessional = async (services) => {
     cleanDataEditServices();
     let dataService = await getService(services.pkProfessional);
     pkProfessional.value = services.pkProfessional;
-    if(dataService.data?.length !== 0){
+    if(dataService.statusCode === 200 && dataService.data?.length !== 0){
         dataServices.push(...dataService.data);
         newServices.push(...dataService.data[0].services);
         pkProfessionalServices.value = dataService.data[0].pkProfessionalServices;
@@ -185,16 +170,23 @@ const editServicesProfessional = async (services) => {
         return;
         
     };
-    console.log(dataService.message);
-    pkProfessionalServices.value = null;
-    isDialogServices.value = true;
-    return;
+    if(dataService.statusCode === 200 && dataService.data?.length === 0){
+        store.commit('setAlertConfig', {message: dataService.message, type: 'info'});
+        pkProfessionalServices.value = null;
+        isDialogServices.value = true;
+        return;
 
+    };
 };
 const deleteProfessional = async (pkProfessional) => {
     let dataProfessional = await deleteProf(pkProfessional);
-    console.log(dataProfessional);
-    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'info'});
+    if(dataProfessional.statusCode !== 200){
+        store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
+        return;
+
+    }
+    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'positive'});
+    reloadPage();
     return;
 
 };
@@ -210,6 +202,19 @@ const previewImage = (event) => {
 
     }    
 };
+const getAllProfessionals = async () => {
+    let dataUserStorage = getDataUser();
+    let dataProfessional = await getAll(dataUserStorage.pkUser);
+    if(dataProfessional.statusCode !== 200){
+        store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
+        return;
+
+    };
+    dataProfessionals.push(...dataProfessional.data);
+    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'info'});
+    return;
+
+};
 const cleanFormProfessional = () => {
     dataEditProfessional.name = '';
     dataEditProfessional.image = '';
@@ -222,21 +227,21 @@ const cleanDataEditServices = () => {
     dataEditServices.time = null;
 
 };
+const reloadPage = () => {
+    setTimeout(() => {
+        location.reload();
+
+    }, 3000);
+
+};
 watch(() => dataEditProfessional.image, () => {
     imageProfile.value = !dataEditProfessional.image ? userDefault : imageProfile.value;
 
 });
-watch(() => store.getters.getAlertConfig.isAlert, () => {
-    if(!store.getters.getAlertConfig.isAlert){
-        //console.log(store.getters.getAlertConfig.isAlert);
-        return location.reload();
-
-    };
-});
 onMounted( async () => {
-    let dataProfessional = await getAll(1);
-    dataProfessionals.push(...dataProfessional.data);
-    
+    dataEditSchedules.push(...scheduleFormatter);
+    await getAllProfessionals();
+        
 });
 </script>
 <template>
