@@ -1,18 +1,24 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
+import { useStore } from 'vuex';
 import { FormEditUser, CardNotice } from '../../components';
-import { getCepUser } from '../../services/api/api.viacep.js';
 import { cepValidator } from '../../utils/inputValidators.js';
 import { cleanSpecialCharacters } from '../../utils/formatters.js';
+import { charactersAndSpaces } from '../../utils/inputValidators.js';
 import userDefault from '../../assets/imgsDefault/user.png';
+import { getCepUser } from '../../services/api/api.viacep.js';
+import { createUserDetails, getUserDetailsByPk, updateUserDetails } from '../../services/api/api.userDetails.js';
+import { getDataUser } from '../../services/storage/settingSession.js';
 
+const store = useStore();
 const isNotice = ref(false);
+const isDetailsExists = ref(false);
 const imageProfile = ref(null);
 const dataEditUser = reactive({
     image: null,
     name: '',
     slug: '',
-    whatsapp: '',
+    phone: '',
     instagram: '',
     cep: '',
     state: '',
@@ -22,9 +28,50 @@ const dataEditUser = reactive({
 });
 const noticeList = reactive([
     '1. Campos com (*) são obrigatórios!',
-    "2. O campo 'nome de usuário (link)' pode ser o mesmo nome do estabelecimento, porem sem [espaços e caracteres]!",
+    "2. O campo 'nome de usuário (link)' pode ser o mesmo nome do estabelecimento, porem sem [espaços e caracteres especiais]!",
     "2.1. O campo 'nome de usuário (link)' é como os clientes vão achar o seu estabelecimento!"
 ]);
+const saveFormUser = async () => {
+    dataEditUser.cep = cleanSpecialCharacters(dataEditUser.cep);
+    dataEditUser.phone = cleanSpecialCharacters(dataEditUser.phone);        
+    let dataUserStorage = getDataUser();
+
+    if(charactersAndSpaces(dataEditUser.slug)){
+        store.commit('setAlertConfig', {message: 'Nome de usuário (link) inválido!', type: 'warning'});
+        return;
+
+    };
+    if(isDetailsExists.value){
+        let dataUser = await updateUserDetails(dataEditUser, dataUserStorage.pkUser);
+        if(dataUser.statusCode === 201){
+            store.commit('setAlertConfig', {message: dataUser.message, type: 'positive'});
+            return;
+
+        };
+        if(dataUser.statusCode === 200){
+            store.commit('setAlertConfig', {message: dataUser.message, type: 'warning'});
+            return;
+
+        };
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
+        return;
+
+    };
+    let dataUser = await createUserDetails(dataEditUser, dataUserStorage.pkUser);
+    if(dataUser.statusCode === 201){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'positive'});
+        return;
+
+    }
+    if(dataUser.statusCode === 200){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'info'});
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
+    return;
+
+};
 const previewImage = (event) => {
     var input = event.target;
     if(input.files && input.files[0]){
@@ -37,27 +84,57 @@ const previewImage = (event) => {
 
     }    
 };
-watch(() => dataEditUser.image, () => {
-    imageProfile.value = !dataEditUser.image ? userDefault : imageProfile.value;
+const getUserDetails = async () => {
+    let dataUserStorage = getDataUser();
+    let dataUser = await getUserDetailsByPk(dataUserStorage.pkUser);
+    if(dataUser.statusCode === 200 && dataUser.data?.length !== 0){
+        dataEditUser.name = dataUser.data[0].name;
+        dataEditUser.slug = dataUser.data[0].slug;
+        dataEditUser.phone = dataUser.data[0].phone;
+        dataEditUser.instagram = dataUser.data[0].instagram;
+        dataEditUser.cep = dataUser.data[0].cep;
+        dataEditUser.state = dataUser.data[0].state;
+        dataEditUser.city = dataUser.data[0].city;
+        dataEditUser.street = dataUser.data[0].street;
+        dataEditUser.number = dataUser.data[0].number;
+        isDetailsExists.value = true;
+        return;
 
-});
-watch(() => dataEditUser.cep, async (elem) => {
-    if(!cepValidator(elem)){
+    };
+    if(dataUser.statusCode === 200 && dataUser.data?.length === 0){
+        store.commit('setAlertConfig', {message: dataUser.message, type: 'info'});
+        isDetailsExists.value = false;
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
+    isDetailsExists.value = false;
+    return;
+
+};
+const searchCep = async () => {
+    if(!cepValidator(dataEditUser.cep)){
         dataEditUser.state = '';
         dataEditUser.city = '';
         dataEditUser.street = '';
         return;
 
     }
-    let cleanString = cleanSpecialCharacters(elem);
+    let cleanString = cleanSpecialCharacters(dataEditUser.cep);
     let dataCep = await getCepUser(cleanString);
     dataEditUser.state = dataCep.estado;
     dataEditUser.city = dataCep.localidade;
     dataEditUser.street = dataCep.logradouro;
+    return;
+
+};
+watch(() => dataEditUser.image, () => {
+    imageProfile.value = !dataEditUser.image ? userDefault : imageProfile.value;
 
 });
-onMounted(() => {
+onMounted( async () => {
     isNotice.value = noticeList.length != 0 || false;
+    await getUserDetails();
 
 });
 </script>
@@ -77,7 +154,9 @@ onMounted(() => {
             </div>
             <FormEditUser
                 v-model:dataEditUser="dataEditUser"
-                @previewImage='previewImage' />
+                @previewImage='previewImage'
+                @saveFormUser='saveFormUser'
+                @searchCep='searchCep' />
         </div>
     </div>
 </template>

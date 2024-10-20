@@ -16,17 +16,39 @@ const getUserDetailsBySlug = async (slug) => {
 
     };
 };
-/*
-const create = async (dataUser) => {
+const getUserDetailsByPk = async (pkUser) => {
     try {
-        const response = await fetch(url+'user/create', {
+        const response = await fetch(url+`userDetails/${pkUser}/getUserDetailsByPk`, {
+            headers: header,
+            method: 'GET',
+            mode: 'cors'
+        });
+        const data = await response.json();
+        return data;       
+
+    } catch(error){
+        return error;
+
+    };
+};
+const createUserDetails = async (dataUserDetails, pkUser) => {
+    try {
+        const response = await fetch(url+`userDetails/createUserDetails`, {
             headers: header,
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
-                email: dataUser.email,
-                password: dataUser.password,
-                confirmPassword: dataUser.confirmPassword
+                image: dataUserDetails.image,
+                name: dataUserDetails.name,
+                slug: dataUserDetails.slug,
+                phone: dataUserDetails.phone,
+                instagram: dataUserDetails.instagram,
+                cep: dataUserDetails.cep,
+                state: dataUserDetails.state,
+                city: dataUserDetails.city,
+                street: dataUserDetails.street,
+                number: dataUserDetails.number,
+                pkUser: pkUser
             })
         });
         const data = await response.json();
@@ -37,16 +59,24 @@ const create = async (dataUser) => {
 
     };
 };
-const update = async (dataUser) => {
+const updateUserDetails = async (dataUserDetails, pkUser) => {
     try {
-        const response = await fetch(url+`user/${1}/update`, {
+        const response = await fetch(url+`userDetails/${pkUser}/updateUserDetails`, {
             headers: header,
             method: 'PUT',
             mode: 'cors',
             body: JSON.stringify({
-                password: dataUser.password,
-                newPassword: dataUser.newPassword,
-                confirmPassword: dataUser.confirmPassword
+                image: dataUserDetails.image,
+                name: dataUserDetails.name,
+                slug: dataUserDetails.slug,
+                phone: dataUserDetails.phone,
+                instagram: dataUserDetails.instagram,
+                cep: dataUserDetails.cep,
+                state: dataUserDetails.state,
+                city: dataUserDetails.city,
+                street: dataUserDetails.street,
+                number: dataUserDetails.number,
+                pkUser: pkUser
             })
         });
         const data = await response.json();
@@ -57,8 +87,11 @@ const update = async (dataUser) => {
 
     };
 };
-*/
+
 export {
-    getUserDetailsBySlug
+    getUserDetailsBySlug,
+    getUserDetailsByPk,
+    createUserDetails,
+    updateUserDetails
 
 };

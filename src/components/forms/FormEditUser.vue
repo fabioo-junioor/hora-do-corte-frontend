@@ -1,18 +1,21 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { fielsRequired, phoneValidator, cepValidator, charactersAndSpaces, fielsCheckSize } from '../../utils/inputValidators.js';
+import { fielsRequired, phoneValidator, cepValidator, fielsCheckSize } from '../../utils/inputValidators.js';
 
-const emit = defineEmits(['saveFormUser', 'previewImage']);
+const emit = defineEmits(['saveFormUser', 'previewImage', 'searchCep']);
 const dataEditUser = defineModel('dataEditUser');
 const urlApp = ref('');
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório!',
     phone: v => phoneValidator(v) || 'Numero incorreto!',
     cep: v => cepValidator(v) || 'Numero incorreto!',
-    slug: v => !charactersAndSpaces(v) || 'Campo inválido!',
     fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!'
     
 });
+const searchCep = () => {
+    emit('searchCep');
+
+};
 const onSubmit = () => {
     emit('saveFormUser');
 
@@ -79,7 +82,7 @@ onMounted(() => {
                     label="Nome de usuário (link) *"
                     lazy-rules
                     :hint="!!dataEditUser.slug ? urlApp + dataEditUser.slug : ''"
-                    :rules="[rulesUser.required, rulesUser.fielsSize, rulesUser.slug]">
+                    :rules="[rulesUser.required, rulesUser.fielsSize]">
                     <template v-slot:prepend>
                         <q-icon name="person_search" color="white" />
                     </template>
@@ -92,7 +95,7 @@ onMounted(() => {
                     class="q-mb-sm"
                     color="white"
                     bg-color="brown-8"
-                    v-model="dataEditUser.whatsapp"
+                    v-model="dataEditUser.phone"
                     type="tel"
                     label="Whatsapp *"
                     mask="(##) ####-#####"
@@ -135,7 +138,10 @@ onMounted(() => {
                     :rules="[rulesUser.required, rulesUser.cep]">
                     <template v-slot:prepend>
                         <q-icon name="location_on" color="white" />
-                    </template>    
+                    </template>
+                    <template v-slot:after>
+                        <q-btn push icon="search" color="brown-10" @click="searchCep" />
+                    </template>
                 </q-input>
             </div>
             <div class="form-edit-user-inputs">
