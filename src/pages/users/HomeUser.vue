@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import { CardProfessional, CalendarSchedule, FormReservation } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
 import { divideHoursIntoIntervals, formatString, orderSchedules } from '../../utils/formatters.js';
@@ -9,9 +10,11 @@ import { getUserDetailsBySlug } from '../../services/api/api.userDetails.js';
 import { getAll } from '../../services/api/api.professional.js';
 import { getService } from '../../services/api/api.services.js';
 import { getSchedules } from '../../services/api/api.schedule.js';
+import { createReservation } from '../../services/api/api.reservation.js';
 
 const route = useRoute();
 const router = useRouter();
+const store = useStore();
 const isReservation = ref(false);
 const isUserExistis = ref(false);
 const step = ref(1);
@@ -20,7 +23,6 @@ const dataUser = reactive([]);
 const dataProfessionals = reactive([]);
 const dataServices = reactive([]);
 const dataSchedules = reactive([]);
-//const reservedTimes = reactive([]);
 const dataTimesFromWeek = reactive([]);
 const dataReservation = reactive({
         pkProfessional: null,
@@ -28,13 +30,14 @@ const dataReservation = reactive({
         services: [],
         dateReservation: '',
         timeReservation: '',
+        price: null,
         duration: null
 });
 const dataFormReservation = reactive({
-    name: '',
-    email: '',
-    phone: '',
-    observation: ''
+    name: 'fabio',
+    email: 'fabio@bol',
+    phone: '11999900022',
+    observation: 'nao'
 });
 const checkProfessional = async (data) => {
     dataServices.splice(0, dataServices.length);
@@ -42,9 +45,8 @@ const checkProfessional = async (data) => {
 
     let dataService = await getService(data.pkProfessional);
     let dataSchedule = await getSchedules(data.pkProfessional);
-    //console.log(dataService)
     if(dataService.data.length === 0 || dataSchedule.data.length === 0){
-        console.log('prof nao completou o cadastro!');
+        store.commit('setAlertConfig', {message: 'Esse profissional ainda não completou o seu cadastro!', type: 'info'});
         return;
         
     };
@@ -95,9 +97,17 @@ const sumMinutes = (data) => {
     return data.reduce((acc, minutes) => acc + Number(minutes.time), 0);
 
 };
-const veriryReservationComplete = () => {
+const veriryReservationComplete = async () => {
     if(fielsCheckSize(dataFormReservation.name) && phoneValidator(dataFormReservation.phone)){
-        console.log('reservou!', dataReservation, dataFormReservation);
+        dataReservation.price = calculePriceTotal();
+        dataReservation.duration = sumMinutes(dataReservation.services);
+        let dataReser = await createReservation(dataUser[0]?.fkUser, dataReservation, dataFormReservation);
+        if(dataReser.statusCode !== 201){
+            store.commit('setAlertConfig', {message: dataReser.message, type: 'warning'});
+            return;
+
+        };
+        store.commit('setAlertConfig', {message: dataReser.message, type: 'positive'});
         return;
 
     };
@@ -128,23 +138,27 @@ const checkCustomerChoice = (step) => {
 
 };
 const btnReservation = async () => {
-    let dataProfessional = await getAll(dataUser[0].fkUser);
-    dataProfessionals.push(...dataProfessional.data);
-    //console.log(dataProfessionals);
-    isReservation.value = !isReservation.value;
+    let dataProfessional = await getAll(dataUser[0]?.fkUser);
+    //console.log(dataProfessional);
+    if(dataProfessional.statusCode === 200 && dataProfessional.data?.length !== 0){
+        dataProfessionals.push(...dataProfessional.data);
+        isReservation.value = !isReservation.value;
+        return;
+
+    };
 
 };
 const checkUserExists = async () => {
     let dataU = await getUserDetailsBySlug(route.params.nameUser);
     if(dataU.statusCode !== 200 || dataU.data.length === 0){
-        //router.push({ name: 'notFoundUser' });
         isUserExistis.value = false;
+        router.push({ name: 'notFoundUser' });
         return;
 
     };
     isUserExistis.value = true;
-    //dataServices.push(...dataServicesTest);
     dataUser.push(...dataU.data);
+    //console.log(dataUser[0].fkUser);
     return;
 
 };
@@ -155,12 +169,10 @@ onMounted(async () => {
 </script>
 <template>
     <div id="home-user">
-        <div v-if="!isUserExistis" class="home-user-404 column items-center">
-            <q-img
-                src="../../assets/imgsDefault/404.png"
-                style="filter: drop-shadow(1px 2px 3px white);"
-                width="30%" />
-            <h4 class="q-ma-md text-black">Opss! Esse usuário não existe.</h4>
+        <div v-if="!isUserExistis" class="home-user-load row justify-center items-center">
+            <q-spinner-hourglass
+                color="brown-10"
+                size="5em" />
         </div>
         <div v-else class="home-user">
             <div class="home-user-details column justify-between" v-if="!isReservation">
@@ -176,18 +188,20 @@ onMounted(async () => {
                 <div class="row items-center justify-between q-pb-md">
                     <div class=" home-user-details-contact column items-center">
                         <div class="text-subtitle1">
-                            <i class='bx bxl-instagram-alt text-white q-ma-xs' />
+                            <a :href="dataUser[0]?.instagram" target="_blank">
+                                <i class='bx bxl-instagram-alt text-white q-ma-xs' />
+                            </a>
                         </div>
                         <div class="text-subtitle1 text-grey-3 row items-center">
                             <i class='bx bxl-whatsapp text-white q-ma-xs' />
-                            (11) 1111 - 55555
+                            {{ dataUser[0]?.phone }}
                         </div>
                     </div>
                     <div class="home-user-details-adress column items-center">
-                        <div class="text-subtitle1 text-grey-3">Estado: </div>
-                        <div class="text-subtitle1 text-grey-3">Cidade: </div>
-                        <div class="text-subtitle1 text-grey-3">Rua: </div>
-                        <div class="text-subtitle1 text-grey-3">Numero: </div>
+                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.state }}</div>
+                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.city }}</div>
+                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.street }}</div>
+                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.number }}</div>
                     </div>
                 </div>
             </div>
@@ -391,15 +405,10 @@ onMounted(async () => {
         fixed bottom;
     background-size: cover;
 
-    .home-user-404{
+    .home-user-load{
         min-height: calc(100vh - 5rem);
         width: 100%;
         
-        h4{
-            font-weight: 500;
-            filter: drop-shadow(2px 2px 3px white);
-
-        }
     }
     .home-user{
         display: flex;
