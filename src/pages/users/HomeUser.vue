@@ -4,13 +4,13 @@ import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { CardProfessional, CalendarSchedule, FormReservation } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
-import { divideHoursIntoIntervals, formatString, orderSchedules } from '../../utils/formatters.js';
+import { divideHoursIntoIntervals, formatString, orderSchedules, sumTimeService } from '../../utils/formatters.js';
 import { phoneValidator, fielsCheckSize } from '../../utils/inputValidators.js';
 import { getUserDetailsBySlug } from '../../services/api/api.userDetails.js';
 import { getAll } from '../../services/api/api.professional.js';
 import { getService } from '../../services/api/api.services.js';
 import { getSchedules } from '../../services/api/api.schedule.js';
-import { createReservation } from '../../services/api/api.reservation.js';
+import { getReservationByProfessional, createReservation } from '../../services/api/api.reservation.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -23,6 +23,7 @@ const dataUser = reactive([]);
 const dataProfessionals = reactive([]);
 const dataServices = reactive([]);
 const dataSchedules = reactive([]);
+const timesIsReserved = reactive([]);
 const dataTimesFromWeek = reactive([]);
 const dataReservation = reactive({
         pkProfessional: null,
@@ -59,17 +60,29 @@ const checkProfessional = async (data) => {
     return;
     
 };
-const checkScheduleDate = (date) => {
+const checkScheduleDate = async (date) => {
     if(date){
         dataTimesFromWeek.splice(0);
+        timesIsReserved.splice(0);
         dataReservation.dateReservation = date;
         //let schedulesProfessional = dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].schedules;
         let dayWeek = getDayWeekFromDate(date);
         let totalMinutes = sumMinutes(dataReservation.services);
         dataReservation.duration = totalMinutes;
-        dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes)[dayWeek]);
-        
-    }
+        //dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes)[dayWeek]);
+        let timesReserved = await getReservationByProfessional(dataReservation.pkProfessional, dataReservation.dateReservation);
+        if(timesReserved?.data){
+            timesIsReserved.push(
+                timesReserved.data.map(elem => {
+                    return { "timeStart": elem.timeReservation, "timeEnd": sumTimeService(elem.timeReservation, elem.duration)}
+
+                })
+            );
+            dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes, timesIsReserved[0]));
+        }
+        return;
+
+    };
 };
 const checkScheduleTime = (data) => {
     dataReservation.timeReservation = data;
@@ -97,7 +110,7 @@ const sumMinutes = (data) => {
     return data.reduce((acc, minutes) => acc + Number(minutes.time), 0);
 
 };
-const veriryReservationComplete = async () => {
+const verifyReservationComplete = async () => {
     if(fielsCheckSize(dataFormReservation.name) && phoneValidator(dataFormReservation.phone)){
         dataReservation.price = calculePriceTotal();
         dataReservation.duration = sumMinutes(dataReservation.services);
@@ -279,7 +292,7 @@ onMounted(async () => {
                             <q-btn
                                 push
                                 v-if="step === 4"
-                                @click="veriryReservationComplete"
+                                @click="verifyReservationComplete"
                                 :disable='!checkCustomerChoice(step)'
                                 icon="check_circle"
                                 color="brown-10"

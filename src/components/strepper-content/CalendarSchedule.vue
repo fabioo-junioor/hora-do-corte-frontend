@@ -53,9 +53,11 @@ const verifySchedules = () => {
     }
 };
 const checkScheduleTime = (data) => {
-    timeCheck.value = data;
-    emit('checkScheduleTime', data);
+    if(!data.isReserved){
+        timeCheck.value = data.time;
+        emit('checkScheduleTime', data.time);
 
+    };
 };
 const verifyTimeBeforeToday = (timeSchedule) => {
     let today = new Date();
@@ -122,9 +124,10 @@ onMounted(() => {
                         <TimeSchedule
                             @click="!verifyTimeBeforeToday(i) || checkScheduleTime(i)"
                             v-for='i in props.timesAvailable' :key='i'
-                            :time='i'
+                            :time='i.time'
                             v-model:timeCheck='timeCheck'
-                            :isAvailable='verifyTimeBeforeToday(i)' />
+                            :isAvailable='verifyTimeBeforeToday(i.time)'
+                            :isReserved='i.isReserved' />
                     </div>
                 </q-tab-panel>
             </q-tab-panels>    

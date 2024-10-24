@@ -1,25 +1,37 @@
 <script setup>
 import { reactive, ref, watch } from 'vue';
 
-const props = defineProps(['time', 'isAvailable']);
+const props = defineProps(['time', 'isAvailable', 'isReserved']);
 const timeCheck = defineModel('timeCheck');
 const isHovered = ref(false);
 
+const verifyReservationColorBg = (data, time) =>{
+  if(data){
+    return 'red';
+
+  }
+  if(!data && time == timeCheck.value){
+    return 'grey';
+
+  };
+  if(!data && time != timeCheck.value){
+    return 'green';
+
+  }
+};
 </script>
 <template>
   <div id="time-schedules">
     <q-badge
-        :style="'background-color: '+ ((isHovered && props.isAvailable) ? 'grey' : '') +' !important;' +
-          'color: '+ ((isHovered && props.isAvailable) ? 'black' : '') +' !important;' +
-          'cursor: '+ ((isHovered && props.isAvailable) ? 'pointer' : 'not-allowed')"
+        :style="'cursor: '+ (!props.isReserved ? 'pointer' : 'not-allowed')"
         class="q-py-xs q-px-sm text-h6"
         @mouseover="isHovered = true"
         @mouseleave="isHovered = false"
-        :color="(props.isAvailable && (timeCheck != props.time)) ? 'green-8' : 'grey-6'"
-        :text-color="(props.isAvailable && (timeCheck != props.time)) ? 'white' : 'black'">
+        :color="verifyReservationColorBg(props.isReserved, props.time)"
+        text-color="white">
         {{ props.time }}
         <q-icon
-          v-if="timeCheck == props.time" 
+          v-if="(timeCheck == props.time && !props.isReserved)" 
           class="icon-check" 
           size="1.1rem" 
           name="done_outline" 

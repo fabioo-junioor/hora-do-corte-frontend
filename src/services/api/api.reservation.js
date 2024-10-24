@@ -16,6 +16,24 @@ const getReservation = async (pkUser) => {
 
     };
 };
+const getReservationByProfessional = async (pkProfessional, dateReservation) => {
+    try {
+        const response = await fetch(url+`reservation/${pkProfessional}/getAllReservationByProfessional`, {
+            headers: header,
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                dateReservation: dateReservation
+            })
+        });
+        const data = await response.json();
+        return data;       
+
+    } catch(error){
+        return error;
+
+    };
+};
 const createReservation = async (pkUser, dataReservation, dataFormReservation) => {
     try {
         const response = await fetch(url+`reservation/createReservation`, {
@@ -62,6 +80,7 @@ const deleteReservation = async (pkReservation) => {
 };
 export {
     getReservation,
+    getReservationByProfessional,
     createReservation,
     deleteReservation
 
