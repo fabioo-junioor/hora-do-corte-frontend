@@ -37,41 +37,11 @@ const verifySchedulesAvailable = (dateReservation, schedules) => {
     }
     return false;
 
-}
-/*const divideHoursIntoIntervals = (schedules, time) => {
-  const result = {};
-
-  schedules.forEach(day => {
-      const dayWeek = Object.keys(day)[0];
-      result[dayWeek] = [];
-
-      for (const period in day[dayWeek]) {
-          const { open, close } = day[dayWeek][period];
-
-          // Verificar se 'open' e 'close' não são null
-          if (open && close) {
-              const [startTime, startMinute] = open.split(':').map(Number);
-              const [endTime, endMinute] = close.split(':').map(Number);
-
-              const startMinutes = startTime * 60 + startMinute;
-              const endMinutes = endTime * 60 + endMinute - time; // Subtrai 'time' minutos do horário de fechamento
-
-              for (let minutes = startMinutes; minutes <= endMinutes; minutes += time) {
-                  const hour = Math.floor(minutes / 60).toString().padStart(2, '0');
-                  const minute = (minutes % 60).toString().padStart(2, '0');
-                  result[dayWeek].push(`${hour}:${minute}`);
-              }
-          }
-      }
-  });
-
-  return result;
-};*/
-const divideHoursIntoIntervals = (schedules, time, dataIsReserved) => { 
+};
+const divideHoursIntoIntervals = (schedules, time, dataIsReserved, dayWeek) => { 
     const result = [];
 
     const isTimeReserved = (currentStartMinutes, currentEndMinutes) => {
-        // Função para verificar se o horário está reservado
         return dataIsReserved.some(reserved => {
             const [reservedStartHour, reservedStartMinute] = reserved.timeStart.split(':').map(Number);
             const [reservedEndHour, reservedEndMinute] = reserved.timeEnd.split(':').map(Number);
@@ -79,7 +49,6 @@ const divideHoursIntoIntervals = (schedules, time, dataIsReserved) => {
             const reservedStartMinutes = reservedStartHour * 60 + reservedStartMinute;
             const reservedEndMinutes = reservedEndHour * 60 + reservedEndMinute;
 
-            // Verifica se há sobreposição
             return (
                 (currentStartMinutes < reservedEndMinutes && currentEndMinutes > reservedStartMinutes)
             );
@@ -87,7 +56,7 @@ const divideHoursIntoIntervals = (schedules, time, dataIsReserved) => {
     };
 
     schedules.forEach(day => {
-        const dayWeek = Object.keys(day)[0];
+        //const dayWeek = Object.keys(day)[0];
 
         for (const period in day[dayWeek]) {
             const { open, close } = day[dayWeek][period];
@@ -106,7 +75,6 @@ const divideHoursIntoIntervals = (schedules, time, dataIsReserved) => {
                     
                     const isReserved = isTimeReserved(minutes, minutes + time);
 
-                    // Adiciona o intervalo com o formato desejado
                     result.push({ time: timeSlot, isReserved: isReserved });
                 }
             }
@@ -128,7 +96,6 @@ const orderSchedules = (schedules) => {
             "night": shifts.night
         };
         
-        // Retorna o objeto reordenado
         return { [day]: orderedShifts };
     });
 };

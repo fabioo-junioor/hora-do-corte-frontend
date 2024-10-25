@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { CardProfessional, CalendarSchedule, FormReservation } from '../../components';
+import { CardProfessional, CalendarSchedule, FormReservation, Loader } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
 import { divideHoursIntoIntervals, formatString, orderSchedules, sumTimeService } from '../../utils/formatters.js';
 import { phoneValidator, fielsCheckSize } from '../../utils/inputValidators.js';
@@ -17,6 +17,10 @@ const router = useRouter();
 const store = useStore();
 const isReservation = ref(false);
 const isUserExistis = ref(false);
+const isProfessionals = ref(false);
+const isServices = ref(false);
+const isSchedules = ref(false);
+const isTimes = ref(false);
 const step = ref(1);
 
 const dataUser = reactive([]);
@@ -36,18 +40,25 @@ const dataReservation = reactive({
 });
 const dataFormReservation = reactive({
     name: 'fabio',
-    email: 'fabio@bol',
+    email: 'fabio@bol.com',
     phone: '11999900022',
     observation: 'nao'
 });
 const checkProfessional = async (data) => {
     dataServices.splice(0, dataServices.length);
     dataSchedules.splice(0, dataSchedules.length);
+    isServices.value = false;
+    isSchedules.value = false;
 
     let dataService = await getService(data.pkProfessional);
-    let dataSchedule = await getSchedules(data.pkProfessional);
-    if(dataService.data.length === 0 || dataSchedule.data.length === 0){
+    if(dataService.data?.length === 0){
         store.commit('setAlertConfig', {message: 'Esse profissional ainda não completou o seu cadastro!', type: 'info'});
+        return;
+        
+    };
+    let dataSchedule = await getSchedules(data.pkProfessional);
+    if(dataSchedule.data?.length === 0){
+        store.commit('setAlertConfig', {message: 'Esse profissional ainda não definiu seus horários!', type: 'info'});
         return;
         
     };
@@ -57,20 +68,23 @@ const checkProfessional = async (data) => {
     dataServices.push(...dataService.data[0].services);
     let orderSchedule = orderSchedules(dataSchedule.data[0].schedules);
     dataSchedules.push(...orderSchedule);
+    isServices.value = true;
+    isSchedules.value = true;
     return;
     
 };
 const checkScheduleDate = async (date) => {
     if(date){
-        dataTimesFromWeek.splice(0);
-        timesIsReserved.splice(0);
+        dataTimesFromWeek.splice(0, dataTimesFromWeek.length);
+        timesIsReserved.splice(0, timesIsReserved.length);
         dataReservation.dateReservation = date;
+        isTimes.value = false;
         //let schedulesProfessional = dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].schedules;
         let dayWeek = getDayWeekFromDate(date);
         let totalMinutes = sumMinutes(dataReservation.services);
         dataReservation.duration = totalMinutes;
         //dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes)[dayWeek]);
-        let timesReserved = await getReservationByProfessional(dataReservation.pkProfessional, dataReservation.dateReservation);
+        let timesReserved = await getReservationByProfessional(dataReservation.pkProfessional, date);
         if(timesReserved?.data){
             timesIsReserved.push(
                 timesReserved.data.map(elem => {
@@ -78,22 +92,24 @@ const checkScheduleDate = async (date) => {
 
                 })
             );
-            dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes, timesIsReserved[0]));
-        }
+            dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes, timesIsReserved[0], dayWeek));
+            isTimes.value = true;
+            return;
+
+        };
+        dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes, timesIsReserved, dayWeek));
+        isTimes.value = true;
         return;
 
     };
+    isTimes.value = false;
+    return;
+
 };
 const checkScheduleTime = (data) => {
     dataReservation.timeReservation = data;
 
 };
-/*
-const verifyKeyByIdProfessional = (id) => {
-    return dataServices.findIndex(elem => elem.idProfessional == id);
-
-};
-*/
 const getDayWeekFromDate = (date) => {
     let parts = date.split('-');
     date = new Date(parts[2], parts[1] - 1, parts[0]);
@@ -121,6 +137,7 @@ const verifyReservationComplete = async () => {
 
         };
         store.commit('setAlertConfig', {message: dataReser.message, type: 'positive'});
+        reloadPage();
         return;
 
     };
@@ -151,14 +168,17 @@ const checkCustomerChoice = (step) => {
 
 };
 const btnReservation = async () => {
+    isReservation.value = !isReservation.value;
+    isProfessionals.value = false;
     let dataProfessional = await getAll(dataUser[0]?.fkUser);
-    //console.log(dataProfessional);
     if(dataProfessional.statusCode === 200 && dataProfessional.data?.length !== 0){
         dataProfessionals.push(...dataProfessional.data);
-        isReservation.value = !isReservation.value;
+        isProfessionals.value = true;
         return;
 
     };
+    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'info'});
+    return;
 
 };
 const checkUserExists = async () => {
@@ -171,8 +191,14 @@ const checkUserExists = async () => {
     };
     isUserExistis.value = true;
     dataUser.push(...dataU.data);
-    //console.log(dataUser[0].fkUser);
     return;
+
+};
+const reloadPage = () => {
+    setTimeout(() => {
+        location.reload();
+
+    }, 3000);
 
 };
 onMounted(async () => {
@@ -183,12 +209,11 @@ onMounted(async () => {
 <template>
     <div id="home-user">
         <div v-if="!isUserExistis" class="home-user-load row justify-center items-center">
-            <q-spinner-hourglass
-                color="brown-10"
-                size="5em" />
+            <Loader />
         </div>
         <div v-else class="home-user">
-            <div class="home-user-details column justify-between" v-if="!isReservation">
+            <div class="home-user-details column justify-between"
+                v-if="!isReservation">
                 <h4 class="text-white text-center q-pt-xl q-ma-none">Bem vindo!</h4>
                 <q-btn
                     push
@@ -235,7 +260,12 @@ onMounted(async () => {
                         title="Selecionar um profissional"
                         icon="person"
                         :done="step > 1">
-                        <div class="reservation-content-step-card-professional q-my-md">
+                        <div v-if="!isProfessionals"
+                            class="reservation-content-step-card-professional row justify-center q-my-md">
+                            <Loader />
+                        </div>
+                        <div v-else
+                            class="reservation-content-step-card-professional q-my-md">
                             <CardProfessional
                                 v-for="i in dataProfessionals" :key="i"
                                 :dataProfessionals='i'
@@ -248,7 +278,11 @@ onMounted(async () => {
                         title="Selecione o(s) serviço(s)"
                         icon="content_cut"
                         :done="step > 2">
-                        <div v-if="dataReservation.pkProfessional != null"
+                        <div v-if="!isServices"
+                            class="reservation-content-services row justify-center q-my-md">
+                            <Loader />
+                        </div>
+                        <div v-else
                             class="reservation-content-services q-my-md">
                             <q-checkbox
                                 dark
@@ -273,8 +307,11 @@ onMounted(async () => {
                             <CalendarSchedule
                                 :schedules='dataSchedules'
                                 :timesAvailable='dataTimesFromWeek'
+                                :isLoaderTimes='isSchedules && isTimes'
                                 @checkScheduleDate='checkScheduleDate'
-                                @checkScheduleTime='checkScheduleTime' />
+                                @checkScheduleTime='checkScheduleTime'>
+                                <Loader loaderColor='white' />
+                            </CalendarSchedule>
                         </div>
                     </q-step>
                     <q-step
