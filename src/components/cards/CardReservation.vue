@@ -3,8 +3,8 @@ const props = defineProps(['dataCustomerReservation']);
 const emit = defineEmits(['cancelReservation']);
 import userDefault from '../../assets/imgsDefault/user.png';
 
-const cancelReservation = (idReservation) => {
-    emit('cancelReservation', idReservation);
+const cancelReservation = (pkReservation) => {
+    emit('cancelReservation', pkReservation);
 
 };
 </script>
@@ -12,47 +12,47 @@ const cancelReservation = (idReservation) => {
   <div id="card-reservation">
     <q-card dark class="my-card q-ma-lg bg-brown-9">
       <q-card-section class="section-date column q-pa-none">
-        <div class="text-h6 q-mt-md q-ml-sm">{{props.dataCustomerReservation[0]?.date}}</div>
+        <div class="text-h6 q-mt-md q-ml-sm">{{props.dataCustomerReservation[0]?.dateReservation}}</div>
         <q-card-section class="section-user row q-ma-md" v-for="i in props.dataCustomerReservation" :key="i">
             <div class="card-reservation-details col-11 row justify-between items-center">
                 <div class="col">
                     <div class="text-subtitle1">Cliente</div>
-                    <div class="text-subtitle2 text-grey-4">{{ i.name }}</div>
+                    <div class="text-subtitle2 text-grey-4">{{ i.nameCustomer }}</div>
                 </div>
                 <div class="col">
                     <div class="text-subtitle1">Telefone</div>
-                    <div class="text-subtitle2 text-grey-4">{{ i.phone }}</div>
+                    <div class="text-subtitle2 text-grey-4">{{ i.phoneCustomer }}</div>
                 </div>
-                <div v-if="!!i.email" class="col">
+                <div v-if="!!i.emailCustomer" class="col">
                     <div class="text-subtitle1">Email</div>
-                    <div class="text-subtitle2 text-grey-4">{{ i.email }}</div>
+                    <div class="text-subtitle2 text-grey-4">{{ i.emailCustomer }}</div>
                 </div>
                 <div class="col">
-                    <div class="text-subtitle1">Data e horário</div>
-                    <div class="text-subtitle2 text-grey-4">{{ i.date }} - {{ i.time }}</div>
+                    <div class="text-subtitle1">Horário</div>
+                    <div class="text-subtitle2 text-grey-4">{{ i.dateReservation }} - {{ i.timeReservation }}</div>
                 </div>
                 <div class="col">
                     <div class="text-subtitle1">Serviços</div>
                     <div class="text-subtitle2 text-grey-4"
-                        v-for="(j, index) in i.services" :key="j">{{index+1}}: {{j}}</div>
+                        v-for="j in i.services" :key="j">{{j.name}} | R$:{{j.price}} | {{j.time}}min</div>
                 </div>
                 <div class="col">
                     <div class="text-subtitle1">Profisional</div>
-                    <div class="text-subtitle2 text-grey-4">{{ i.professional }}</div>
+                    <div class="text-subtitle2 text-grey-4">{{ i.nameProfessional }}</div>
                 </div>
                 <div class="col">
                     <div class="text-subtitle1">Valor</div>
                     <div class="text-subtitle2 text-grey-4">R$: {{ i.price }}</div>
                 </div>
-                <div v-if="!!i.observation" class="col">
+                <div v-if="!!i.observationCustomer" class="col">
                     <div class="text-subtitle1">Observações</div>
-                    <div class="text-subtitle2 text-grey-4 q-pr-sm">R$: {{ i.observation }}</div>
+                    <div class="text-subtitle2 text-grey-4 q-pr-sm">R$: {{ i.observationCustomer }}</div>
                 </div>
             </div>
             <div class="card-reservation-btn col-1 row justify-center items-center">
                 <q-btn
                     dark stack push
-                    @click="cancelReservation(i.id)"
+                    @click="cancelReservation(i.pkReservation)"
                     class="full-height"
                     size=".8rem"
                     color="brown-5"

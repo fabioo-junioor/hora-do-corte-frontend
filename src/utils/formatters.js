@@ -37,36 +37,53 @@ const verifySchedulesAvailable = (dateReservation, schedules) => {
     }
     return false;
 
-}
-const divideHoursIntoIntervals = (schedules, time) => {
-  const result = {};
-
-  schedules.forEach(day => {
-      const dayWeek = Object.keys(day)[0];
-      result[dayWeek] = [];
-
-      for (const period in day[dayWeek]) {
-          const { open, close } = day[dayWeek][period];
-
-          // Verificar se 'open' e 'close' não são null
-          if (open && close) {
-              const [startTime, startMinute] = open.split(':').map(Number);
-              const [endTime, endMinute] = close.split(':').map(Number);
-
-              const startMinutes = startTime * 60 + startMinute;
-              const endMinutes = endTime * 60 + endMinute - time; // Subtrai 'time' minutos do horário de fechamento
-
-              for (let minutes = startMinutes; minutes <= endMinutes; minutes += time) {
-                  const hour = Math.floor(minutes / 60).toString().padStart(2, '0');
-                  const minute = (minutes % 60).toString().padStart(2, '0');
-                  result[dayWeek].push(`${hour}:${minute}`);
-              }
-          }
-      }
-  });
-
-  return result;
 };
+const divideHoursIntoIntervals = (schedules, time, dataIsReserved, dayWeek) => { 
+    const result = [];
+
+    const isTimeReserved = (currentStartMinutes, currentEndMinutes) => {
+        return dataIsReserved.some(reserved => {
+            const [reservedStartHour, reservedStartMinute] = reserved.timeStart.split(':').map(Number);
+            const [reservedEndHour, reservedEndMinute] = reserved.timeEnd.split(':').map(Number);
+            
+            const reservedStartMinutes = reservedStartHour * 60 + reservedStartMinute;
+            const reservedEndMinutes = reservedEndHour * 60 + reservedEndMinute;
+
+            return (
+                (currentStartMinutes < reservedEndMinutes && currentEndMinutes > reservedStartMinutes)
+            );
+        });
+    };
+
+    schedules.forEach(day => {
+        //const dayWeek = Object.keys(day)[0];
+
+        for (const period in day[dayWeek]) {
+            const { open, close } = day[dayWeek][period];
+
+            if (open && close) {
+                const [startTime, startMinute] = open.split(':').map(Number);
+                const [endTime, endMinute] = close.split(':').map(Number);
+
+                const startMinutes = startTime * 60 + startMinute;
+                const endMinutes = endTime * 60 + endMinute - time;
+
+                for (let minutes = startMinutes; minutes <= endMinutes; minutes += time) {
+                    const hour = Math.floor(minutes / 60).toString().padStart(2, '0');
+                    const minute = (minutes % 60).toString().padStart(2, '0');
+                    const timeSlot = `${hour}:${minute}`;
+                    
+                    const isReserved = isTimeReserved(minutes, minutes + time);
+
+                    result.push({ time: timeSlot, isReserved: isReserved });
+                }
+            }
+        }
+    });
+
+    return result;
+};
+
 const orderSchedules = (schedules) => {
     return schedules.map(schedule => {
         const day = Object.keys(schedule)[0];
@@ -79,9 +96,19 @@ const orderSchedules = (schedules) => {
             "night": shifts.night
         };
         
-        // Retorna o objeto reordenado
         return { [day]: orderedShifts };
     });
+};
+const sumTimeService = (time, minutesToAdd) => {
+    const [hours, minutes] = time.split(':').map(Number);
+    const totalMinutesToAdd = parseInt(minutesToAdd, 10);
+    let totalMinutes = minutes + totalMinutesToAdd;
+    let totalHours = hours + Math.floor(totalMinutes / 60);
+    totalMinutes = totalMinutes % 60;
+    totalHours = totalHours % 24;
+
+    return `${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}`;
+
 };
 
 export {
@@ -90,5 +117,6 @@ export {
     verifySchedulesAvailable,
     getDateToday,
     divideHoursIntoIntervals,
-    orderSchedules
+    orderSchedules,
+    sumTimeService
 };

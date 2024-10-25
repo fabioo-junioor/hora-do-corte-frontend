@@ -4,6 +4,7 @@ import { verifySchedulesAvailable, getDateToday } from '../../utils/formatters.j
 import { TimeSchedule } from '../../components';
 const props = defineProps(['schedules', 'timesAvailable']);
 const emit = defineEmits(['checkScheduleDate', 'checkScheduleTime']);
+const isLoaderTimes = defineModel('isLoaderTimes');
 
 const splitterModel = ref(40);
 const date = ref(null);
@@ -53,9 +54,19 @@ const verifySchedules = () => {
     }
 };
 const checkScheduleTime = (data) => {
-    timeCheck.value = data;
-    emit('checkScheduleTime', data);
+    if(!data.isReserved){
+        timeCheck.value = data.time;
+        emit('checkScheduleTime', data.time);
 
+    };
+};
+const checkDateExists = (dateReservation, schedule) => {
+    let parts = dateReservation.split('-');
+    dateReservation = new Date(parts[2], parts[1] - 1, parts[0]);
+    let newFormatDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+
+    return verifySchedulesAvailable(newFormatDate, schedule);
+    
 };
 const verifyTimeBeforeToday = (timeSchedule) => {
     let today = new Date();
@@ -88,7 +99,7 @@ onMounted(() => {
   <div id="calendar-schedules">
     <q-splitter
         v-model="splitterModel"
-        :limits="[40, 50]"
+        :limits="[50, 50]"
         separator-class="bg-white"
         separator-style="width: 2px;">
         <template v-slot:before>
@@ -118,13 +129,23 @@ onMounted(() => {
                 <q-tab-panel :name="date">
                     <div class="text-h4 text-center">{{ date }}</div>
                     <q-separator class="q-my-md" color="white" />
-                    <div class="calendar-schedules-times">
-                        <TimeSchedule
-                            @click="!verifyTimeBeforeToday(i) || checkScheduleTime(i)"
-                            v-for='i in props.timesAvailable' :key='i'
-                            :time='i'
-                            v-model:timeCheck='timeCheck'
-                            :isAvailable='verifyTimeBeforeToday(i)' />
+                    <div v-if="!props.isLoaderTimes" 
+                        class="calendar-schedules-times">
+                        <slot />
+                    </div>
+                    <div v-if="!!props.isLoaderTimes"
+                        class="calendar-schedules-times">
+                        <div v-if="checkDateExists(date, props.schedules)"
+                            class="calendar-schedules-times">
+                            <TimeSchedule
+                                @click="!verifyTimeBeforeToday(i) || checkScheduleTime(i)"
+                                v-for='i in props.timesAvailable' :key='i'
+                                :time='i.time'
+                                v-model:timeCheck='timeCheck'
+                                :isAvailable='verifyTimeBeforeToday(i.time)'
+                                :isReserved='i.isReserved' />
+                        </div>
+                        <div v-else>Essa data não contem horários!</div>
                     </div>
                 </q-tab-panel>
             </q-tab-panels>    
@@ -134,7 +155,7 @@ onMounted(() => {
 </template>
 <style lang="scss" scoped>
 #calendar-schedules{
-    width: 70%;
+    width: 100%;
     
     .calendar-schedules-times{
         display: flex;

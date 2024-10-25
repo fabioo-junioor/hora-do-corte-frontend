@@ -1,68 +1,65 @@
 <script setup>
-import { reactive } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
+import { useStore } from 'vuex';
 import { CardReservation } from '../../components';
+import { getReservation, deleteReservation } from '../../services/api/api.reservation.js';
+import { getDataUser } from '../../services/storage/settingSession.js';
 
-const dataCustomerReservation = reactive([
-    { 
-        id: 1,
-        name: 'Fabio',
-        phone: '(55) 1234 - 55556',
-        email: 'fabio@bol.com',
-        professional: 'Sousa',
-        week: 'sun',
-        date: '01/10/2025',
-        time: '10:00',
-        price: '20',
-        services: ['corte', 'barba', 'pezin'],
-        observation: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
-    },
-    {
-        id: 2,
-        name: 'Maria',
-        phone: '(55) 1234 - 11556',
-        email: '',
-        professional: 'Sousa',
-        week: 'fri',
-        date: '15/10/2025',
-        time: '15:30',
-        price: '50',
-        services: ['depilação'],
-        observation: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.'
-    },
-    {
-        id: 3,
-        name: 'Carla',
-        phone: '(15) 1234 - 55556',
-        email: 'maria@hotmail.com',
-        professional: 'Sousa',
-        week: 'sun',
-        date: '15/10/2025',
-        time: '15:30',
-        price: '150',
-        services: ['depilação'],
-        observation: ''
-    }
-]);
-const cancelReservation = (data) => {
-    console.log(data);
+const store = useStore();
+const dataCustomerReservation = reactive([]);
+
+const cancelReservation = async (pkReservation) => {
+    let dataReservaions = await deleteReservation(pkReservation);
+    if(dataReservaions.statusCode !== 200){
+        store.commit('setAlertConfig', {message: dataReservaions.message, type: 'warning'});
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataReservaions.message, type: 'positive'});
+    reloadPage();
+    return;
 
 };
 const orderbyDate = (array) => {
     return array.sort((a, b) => {
-        const dataA = new Date(a.date.split('/').reverse().join('-'));
-        const dataB = new Date(b.date.split('/').reverse().join('-'));
+        const dataA = new Date(a.dateReservation.split('-').reverse().join('-'));
+        const dataB = new Date(b.dateReservation.split('-').reverse().join('-'));
         
         return dataA - dataB;
     });
 };
 const groupByDate = (array) => {
     return array.reduce((grupo, item) => {
-        (grupo[item.date] = grupo[item.date] || []).push(item);
+        (grupo[item.dateReservation] = grupo[item.dateReservation] || []).push(item);
         
         return grupo;
 
     }, {});
 };
+const getReservations = async () =>{
+    let dataUser = getDataUser();
+    let dataReservaions = await getReservation(dataUser.pkUser);
+    if(dataReservaions.statusCode === 200 & dataReservaions.data.length === 0){
+        return;
+
+    };
+    if(dataReservaions.statusCode === 200 & dataReservaions.data.length !== 0){
+        dataCustomerReservation.push(...dataReservaions.data);
+        return;
+
+    };
+};
+const reloadPage = () => {
+    setTimeout(() => {
+        location.reload();
+
+    }, 3000);
+
+};
+onMounted( async () => {
+    await getReservations();
+
+});
 </script>
 <template>
     <div id="reservations" class="column items-center q-mt-md">
