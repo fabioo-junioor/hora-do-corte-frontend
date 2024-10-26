@@ -4,19 +4,14 @@ const cleanSpecialCharacters = (string) => {
     return string.replace(/\D/g, '');
 
 };
+const formatPhoneNumber = (phone) => {
+    const ddd = phone.slice(0, 2);
+    const part1 = phone.slice(2, 6);
+    const part2 = phone.slice(6);
 
-const getDateToday = () => {
-    let today = new Date();
-    let day = today.getDate();
-    let month = today.getMonth() + 1;
-    let year = today.getFullYear();
+    return `(${ddd}) ${part1} - ${part2}`;
 
-    day = (day < 10) ? `0${day}` : `${day}`;
-    month = (month < 10) ? `0${month}` : `${month}`;
-
-    return `${day}-${month}-${year}`;
-    
-}
+};
 const verifySchedulesAvailable = (dateReservation, schedules) => {
     let parts = dateReservation.split('/');
     dateReservation = new Date(parts[0], parts[1] - 1, parts[2]);
@@ -114,8 +109,8 @@ const sumTimeService = (time, minutesToAdd) => {
 export {
     formatString,
     cleanSpecialCharacters,
+    formatPhoneNumber,
     verifySchedulesAvailable,
-    getDateToday,
     divideHoursIntoIntervals,
     orderSchedules,
     sumTimeService

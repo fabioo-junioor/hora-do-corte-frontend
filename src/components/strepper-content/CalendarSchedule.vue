@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { verifySchedulesAvailable, getDateToday } from '../../utils/formatters.js';
+import { verifySchedulesAvailable } from '../../utils/formatters.js';
+import { getDateToday } from '../../utils/dataUtils.js';
 import { TimeSchedule } from '../../components';
 const props = defineProps(['schedules', 'timesAvailable']);
 const emit = defineEmits(['checkScheduleDate', 'checkScheduleTime']);

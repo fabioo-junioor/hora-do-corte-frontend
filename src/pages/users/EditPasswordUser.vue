@@ -6,9 +6,9 @@ import { updateUser } from '../../services/api/api.user.js';
 
 const store = useStore();
 const dataEditPasswordUser = reactive({
-    password: 'teste2222',
-    newPassword: 'teste1010',
-    confirmPassword: 'teste1010'
+    password: '',
+    newPassword: '',
+    confirmPassword: ''
 
 });
 const saveFormPasswordUser = async () => {
