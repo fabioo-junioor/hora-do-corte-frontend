@@ -1,32 +1,47 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useStore} from 'vuex';
-import { FormUser } from '../../components';
+import { FormUser, Loader } from '../../components';
 import { loginUser } from '../../services/api/api.user.js';
 import { setDataUser } from '../../services/storage/settingSession.js';
 
 const store = useStore();
+const router = useRouter();
+const isLoaderLogin = ref(false);
 const dataFormUser = reactive({
     email: 'fabio@bol.com',
     password: 'teste1010'
 
 });
 const login = async () => {
+    isLoaderLogin.value = true;
     let dataUser = await loginUser(dataFormUser);
     if(dataUser.data?.length === 0 && dataUser.statusCode === 200){
+        isLoaderLogin.value = false;
         store.commit('setAlertConfig', {message: dataUser.message, type: 'warning'});
-        //console.log(datauser);
         return;
 
     };
     if(dataUser.data?.length !== 0 && dataUser.statusCode === 200){
+        isLoaderLogin.value = false;
         store.commit('setAlertConfig', {message: dataUser.message, type: 'positive'});
         setDataUser(dataUser.data);
+        store.commit('setStateUser', {login: true});
+        router.push({ path: '/reservations' });
         return;
 
     };
+    isLoaderLogin.value = false;
     store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
     return;
+
+};
+const reloadPage = () => {
+    setTimeout(() => {
+        location.reload();
+
+    }, 3000);
 
 };
 </script>
@@ -45,7 +60,12 @@ const login = async () => {
                 typeForm="loginUser"
                 v-model:email="dataFormUser.email"
                 v-model:password="dataFormUser.password"
-                @loginUser="login" />
+                :isLoaderTime='isLoaderLogin'
+                @loginUser="login">
+                <Loader
+                    loaderSize='1.2em'
+                    loaderColor='white' />
+            </FormUser>
         </div>
     </div>
 </template>

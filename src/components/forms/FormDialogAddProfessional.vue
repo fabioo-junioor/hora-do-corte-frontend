@@ -108,6 +108,7 @@ onMounted(() => {
                 v-model="dataEditProfessional.instagram"
                 type="text"
                 label="Link do instagram"
+                hint="Exemplo: https://www.instagram.com/fulano"
                 lazy-rules>
                 <template v-slot:prepend>
                   <i class='bx bxl-instagram' />

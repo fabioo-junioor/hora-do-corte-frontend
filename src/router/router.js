@@ -3,7 +3,9 @@ import { Home, LoginUser,
         CadUser, HomeUser, 
         EditUser, EditPasswordUser,
         EditProfessional, Reservations,
+        CheckoutBuyPlan,
         NotFound, NotFoundUser } from '../pages';
+import { getDataUser } from '../services/storage/settingSession.js';
 
 const routes = [
     {
@@ -31,6 +33,12 @@ const routes = [
         name: 'loginUser',
         component: LoginUser,
         beforeEnter: (_, __, next) => {
+            let dataUser = getDataUser();
+            if(!!dataUser){
+                next('/reservations');
+                return;
+
+            };
             next();
             return;
 
@@ -41,6 +49,12 @@ const routes = [
         name: 'cadUser',
         component: CadUser,
         beforeEnter: (_, __, next) => {
+            let dataUser = getDataUser();
+            if(!!dataUser){
+                next('/reservations');
+                return;
+
+            };
             next();
             return;
 
@@ -51,6 +65,12 @@ const routes = [
         name: 'reservations',
         component: Reservations,
         beforeEnter: (_, __, next) => {
+            let dataUser = getDataUser();
+            if(!dataUser){
+               next('/');
+               return; 
+
+            };
             next();
             return;
 
@@ -61,6 +81,12 @@ const routes = [
         name: 'editUser',
         component: EditUser,
         beforeEnter: (_, __, next) => {
+            let dataUser = getDataUser();
+            if(!dataUser){
+                next('/');
+                return;
+
+            };
             next();
             return;
 
@@ -71,6 +97,12 @@ const routes = [
         name: 'editPasswordUser',
         component: EditPasswordUser,
         beforeEnter: (_, __, next) => {
+            let dataUser = getDataUser();
+            if(!dataUser){
+                next('/');
+                return;
+
+            };
             next();
             return;
 
@@ -81,9 +113,31 @@ const routes = [
         name: 'editProfessional',
         component: EditProfessional,
         beforeEnter: (_, __, next) => {
+            let dataUser = getDataUser();
+            if(!dataUser){
+                next('/');
+                return;
+
+            };
             next();
             return;
             
+        }
+    },
+    {
+        path: '/checkoutBuyPlan',
+        name: 'checkoutBuyPlan',
+        component: CheckoutBuyPlan,
+        beforeEnter: (_, __, next) => {
+            let dataUser = getDataUser();
+            if(!dataUser){
+                next('/');
+                return;
+
+            };
+            next();
+            return;
+
         }
     },
     {

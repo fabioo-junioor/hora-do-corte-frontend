@@ -1,10 +1,11 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { useStore } from 'vuex';
-import { FormUser } from '../../components';
+import { FormUser, Loader } from '../../components';
 import { createUser } from '../../services/api/api.user.js';
 
 const store = useStore();
+const isLoaderCad = ref(false);
 const dataFormUser = reactive({
     email: 'fabio@bol.com',
     password: '11111111',
@@ -12,17 +13,21 @@ const dataFormUser = reactive({
 
 });
 const create = async () => {
+    isLoaderCad.value = true;
     let dataUser = await createUser(dataFormUser);
     if(dataUser.statusCode === 200){
+        isLoaderCad.value = false;
         store.commit('setAlertConfig', {message: dataUser.message, type: 'warning'});
         return;
 
     };
     if(dataUser.statusCode === 201){
+        isLoaderCad.value = false;
         store.commit('setAlertConfig', {message: dataUser.message, type: 'positive'});
         return;
 
     };
+    isLoaderCad.value = false;
     store.commit('setAlertConfig', {message: dataUser.message, type: 'negative'});
     return;
 
@@ -43,7 +48,12 @@ const create = async () => {
                 v-model:email="dataFormUser.email"
                 v-model:password="dataFormUser.password"
                 v-model:confirmPassword="dataFormUser.confirmPassword"
-                @createUser="create" />
+                :isLoaderTime='isLoaderCad'
+                @createUser="create">
+                <Loader
+                    loaderSize='1.2em'
+                    loaderColor='white' />
+            </FormUser>
         </div>
     </div>
 </template>

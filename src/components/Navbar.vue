@@ -1,15 +1,23 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { AlertUser } from '../components';
+import { getDataUser, deleteDataUser } from '../services/storage/settingSession.js';
 
 const store = useStore();
 const router = useRouter();
 const isUserLogin = ref(false);
 
 const checkLoginUser = () => {
+  let dataUser = getDataUser();
+  if(!dataUser){
+    isUserLogin.value = false;
+    return;
+
+  };
   isUserLogin.value = true;
+  return;
 
 };
 const getLogin = () => {
@@ -17,7 +25,10 @@ const getLogin = () => {
    
 };
 const getLogout = () => {
-   console.log('sair');
+   deleteDataUser();
+   store.commit('setAlertConfig', {message: 'Saindo!', type: 'positive'});
+   //store.commit('setStateUser', {login: false});
+   reloadPage();
    
 };
 const getEditUser = () => {
@@ -36,8 +47,19 @@ const getReservations = () => {
   router.push({ path: '/reservations' });
    
 };
+const reloadPage = () => {
+    setTimeout(() => {
+        location.reload();
+
+    }, 3000);
+
+};
+watch(() => store.getters.getStateUser.isUserLogin, (val) => {
+    isUserLogin.value = val;
+
+});
 onMounted(() => {
-  //checkLoginUser();
+  checkLoginUser();
 
 });
 </script>
@@ -57,7 +79,7 @@ onMounted(() => {
           </div>
           <div class="navbar-area-user col-11">
             <div
-              v-if="isUserLogin" 
+              v-if="!isUserLogin" 
               class="navbar-area-user-login row justify-end">
               <q-btn 
                   push

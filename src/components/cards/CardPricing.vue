@@ -3,7 +3,7 @@ const props = defineProps(['dataPricing']);
 const emit = defineEmits(['buyPlan']);
 
 const buyPlan = () => {
-  emit('buyPlan', props.dataPricing.id);
+  emit('buyPlan', props.dataPricing.pk);
 
 };
 </script>
@@ -13,7 +13,7 @@ const buyPlan = () => {
       <q-card-section class="flex-column items-center">
         <div class="pricing-about">
             <q-badge
-              v-if="props.dataPricing.name != 'Prata'"
+              v-if="props.dataPricing.pk === 2"
               class="badge-discount q-pa-sm"
               color="red-8">-10%</q-badge>
             <div class="text-h4 q-mb-sm">{{ props.dataPricing.name }}</div>
@@ -26,7 +26,7 @@ const buyPlan = () => {
             @click="buyPlan"
             class="full-width q-mb-md"
             size="lg"
-            label="Teste 30 dias gratis"
+            :label="props.dataPricing.pk == 0 ? 'Teste grátis' : 'Adquirir plano'"
             color="brown-6"
             text-color="grey-3"  />
         <div class="pricing-details">

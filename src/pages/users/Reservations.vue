@@ -1,12 +1,18 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
-import { CardReservation } from '../../components';
+import { CardReservation, Loader, CardNotice } from '../../components';
 import { getReservation, deleteReservation } from '../../services/api/api.reservation.js';
 import { getDataUser } from '../../services/storage/settingSession.js';
 
 const store = useStore();
+const isLoaderReservations = ref(false);
+const isNotice = ref(false);
 const dataCustomerReservation = reactive([]);
+const noticeList = reactive([
+    '1. Para o seu estabelecimento ficar disponivel para as pessoas agendarem, adquira um de nossos planos!',
+    '1.1. Vá até pagina inicial do nosso site. Você pode começar com o nosso plano [Free]!'
+]);
 
 const cancelReservation = async (pkReservation) => {
     let dataReservaions = await deleteReservation(pkReservation);
@@ -40,14 +46,19 @@ const getReservations = async () =>{
     let dataUser = getDataUser();
     let dataReservaions = await getReservation(dataUser.pkUser);
     if(dataReservaions.statusCode === 200 & dataReservaions.data.length === 0){
+        store.commit('setAlertConfig', {message: dataReservaions.message, type: 'info'});
         return;
 
     };
     if(dataReservaions.statusCode === 200 & dataReservaions.data.length !== 0){
         dataCustomerReservation.push(...dataReservaions.data);
+        isLoaderReservations.value = true;
         return;
 
     };
+    store.commit('setAlertConfig', {message: dataReservaions.message, type: 'negative'});
+    return;
+
 };
 const reloadPage = () => {
     setTimeout(() => {
@@ -57,17 +68,28 @@ const reloadPage = () => {
 
 };
 onMounted( async () => {
+    isNotice.value = noticeList.length != 0 || false;
     await getReservations();
 
 });
 </script>
 <template>
-    <div id="reservations" class="column items-center q-mt-md">
+    <div id="reservations" class="column items-center q-mt-sm">
+        <CardNotice
+            class="full-width q-pa-md"
+            v-if="isNotice"
+            v-model:isNotice="isNotice"
+            :noticeList='noticeList' />
         <h4 class="text-white q-my-lg">Lista de agendamentos</h4>
-        <CardReservation
-            v-for="i in groupByDate(orderbyDate(dataCustomerReservation))" :key="i"
-            :dataCustomerReservation='i'
-            @cancelReservation='cancelReservation' />
+        <div v-if="!isLoaderReservations">
+            <Loader />
+        </div>
+        <div v-else>
+            <CardReservation
+                v-for="i in groupByDate(orderbyDate(dataCustomerReservation))" :key="i"
+                :dataCustomerReservation='i'
+                @cancelReservation='cancelReservation' />
+        </div>
     </div>
 </template>
 <style lang="scss" scoped>

@@ -4,13 +4,16 @@ import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { CardProfessional, CalendarSchedule, FormReservation, Loader } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
-import { divideHoursIntoIntervals, formatString, orderSchedules, sumTimeService } from '../../utils/formatters.js';
+import { divideHoursIntoIntervals, formatString, formatPhoneNumber, orderSchedules, sumTimeService, cleanSpecialCharacters } from '../../utils/formatters.js';
+import { dateCompare, getDateToday, getCurrentTime } from '../../utils/dataUtils.js';
 import { phoneValidator, fielsCheckSize } from '../../utils/inputValidators.js';
 import { getUserDetailsBySlug } from '../../services/api/api.userDetails.js';
 import { getAll } from '../../services/api/api.professional.js';
 import { getService } from '../../services/api/api.services.js';
 import { getSchedules } from '../../services/api/api.schedule.js';
 import { getReservationByProfessional, createReservation } from '../../services/api/api.reservation.js';
+import { getLastPurchasePlan } from '../../services/api/api.purchase.js';
+import { date } from 'quasar';
 
 const route = useRoute();
 const router = useRouter();
@@ -21,6 +24,7 @@ const isProfessionals = ref(false);
 const isServices = ref(false);
 const isSchedules = ref(false);
 const isTimes = ref(false);
+const btnReservationDisable = ref(false);
 const step = ref(1);
 
 const dataUser = reactive([]);
@@ -130,6 +134,7 @@ const verifyReservationComplete = async () => {
     if(fielsCheckSize(dataFormReservation.name) && phoneValidator(dataFormReservation.phone)){
         dataReservation.price = calculePriceTotal();
         dataReservation.duration = sumMinutes(dataReservation.services);
+        dataFormReservation.phone = cleanSpecialCharacters(dataFormReservation.phone);
         let dataReser = await createReservation(dataUser[0]?.fkUser, dataReservation, dataFormReservation);
         if(dataReser.statusCode !== 201){
             store.commit('setAlertConfig', {message: dataReser.message, type: 'warning'});
@@ -190,7 +195,28 @@ const checkUserExists = async () => {
 
     };
     isUserExistis.value = true;
-    dataUser.push(...dataU.data);
+    dataUser.push(...dataU.data);    
+    let dataLastPurchase = await getLastPurchasePlan(dataU.data[0].fkUser);
+    if(dataLastPurchase.statusCode === 200 && dataLastPurchase.data?.length === 0){
+        btnReservationDisable.value = false;
+        return;
+
+    };
+    if(dataLastPurchase.statusCode === 200 && dataLastPurchase.data?.length !== 0){
+        let dateValidity = dataLastPurchase.data[0].purchaseValidity;
+        let timeValidity = dataLastPurchase.data[0].purchaseTime;
+        let dateToday = getDateToday();
+        let timeToday = getCurrentTime();
+        if(!dateCompare(dateValidity, timeValidity, dateToday, timeToday)){
+            btnReservationDisable.value = false;
+            return;
+
+        };
+        btnReservationDisable.value = true;
+        //console.log(dataLastPurchase, dateCompare(dateValidity, today));
+        return;
+
+    };    
     return;
 
 };
@@ -217,14 +243,21 @@ onMounted(async () => {
                 <h4 class="text-white text-center q-pt-xl q-ma-none">Bem vindo!</h4>
                 <q-btn
                     push
+                    :disable='!btnReservationDisable'
                     size="xl"
                     color="brown-10"
                     @click="btnReservation" >
                         <i class='bx bxs-hand-up q-px-sm' />
                         Agendar
                 </q-btn>
-                <div class="row items-center justify-between q-pb-md">
-                    <div class=" home-user-details-contact column items-center">
+                <div class="row items-end justify-between q-pb-sm">
+                    <div class="home-user-details-adress column items-start">
+                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.state }}</div>
+                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.city }}</div>
+                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.street }}</div>
+                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.number }}</div>
+                    </div>
+                    <div class=" home-user-details-contact column items-end justify-end">
                         <div class="text-subtitle1">
                             <a :href="dataUser[0]?.instagram" target="_blank">
                                 <i class='bx bxl-instagram-alt text-white q-ma-xs' />
@@ -232,14 +265,8 @@ onMounted(async () => {
                         </div>
                         <div class="text-subtitle1 text-grey-3 row items-center">
                             <i class='bx bxl-whatsapp text-white q-ma-xs' />
-                            {{ dataUser[0]?.phone }}
+                            {{ formatPhoneNumber(dataUser[0]?.phone) }}
                         </div>
-                    </div>
-                    <div class="home-user-details-adress column items-center">
-                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.state }}</div>
-                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.city }}</div>
-                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.street }}</div>
-                        <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.number }}</div>
                     </div>
                 </div>
             </div>
@@ -473,12 +500,13 @@ onMounted(async () => {
 
             .home-user-details-contact{
                 i{
-                    font-size: 2rem;
+                    font-size: 1.8rem;
                     color: $brown-10 !important;
                     
                 }
                 .bxl-instagram-alt:hover{
                     color: $brown-3 !important;
+
                 }
             }
         }

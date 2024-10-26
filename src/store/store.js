@@ -6,6 +6,14 @@ const store = createStore({
             isAlert: false,
             message: '',
             type: ''
+        },
+        stateUser: {
+            isUserLogin: false
+        },
+        stateBuyPlan: {
+            pkPlan: null,
+            pkUser: null,
+            details: []
         }
     },
     mutations: {
@@ -21,12 +29,29 @@ const store = createStore({
                 state.alertConfig.isAlert = false;
 
             }, 2000);
+        },
+        setStateUser(state, data){
+            state.stateUser.isUserLogin = data.login;
+
+        },
+        setStateBuyPlan(state, data){
+            state.stateBuyPlan.pkPlan = data.pkPlan;
+            state.stateBuyPlan.pkUser = data.pkUser
+            state.stateBuyPlan.details = data.details;
+
         }
     },
     getters: {
         getAlertConfig(state){
             return state.alertConfig;
 
+        },
+        getStateUser(state){
+            return state.stateUser;
+
+        },
+        getStateBuyPlan(state){
+            return state.stateBuyPlan;
         }
     }
 });
