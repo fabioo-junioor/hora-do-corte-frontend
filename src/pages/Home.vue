@@ -1,29 +1,52 @@
 <script setup>
 import { reactive } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import { useStore } from 'vuex';
 import { CardPricing } from '../components';
+import { getDataUser } from '../services/storage/settingSession.js';
 
 const router = useRouter();
+const store = useStore();
 const pricingPlans = reactive([
     { 
-        id: 1, 
-        name: 'Prata', 
+        pk: 0, 
+        name: 'Free', 
+        about: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', 
+        price: 0, 
+        time: 30,
+        benefits: ['30 dias de uso grátis', 'Suporte diário']
+    },
+    { 
+        pk: 1, 
+        name: 'Basic', 
         about: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', 
         price: 25, 
         time: 30,
         benefits: ['30 dias de uso', 'Suporte diário']
     },
     { 
-        id: 2, 
-        name: 'Ouro', 
+        pk: 2,
+        name: 'Pró', 
         about: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.', 
         price: 135, 
         time: 180,
         benefits: ['180 dias de uso', 'Suporte diário']
     }
 ]);
+const getDetailsPlan = (pk) => {
+  return pricingPlans.filter((elem) => elem.pk === pk);
+
+};
 const buyPlan = (data) => {
-  console.log('buy ', data);
+  let dataUser = getDataUser();
+  if(!dataUser){
+    store.commit('setAlertConfig', {message: 'Primeiramente efetue o login ou cadastre-se!', type: 'warning'});
+    return;
+
+  }
+  store.commit('setStateBuyPlan', {pkPlan: data, pkUser: dataUser.pkUser, details: [...getDetailsPlan(data)]});
+  router.push({ path: '/checkoutBuyPlan' });
+  return;
 
 };
 const register = () => {
@@ -78,9 +101,9 @@ const register = () => {
         <p class="q-pa-sm">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
       </div>
     </div>
-    <div class="home-pricings q-py-xl q-my-xl">
+    <div class="home-pricings row wrap q-py-xl q-my-xl">
         <CardPricing
-            v-for=" i in pricingPlans" :key="i.id"
+            v-for=" i in pricingPlans" :key="i.pk"
             class="home-pricing q-my-xl"
             :dataPricing='i'
             @buyPlan='buyPlan' />
@@ -101,7 +124,9 @@ const register = () => {
     <div class="home-footer row full-width q-pa-md q-mt-xl">
       <div class="col column justify-end">
         <div class="col row items-end">
-          <i class='bx bxl-instagram' />
+          <a href="https://www.instagram.com/horadocorte.real/" target="_blank">
+            <i class='bx bxl-instagram' />
+          </a>
         </div>
         <div class="col text-subtitle1 row items-end">
           Contato: contato@gmail.com

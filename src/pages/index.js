@@ -9,6 +9,7 @@ import EditUser from './users/EditUser.vue';
 import EditPasswordUser from './users/EditPasswordUser.vue';
 import EditProfessional from './users/EditProfessional.vue';
 import Reservations from './users/Reservations.vue';
+import CheckoutBuyPlan from './users/CheckoutBuyPlan.vue';
 
 export {
     Home,
@@ -20,5 +21,6 @@ export {
     EditUser,
     EditPasswordUser,
     EditProfessional,
-    Reservations
+    Reservations,
+    CheckoutBuyPlan
 };
