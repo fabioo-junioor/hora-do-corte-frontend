@@ -1,12 +1,12 @@
 <script setup>
-const props = defineProps(['loaderColor']);
+const props = defineProps(['loaderColor', 'loaderSize']);
 
 </script>
 <template>
     <div id="loader">
         <q-spinner-hourglass
             :color="!!props.loaderColor ? props.loaderColor : 'brown-10'"
-            size="5em" />
+            :size="!!props.loaderSize ? props.loaderSize : '5em'" />
     </div>
 </template>
 <style lang="scss" scoped>

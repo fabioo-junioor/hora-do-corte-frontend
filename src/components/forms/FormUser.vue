@@ -5,7 +5,7 @@ import { fielsRequired, emailValidator } from '../../utils/inputValidators.js';
 
 const route = useRoute();
 const emit = defineEmits(['loginUser', 'cadUser']);
-const props = defineProps(['typeForm']);
+const props = defineProps(['typeForm', 'isLoaderTime']);
 const emailUser = defineModel('email');
 const passwordUser = defineModel('password');
 const confirmPasswordUser = defineModel('confirmPassword');
@@ -91,15 +91,19 @@ onMounted(() => {
                 v-if="typeFormUser"
                 class="q-mb-md"
                 color="brown-14"
-                label="Entrar"
-                type="submit" />
+                :label="!isLoaderTime ? 'Entrar' : ''"
+                type="submit">
+                    <slot v-if="isLoaderTime" />
+                </q-btn>
             <q-btn
                 push
                 v-else
                 class="q-mb-md"
                 color="brown-14"
-                label="Cadastrar-se"
-                type="submit" />
+                :label="!isLoaderTime ? 'Cadastrar-se' : ''"
+                type="submit">
+                <slot v-if="isLoaderTime" />
+            </q-btn>
             <div class="links-type-form-user q-pa-sm">
                 <a v-if="typeFormUser" href="#">
                     <router-link to="/cadUser">Não tem uma conta?</router-link>

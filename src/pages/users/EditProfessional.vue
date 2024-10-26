@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 import { FormDialogAddProfessional, FormDialogAddServices, 
-        FormDialogAddSchedules, CardProfessionalList } from '../../components';
+        FormDialogAddSchedules, CardProfessionalList, Loader } from '../../components';
 import { isAnyShiftOpen } from '../../utils/inputValidators.js';
 import { scheduleFormatter } from '../../utils/dataUtils.js';
 import userDefault from '../../assets/imgsDefault/user.png';
@@ -15,6 +15,8 @@ const store = useStore();
 const isDialogAdd = ref(false);
 const isDialogSchedules = ref(false);
 const isDialogServices = ref(false);
+const isLoaderEditProfessional = ref(false);
+
 const pkProfessional = ref(null);
 const pkProfessionalServices = ref(null);
 const pkProfessionalSchedule = ref(null);
@@ -206,11 +208,13 @@ const getAllProfessionals = async () => {
     let dataUserStorage = getDataUser();
     let dataProfessional = await getAll(dataUserStorage.pkUser);
     if(dataProfessional.statusCode !== 200){
+        isLoaderEditProfessional.value = true;
         store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
         return;
 
     };
     dataProfessionals.push(...dataProfessional.data);
+    isLoaderEditProfessional.value = true;
     store.commit('setAlertConfig', {message: dataProfessional.message, type: 'info'});
     return;
 
@@ -259,13 +263,18 @@ onMounted( async () => {
                     label="Adicionar" />
             </div>
             <div class="edit-professional-list q-my-lg">
-                <CardProfessionalList
-                    v-for="i in dataProfessionals" :key="i"
-                    :dataProfessional='i'
-                    @deleteProfessional='deleteProfessional'
-                    @editFormProfessional='editFormProfessional'
-                    @editScheduleProfessional='editScheduleProfessional'
-                    @editServicesProfessional='editServicesProfessional' />
+                <div v-if="!isLoaderEditProfessional">
+                    <Loader />
+                </div>
+                <div v-else>
+                    <CardProfessionalList
+                        v-for="i in dataProfessionals" :key="i"
+                        :dataProfessional='i'
+                        @deleteProfessional='deleteProfessional'
+                        @editFormProfessional='editFormProfessional'
+                        @editScheduleProfessional='editScheduleProfessional'
+                        @editServicesProfessional='editServicesProfessional' />
+                </div>
             </div>
             <FormDialogAddProfessional
                 v-model:isDialogAdd='isDialogAdd'
