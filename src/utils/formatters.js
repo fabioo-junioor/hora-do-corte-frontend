@@ -49,7 +49,6 @@ const divideHoursIntoIntervals = (schedules, time, dataIsReserved, dayWeek) => {
             );
         });
     };
-
     schedules.forEach(day => {
         //const dayWeek = Object.keys(day)[0];
 
@@ -77,8 +76,8 @@ const divideHoursIntoIntervals = (schedules, time, dataIsReserved, dayWeek) => {
     });
 
     return result;
-};
 
+};
 const orderSchedules = (schedules) => {
     return schedules.map(schedule => {
         const day = Object.keys(schedule)[0];
@@ -92,6 +91,7 @@ const orderSchedules = (schedules) => {
         };
         
         return { [day]: orderedShifts };
+
     });
 };
 const sumTimeService = (time, minutesToAdd) => {

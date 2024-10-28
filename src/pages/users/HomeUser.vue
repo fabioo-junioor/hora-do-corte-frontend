@@ -5,7 +5,7 @@ import { useStore } from 'vuex';
 import { CardProfessional, CalendarSchedule, FormReservation, Loader } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
 import { divideHoursIntoIntervals, formatString, formatPhoneNumber, orderSchedules, sumTimeService, cleanSpecialCharacters } from '../../utils/formatters.js';
-import { dateCompare, getDateToday, getCurrentTime } from '../../utils/dataUtils.js';
+import { dateCompare, getDateToday, getCurrentTime, getDayWeekFromDate, sumMinutes, calculePriceTotal } from '../../utils/dataUtils.js';
 import { phoneValidator, fielsCheckSize } from '../../utils/inputValidators.js';
 import { getUserDetailsBySlug } from '../../services/api/api.userDetails.js';
 import { getAll } from '../../services/api/api.professional.js';
@@ -20,17 +20,17 @@ const router = useRouter();
 const store = useStore();
 const isReservation = ref(false);
 const isUserExistis = ref(false);
-const isProfessionals = ref(false);
-const isServices = ref(false);
-const isSchedules = ref(false);
 const isTimes = ref(false);
 const btnReservationDisable = ref(false);
 const step = ref(1);
 
 const dataUser = reactive([]);
-const dataProfessionals = reactive([]);
-const dataServices = reactive([]);
-const dataSchedules = reactive([]);
+const dataAllProfessionals = reactive([]);
+const dataAllServices = reactive([]);
+const dataAllSchedules = reactive([]);
+const dataServiceSelected = reactive([]);
+const dataScheduleSelected = reactive([]);
+
 const timesIsReserved = reactive([]);
 const dataTimesFromWeek = reactive([]);
 const dataReservation = reactive({
@@ -46,34 +46,31 @@ const dataFormReservation = reactive({
     name: 'fabio',
     email: 'fabio@bol.com',
     phone: '11999900022',
-    observation: 'nao'
+    observation: 'sem'
 });
 const checkProfessional = async (data) => {
-    dataServices.splice(0, dataServices.length);
-    dataSchedules.splice(0, dataSchedules.length);
-    isServices.value = false;
-    isSchedules.value = false;
+    dataServiceSelected.splice(0, dataServiceSelected.length);
+    dataScheduleSelected.splice(0, dataScheduleSelected.length);
 
-    let dataService = await getService(data.pkProfessional);
-    if(dataService.data?.length === 0){
-        store.commit('setAlertConfig', {message: 'Esse profissional ainda não completou o seu cadastro!', type: 'info'});
-        return;
-        
-    };
-    let dataSchedule = await getSchedules(data.pkProfessional);
-    if(dataSchedule.data?.length === 0){
-        store.commit('setAlertConfig', {message: 'Esse profissional ainda não definiu seus horários!', type: 'info'});
-        return;
-        
-    };
     dataReservation.pkProfessional = data.pkProfessional;
     dataReservation.professional = data.name;
-    dataReservation.services = [];  
-    dataServices.push(...dataService.data[0].services);
-    let orderSchedule = orderSchedules(dataSchedule.data[0].schedules);
-    dataSchedules.push(...orderSchedule);
-    isServices.value = true;
-    isSchedules.value = true;
+    dataReservation.services = [];
+
+    dataAllServices.filter((elem) => {
+        if(elem.fkProfessional == data.pkProfessional){
+            dataServiceSelected.push(...elem.services);
+
+        };
+    });
+    dataAllSchedules.filter((elem) => {
+        if(elem.fkProfessional == data.pkProfessional){
+            dataScheduleSelected.push(...elem.schedules);
+
+        };
+    });    
+    let orderSchedule = orderSchedules(dataScheduleSelected);
+    dataScheduleSelected.splice(0, dataServiceSelected.length);
+    dataScheduleSelected.push(...orderSchedule);    
     return;
     
 };
@@ -81,13 +78,13 @@ const checkScheduleDate = async (date) => {
     if(date){
         dataTimesFromWeek.splice(0, dataTimesFromWeek.length);
         timesIsReserved.splice(0, timesIsReserved.length);
+
         dataReservation.dateReservation = date;
         isTimes.value = false;
-        //let schedulesProfessional = dataServices[verifyKeyByIdProfessional(dataReservation.idProfessional)].schedules;
         let dayWeek = getDayWeekFromDate(date);
         let totalMinutes = sumMinutes(dataReservation.services);
         dataReservation.duration = totalMinutes;
-        //dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes)[dayWeek]);
+        
         let timesReserved = await getReservationByProfessional(dataReservation.pkProfessional, date);
         if(timesReserved?.data){
             timesIsReserved.push(
@@ -96,12 +93,12 @@ const checkScheduleDate = async (date) => {
 
                 })
             );
-            dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes, timesIsReserved[0], dayWeek));
+            dataTimesFromWeek.push(...divideHoursIntoIntervals(dataScheduleSelected, totalMinutes, timesIsReserved[0], dayWeek));
             isTimes.value = true;
             return;
 
         };
-        dataTimesFromWeek.push(...divideHoursIntoIntervals(dataSchedules, totalMinutes, timesIsReserved, dayWeek));
+        dataTimesFromWeek.push(...divideHoursIntoIntervals(dataScheduleSelected, totalMinutes, timesIsReserved, dayWeek));
         isTimes.value = true;
         return;
 
@@ -114,25 +111,9 @@ const checkScheduleTime = (data) => {
     dataReservation.timeReservation = data;
 
 };
-const getDayWeekFromDate = (date) => {
-    let parts = date.split('-');
-    date = new Date(parts[2], parts[1] - 1, parts[0]);
-    let dayWeek = String(date).slice(0, 3);
-    dayWeek = dayWeek.toLowerCase();
-    return dayWeek;
-
-};
-const calculePriceTotal = () => {
-    return dataReservation.services.reduce((acc, value) => acc + Number(value.price), 0);
-    
-};
-const sumMinutes = (data) => {
-    return data.reduce((acc, minutes) => acc + Number(minutes.time), 0);
-
-};
 const verifyReservationComplete = async () => {
     if(fielsCheckSize(dataFormReservation.name) && phoneValidator(dataFormReservation.phone)){
-        dataReservation.price = calculePriceTotal();
+        dataReservation.price = calculePriceTotal(dataReservation.services);
         dataReservation.duration = sumMinutes(dataReservation.services);
         dataFormReservation.phone = cleanSpecialCharacters(dataFormReservation.phone);
         let dataReser = await createReservation(dataUser[0]?.fkUser, dataReservation, dataFormReservation);
@@ -172,30 +153,70 @@ const checkCustomerChoice = (step) => {
     return false;
 
 };
-const btnReservation = async () => {
-    isReservation.value = !isReservation.value;
-    isProfessionals.value = false;
+const getAllProfessionals = async () => {
     let dataProfessional = await getAll(dataUser[0]?.fkUser);
     if(dataProfessional.statusCode === 200 && dataProfessional.data?.length !== 0){
-        dataProfessionals.push(...dataProfessional.data);
-        isProfessionals.value = true;
+        dataAllProfessionals.push(...dataProfessional.data);
         return;
 
     };
-    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'info'});
+    if(dataProfessional.statusCode === 200 && dataProfessional.data?.length === 0){
+        //store.commit('setAlertConfig', {message: dataProfessional.message, type: 'info'});
+        return;
+
+    };
+    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
     return;
 
 };
+const getAllServices = async () => {
+    dataAllProfessionals.filter( async (elem) => {
+        let dataServices = await getService(elem.pkProfessional);
+        if(dataServices.statusCode === 200 && dataServices.data?.length !== 0){
+            dataAllServices.push(...dataServices.data);
+
+        };
+    });
+};
+const getAllSchedules = async () => {
+    dataAllProfessionals.filter( async (elem) => {
+        let dataSchedules = await getSchedules(elem.pkProfessional);
+        if(dataSchedules.statusCode === 200 && dataSchedules.data.length !== 0){
+            dataAllSchedules.push(...dataSchedules.data);
+
+        };
+    });
+};
+const servicesExistsByProfessional = (pkProfessional) => {
+    for (let i in dataAllServices) {
+        if(dataAllServices[i].fkProfessional === pkProfessional){
+            return true;
+
+        };
+        return false;
+        
+    }
+};
+const schedulesExistsByProfessional = (pkProfessional) => {
+    for (let i in dataAllSchedules) {
+        if(dataAllSchedules[i].fkProfessional === pkProfessional){
+            return true;
+
+        };
+        return false;
+        
+    }
+};
 const checkUserExists = async () => {
     let dataU = await getUserDetailsBySlug(route.params.nameUser);
-    if(dataU.statusCode !== 200 || dataU.data.length === 0){
+    if(dataU.statusCode !== 200 || dataU.data?.length === 0){
         isUserExistis.value = false;
         router.push({ name: 'notFoundUser' });
         return;
 
     };
     isUserExistis.value = true;
-    dataUser.push(...dataU.data);    
+    dataUser.push(...dataU.data);   
     let dataLastPurchase = await getLastPurchasePlan(dataU.data[0].fkUser);
     if(dataLastPurchase.statusCode === 200 && dataLastPurchase.data?.length === 0){
         btnReservationDisable.value = false;
@@ -212,8 +233,16 @@ const checkUserExists = async () => {
             return;
 
         };
+        await getAllProfessionals();
+        if(dataAllProfessionals.length !== 0){
+            await getAllServices();
+            await getAllSchedules();
+            btnReservationDisable.value = true;
+            return;
+
+        }
+        //store.commit('setAlertConfig', {message: 'Nenhum profissional cadastrado!', type: 'info'});
         btnReservationDisable.value = true;
-        //console.log(dataLastPurchase, dateCompare(dateValidity, today));
         return;
 
     };    
@@ -246,7 +275,7 @@ onMounted(async () => {
                     :disable='!btnReservationDisable'
                     size="xl"
                     color="brown-10"
-                    @click="btnReservation" >
+                    @click="isReservation = !isReservation" >
                         <i class='bx bxs-hand-up q-px-sm' />
                         Agendar
                 </q-btn>
@@ -287,16 +316,19 @@ onMounted(async () => {
                         title="Selecionar um profissional"
                         icon="person"
                         :done="step > 1">
-                        <div v-if="!isProfessionals"
-                            class="reservation-content-step-card-professional row justify-center q-my-md">
-                            <Loader />
+                        <div 
+                            v-if="!dataAllProfessionals.length"
+                            class="text-subtitle1">
+                            Ainda sem profissionais cadastrados!
                         </div>
-                        <div v-else
+                        <div
+                            v-else 
                             class="reservation-content-step-card-professional q-my-md">
                             <CardProfessional
-                                v-for="i in dataProfessionals" :key="i"
+                                v-for="i in dataAllProfessionals" :key="i"
                                 :dataProfessionals='i'
                                 v-model:pkProfessional='dataReservation.pkProfessional'
+                                :professionalEnable='servicesExistsByProfessional(i.pkProfessional) && schedulesExistsByProfessional(i.pkProfessional)'
                                 @checkProfessional='checkProfessional' />
                         </div>
                     </q-step>
@@ -305,16 +337,11 @@ onMounted(async () => {
                         title="Selecione o(s) serviço(s)"
                         icon="content_cut"
                         :done="step > 2">
-                        <div v-if="!isServices"
-                            class="reservation-content-services row justify-center q-my-md">
-                            <Loader />
-                        </div>
-                        <div v-else
-                            class="reservation-content-services q-my-md">
+                        <div class="reservation-content-services q-my-md">
                             <q-checkbox
                                 dark
                                 class="reservation-content-service text-brown-10 q-py-xs q-px-md"
-                                v-for="i in dataServices" :key="i"
+                                v-for="i in dataServiceSelected" :key="i"
                                 v-model="dataReservation.services"
                                 color="brown-8"
                                 keep-color
@@ -332,9 +359,9 @@ onMounted(async () => {
                         :done="step > 3">
                         <div class="reservation-content-schedules q-my-md">
                             <CalendarSchedule
-                                :schedules='dataSchedules'
+                                :schedules='dataScheduleSelected'
                                 :timesAvailable='dataTimesFromWeek'
-                                :isLoaderTimes='isSchedules && isTimes'
+                                :isLoaderTimes='isTimes'
                                 @checkScheduleDate='checkScheduleDate'
                                 @checkScheduleTime='checkScheduleTime'>
                                 <Loader loaderColor='white' />
@@ -456,7 +483,7 @@ onMounted(async () => {
                                             Total:
                                         </p>
                                         <p class="q-ma-none">
-                                            <q-badge outline class="q-my-xs q-pa-xs" color="white" :label="'R$ ' + calculePriceTotal()" />
+                                            <q-badge outline class="q-my-xs q-pa-xs" color="white" :label="'R$ ' + calculePriceTotal(dataReservation.services)" />
                                         </p>
                                     </div>
                                 </div>

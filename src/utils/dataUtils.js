@@ -78,7 +78,7 @@ const getDateToday = () => {
     return `${day}-${month}-${year}`;
     
 };
-function getCurrentTime() {
+const getCurrentTime = () => {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');
@@ -86,11 +86,30 @@ function getCurrentTime() {
     return `${hours}:${minutes}`;
 
 };
+const getDayWeekFromDate = (date) => {
+    let parts = date.split('-');
+    date = new Date(parts[2], parts[1] - 1, parts[0]);
+    let dayWeek = String(date).slice(0, 3);
+    dayWeek = dayWeek.toLowerCase();
+    return dayWeek;
+
+};
+const sumMinutes = (data) => {
+    return data.reduce((acc, minutes) => acc + Number(minutes.time), 0);
+
+};
+const calculePriceTotal = (data) => {
+    return data.reduce((acc, value) => acc + Number(value.price), 0);
+    
+};
 
 export {
     scheduleFormatter,
     dateCompare,
     getDateToday,
-    getCurrentTime
+    getCurrentTime,
+    getDayWeekFromDate,
+    sumMinutes,
+    calculePriceTotal
 
 };
