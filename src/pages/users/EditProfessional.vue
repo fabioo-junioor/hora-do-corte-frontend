@@ -25,7 +25,8 @@ const dataEditProfessional = reactive({
     pkProfessional: '',
     name: '',
     image: null,
-    instagram: ''
+    instagram: '',
+    isUnavailable: false
     
 });
 const dataEditServices = reactive({
@@ -134,6 +135,7 @@ const editFormProfessional = (data) => {
     dataEditProfessional.name = data.name;
     dataEditProfessional.image = data.image;
     dataEditProfessional.instagram = data.instagram;
+    dataEditProfessional.isUnavailable = !!data.isUnavailable;
     isDialogAdd.value = true;
 
 };
@@ -223,6 +225,7 @@ const cleanFormProfessional = () => {
     dataEditProfessional.name = '';
     dataEditProfessional.image = '';
     dataEditProfessional.instagram = '';
+    dataEditProfessional.isUnavailable = false;
 
 };
 const cleanDataEditServices = () => {
