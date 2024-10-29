@@ -26,6 +26,7 @@ const create = async (dataProfessional, pkUser) => {
                 name: dataProfessional.name,
                 image: dataProfessional.image,
                 instagram: dataProfessional.instagram,
+                isUnavailable: dataProfessional.isUnavailable,
                 pkUser: pkUser
             })
         });
@@ -46,7 +47,8 @@ const update = async (dataProfessional, pkProfessional) => {
             body: JSON.stringify({
                 name: dataProfessional.name,
                 image: dataProfessional.image,
-                instagram: dataProfessional.instagram
+                instagram: dataProfessional.instagram,
+                isUnavailable: dataProfessional.isUnavailable
             })
         });
         const data = await response.json();

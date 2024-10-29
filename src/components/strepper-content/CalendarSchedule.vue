@@ -55,11 +55,20 @@ const verifySchedules = () => {
     }
 };
 const checkScheduleTime = (data) => {
-    if(!data.isReserved){
+    if(!data){
         timeCheck.value = data.time;
-        emit('checkScheduleTime', data.time);
+        emit('checkScheduleTime', '');
+        return true;
 
     };
+    if(!data?.isReserved){
+        timeCheck.value = data.time;
+        emit('checkScheduleTime', data.time);
+        return true;
+
+    };
+    return false;
+
 };
 const checkDateExists = (dateReservation, schedule) => {
     let parts = dateReservation.split('-');

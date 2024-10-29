@@ -115,6 +115,14 @@ onMounted(() => {
                 </template>
               </q-input>
             </div>
+            <div class="form-edit-professional-inputs">
+              <q-checkbox
+                dark
+                keep-color
+                color="brown-10"
+                v-model="dataEditProfessional.isUnavailable"
+                label="Temporariamente indisponivel!" />
+            </div>
             <q-btn
               push
               class="q-my-lg full-width"
