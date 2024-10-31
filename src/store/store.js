@@ -36,7 +36,7 @@ const store = createStore({
         },
         setStateBuyPlan(state, data){
             state.stateBuyPlan.pkPlan = data.pkPlan;
-            state.stateBuyPlan.pkUser = data.pkUser
+            state.stateBuyPlan.pkUser = data.pkUser;
             state.stateBuyPlan.details = data.details;
 
         }
