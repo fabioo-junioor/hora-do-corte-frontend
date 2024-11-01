@@ -26,33 +26,35 @@ const verifySchedules = () => {
     let month = today.getMonth() + 1;
     let year = today.getFullYear();
     day = (day < 10) ? `0${day}` : `${day}`;
+
+    for(let i = 1; i <= 12; i++){
+        for(let j = 1; j <= 31; j++){
+            if(j < 10 && i < 10){
+                if(verifySchedulesAvailable(`${year}/0${i}/0${j}`, props.schedules) && `${year}/0${i}/0${j}` >= `${year}/0${month}/${day}`){
+                    options.push(`${year}/0${i}/0${j}`);
     
-    for(let i = 1; i <= 31; i++){
-        if(i < 10 && month < 10){
-            if(verifySchedulesAvailable(`${year}/0${month}/0${i}`, props.schedules) && `${year}/0${month}/0${i}` >= `${year}/0${month}/${day}`){
-                options.push(`${year}/0${month}/0${i}`);
-
-            }
+                };
+            };
+            if(j < 10 && i >= 10){
+                if(verifySchedulesAvailable(`${year}/${i}/0${j}`, props.schedules) && `${year}/${i}/0${j}` >= `${year}/${month}/${day}`){
+                    options.push(`${year}/${i}/0${j}`);
+                    
+                };
+            };
+            if(j >= 10 && i < 10){
+                if(verifySchedulesAvailable(`${year}/0${i}/${j}`, props.schedules) && `${year}/0${i}/${j}` >= `${year}/0${month}/${day}`){
+                    options.push(`${year}/0${i}/${j}`);
+                    
+                };
+            };
+            if(j >= 10 && i >= 10){
+                if(verifySchedulesAvailable(`${year}/${i}/${j}`, props.schedules) && `${year}/${i}/${j}` >= `${year}/${month}/${day}`){
+                    options.push(`${year}/${i}/${j}`);
+    
+                };
+            };
         }
-        if(i < 10 && month >= 10){
-            if(verifySchedulesAvailable(`${year}/${month}/0${i}`, props.schedules) && `${year}/${month}/0${i}` >= `${year}/${month}/${day}`){
-                options.push(`${year}/${month}/0${i}`);
-
-            }
-        }
-        if(i >= 10 && month < 10){
-            if(verifySchedulesAvailable(`${year}/0${month}/${i}`, props.schedules) && `${year}/0${month}/${i}` >= `${year}/0${month}/${day}`){
-                options.push(`${year}/0${month}/${i}`);
-                
-            }
-        }
-        if(i >= 10 && month >= 10){
-            if(verifySchedulesAvailable(`${year}/${month}/${i}`, props.schedules) && `${year}/${month}/${i}` >= `${year}/${month}/${day}`){
-                options.push(`${year}/${month}/${i}`);
-
-            }
-        }
-    }
+    };
 };
 const checkScheduleTime = (data) => {
     if(!data){

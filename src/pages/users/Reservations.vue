@@ -52,6 +52,7 @@ const getReservations = async () =>{
     };
     if(dataReservaions.statusCode === 200 & dataReservaions.data.length !== 0){
         dataCustomerReservation.push(...dataReservaions.data);
+        converterDataToJson(dataCustomerReservation);
         isLoaderReservations.value = true;
         return;
 
@@ -59,6 +60,12 @@ const getReservations = async () =>{
     store.commit('setAlertConfig', {message: dataReservaions.message, type: 'negative'});
     return;
 
+};
+const converterDataToJson = (data) => {
+    data.filter((elem) => {
+        elem.services = JSON.parse(elem.services);
+
+    });
 };
 const reloadPage = () => {
     setTimeout(() => {
