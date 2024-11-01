@@ -58,19 +58,21 @@ const checkProfessional = async (data) => {
 
     dataAllServices.filter((elem) => {
         if(elem.fkProfessional == data.pkProfessional){
-            dataServiceSelected.push(...elem.services);
+            let dataServicesToJson = JSON.parse(elem.services);
+            dataServiceSelected.push(...dataServicesToJson);
 
         };
     });
     dataAllSchedules.filter((elem) => {
         if(elem.fkProfessional == data.pkProfessional){
-            dataScheduleSelected.push(...elem.schedules);
+            let dataSchedulesToJson = JSON.parse(elem.schedules);
+            dataScheduleSelected.push(...dataSchedulesToJson);
 
         };
     });    
     let orderSchedule = orderSchedules(dataScheduleSelected);
-    dataScheduleSelected.splice(0, dataServiceSelected.length);
-    dataScheduleSelected.push(...orderSchedule);    
+    dataScheduleSelected.splice(0, dataScheduleSelected.length);
+    dataScheduleSelected.push(...orderSchedule);
     return;
     
 };
@@ -161,7 +163,6 @@ const getAllProfessionals = async () => {
 
     };
     if(dataProfessional.statusCode === 200 && dataProfessional.data?.length === 0){
-        //store.commit('setAlertConfig', {message: dataProfessional.message, type: 'info'});
         return;
 
     };
@@ -188,24 +189,24 @@ const getAllSchedules = async () => {
     });
 };
 const servicesExistsByProfessional = (pkProfessional) => {
-    for (let i in dataAllServices) {
+    for (let i = 0; i < dataAllServices.length; i++) {
         if(dataAllServices[i].fkProfessional === pkProfessional){
             return true;
 
-        };
-        return false;
-        
+        };        
     }
+    return false;
+
 };
 const schedulesExistsByProfessional = (pkProfessional) => {
-    for (let i in dataAllSchedules) {
+    for (let i = 0; i < dataAllSchedules.length; i++) {
         if(dataAllSchedules[i].fkProfessional === pkProfessional){
             return true;
 
-        };
-        return false;
-        
-    }
+        };        
+    };
+    return false;
+
 };
 const checkUserExists = async () => {
     let dataU = await getUserDetailsBySlug(route.params.nameUser);
@@ -217,15 +218,15 @@ const checkUserExists = async () => {
     };
     isUserExistis.value = true;
     dataUser.push(...dataU.data);   
-    let dataLastPurchase = await getLastPurchasePlan(dataU.data[0].fkUser);
+    let dataLastPurchase = await getLastPurchasePlan(dataU.data[0]?.fkUser);
     if(dataLastPurchase.statusCode === 200 && dataLastPurchase.data?.length === 0){
         btnReservationDisable.value = false;
         return;
 
     };
     if(dataLastPurchase.statusCode === 200 && dataLastPurchase.data?.length !== 0){
-        let dateValidity = dataLastPurchase.data[0].purchaseValidity;
-        let timeValidity = dataLastPurchase.data[0].purchaseTime;
+        let dateValidity = dataLastPurchase.data[0]?.purchaseValidity;
+        let timeValidity = dataLastPurchase.data[0]?.purchaseTime;
         let dateToday = getDateToday();
         let timeToday = getCurrentTime();
         if(!dateCompare(dateValidity, timeValidity, dateToday, timeToday)){
@@ -240,8 +241,7 @@ const checkUserExists = async () => {
             btnReservationDisable.value = true;
             return;
 
-        }
-        //store.commit('setAlertConfig', {message: 'Nenhum profissional cadastrado!', type: 'info'});
+        };
         btnReservationDisable.value = true;
         return;
 

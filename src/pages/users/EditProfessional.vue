@@ -144,8 +144,9 @@ const editScheduleProfessional = async (data) => {
     pkProfessional.value = data.pkProfessional;
     if(dataSchedule.statusCode === 200 && dataSchedule.data?.length !== 0){
         dataEditSchedules.splice(0, dataEditSchedules.length);
-        dataEditSchedules.push(...dataSchedule.data[0].schedules);
-        pkProfessionalSchedule.value = dataSchedule.data[0].pkProfessionalSchedules;
+        let dataSchedulesToJson = JSON.parse(dataSchedule.data[0]?.schedules);
+        dataEditSchedules.push(...dataSchedulesToJson);
+        pkProfessionalSchedule.value = dataSchedule.data[0]?.pkProfessionalSchedules;
         isDialogSchedules.value = true;
         return;
 
@@ -168,8 +169,9 @@ const editServicesProfessional = async (services) => {
     pkProfessional.value = services.pkProfessional;
     if(dataService.statusCode === 200 && dataService.data?.length !== 0){
         dataServices.push(...dataService.data);
-        newServices.push(...dataService.data[0].services);
-        pkProfessionalServices.value = dataService.data[0].pkProfessionalServices;
+        let dataServicesToJson = JSON.parse(dataService.data[0]?.services);
+        newServices.push(...dataServicesToJson);
+        pkProfessionalServices.value = dataService.data[0]?.pkProfessionalServices;
         isDialogServices.value = true;
         return;
         
@@ -269,7 +271,8 @@ onMounted( async () => {
                 <div v-if="!isLoaderEditProfessional">
                     <Loader />
                 </div>
-                <div v-else>
+                <div v-else
+                    class="edit-professional-list-card">
                     <CardProfessionalList
                         v-for="i in dataProfessionals" :key="i"
                         :dataProfessional='i'
@@ -313,7 +316,7 @@ onMounted( async () => {
     background-size: cover;
 
     .edit-professional{
-        width: 70%;
+        width: 80%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -327,13 +330,15 @@ onMounted( async () => {
         }
         .edit-professional-list{
             width: 100%;
-            display: flex;
-            justify-content: space-evenly;
-            gap: 1rem;
-            flex-wrap: wrap;
+            
+            .edit-professional-list-card{
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 1.2rem;
 
+            }
         }
-
     }
 }
 /* Breakpoints - response*/
