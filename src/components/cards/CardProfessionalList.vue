@@ -1,8 +1,11 @@
 <script setup>
+import { onMounted, ref } from 'vue';
 const emit = defineEmits(['editFormProfessional', 'editScheduleProfessional', 'editServicesProfessional', 'deleteProfessional']);
 const props = defineProps(['dataProfessional']);
+import { mainColors, numberRandom, firstCaracterName } from '../../utils/dataUtils.js';
 import userDefault from '../../assets/imgsDefault/user.png';
 
+const numberRandomColor = ref(0);
 const editFormProfessional = () => {
     emit('editFormProfessional', props.dataProfessional);
 
@@ -19,6 +22,10 @@ const deleteProfessional = (pkProfessional) => {
   emit('deleteProfessional', pkProfessional);
 
 };
+onMounted(() => {
+  numberRandomColor.value = numberRandom(mainColors.length);
+
+});
 </script>
 <template>
   <div id="card-professional-list">
@@ -27,7 +34,14 @@ const deleteProfessional = (pkProfessional) => {
       bordered 
       style="width: 20rem;"
       class="my-card bg-brown-9 text-white column items-center">
-       <q-img class="q-ma-md" height="15rem" width="15rem" :src="props.dataProfessional.image || userDefault" />
+      <q-avatar rounded :style="'width: 100%; height: 10rem;' +
+        `background-color: ${mainColors[numberRandomColor].color};`">
+        <p :style="'font-size: 5rem;' +
+          `color: ${mainColors[numberRandomColor].colorContrast};`"
+          class="q-ma-none">
+          {{ firstCaracterName(props.dataProfessional.name) }}
+        </p>
+      </q-avatar>
       <q-card-section class="row justify-between items-center full-width">
         <div class="row items-center">
           <q-icon class="q-mr-sm" name="person" size="1.5rem" color="white" />

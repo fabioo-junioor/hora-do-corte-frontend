@@ -1,13 +1,15 @@
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, onMounted, watch } from 'vue';
 import { fielsRequired, fielsCheckSize } from '../../utils/inputValidators.js';
 import { CardNotice } from '../../components';
+import { mainColors, numberRandom, firstCaracterName } from '../../utils/dataUtils.js';
 
 const emit = defineEmits(['saveFormProfessional', 'previewImage']);
 const props = defineProps(['imageProfile']);
 const isDialogAdd = defineModel('isDialogAdd');
 const dataEditProfessional = defineModel('dataEditProfessional');
 const isNotice = ref(false);
+const numberRandomColor = ref(0);
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório!',
     fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!'
@@ -25,6 +27,12 @@ const previewImage = (event) => {
     emit('previewImage', event);
 
 };
+watch(() => isDialogAdd.value, (val) => {
+    if(val){
+      numberRandomColor.value = numberRandom(mainColors.length);
+
+    };
+});
 onMounted(() => {
   isNotice.value = noticeList.length != 0 || false;
 
@@ -53,13 +61,17 @@ onMounted(() => {
         
         <q-card-section>
           <div class="edit-professional-image q-my-md row justify-center">
-            <q-avatar style="width: 10rem; height: 10rem">
-              <q-img :src="props.imageProfile"
-                fit="cover" :ratio="1" />
+            <q-avatar :style="'height: 10rem; width: 10rem;' +
+              `background-color: ${mainColors[numberRandomColor].color};`">
+              <p :style="'font-size: 4rem;' +
+                `color: ${mainColors[numberRandomColor].colorContrast};`"
+                class="q-ma-none">
+                {{!!dataEditProfessional.name ? firstCaracterName(dataEditProfessional.name) : 'Hc'}}
+              </p>
             </q-avatar>
           </div>
           <q-form @submit="onSubmit">
-            <div class="form-edit-professional-inputs">
+            <div v-if="false" class="form-edit-professional-inputs">
               <q-file
                 dark
                 filled

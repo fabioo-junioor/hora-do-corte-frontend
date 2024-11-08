@@ -5,6 +5,7 @@ import { FormEditUser, CardNotice } from '../../components';
 import { cepValidator } from '../../utils/inputValidators.js';
 import { cleanSpecialCharacters } from '../../utils/formatters.js';
 import { charactersAndSpaces } from '../../utils/inputValidators.js';
+import { firstCaracterName, mainColors, numberRandom } from '../../utils/dataUtils.js';
 import userDefault from '../../assets/imgsDefault/user.png';
 import { getCepUser } from '../../services/api/api.viacep.js';
 import { createUserDetails, getUserDetailsByPk, updateUserDetails } from '../../services/api/api.userDetails.js';
@@ -14,6 +15,7 @@ const store = useStore();
 const isNotice = ref(false);
 const isDetailsExists = ref(false);
 const imageProfile = ref(null);
+const numberRandomColor = ref(0);
 const dataEditUser = reactive({
     image: null,
     name: '',
@@ -133,6 +135,7 @@ watch(() => dataEditUser.image, () => {
 
 });
 onMounted( async () => {
+    numberRandomColor.value = numberRandom(mainColors.length);
     isNotice.value = noticeList.length != 0 || false;
     await getUserDetails();
 
@@ -148,8 +151,11 @@ onMounted( async () => {
         <div class="edit-user q-mt-xl text-white">
             <h4 class="q-ma-none">Informações do estabelecimento</h4>
             <div class="edit-user-image q-my-md">
-                <q-avatar>
-                    <img :src="imageProfile || userDefault">
+                <q-avatar :style="`background-color: ${mainColors[numberRandomColor].color};` +
+                        `border: 1px solid ${mainColors[numberRandomColor].colorContrast};`">
+                    <p :style="`color: ${mainColors[numberRandomColor].colorContrast};`">
+                        {{ firstCaracterName(dataEditUser.name) }}
+                    </p>
                 </q-avatar>
             </div>
             <FormEditUser
@@ -183,7 +189,11 @@ onMounted( async () => {
             .q-avatar{
                 width: 15rem;
                 height: 15rem;
-                object-fit: contain;
+
+                p{
+                    font-size: 7rem;
+
+                }
             }
         }
     }
