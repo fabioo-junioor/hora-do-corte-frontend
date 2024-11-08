@@ -5,7 +5,7 @@ import { useStore } from 'vuex';
 import { CardProfessional, CalendarSchedule, FormReservation, Loader } from '../../components';
 import { dataServicesTest } from '../../utils/dataTests.js';
 import { divideHoursIntoIntervals, formatString, formatPhoneNumber, orderSchedules, sumTimeService, cleanSpecialCharacters } from '../../utils/formatters.js';
-import { dateCompare, getDateToday, getCurrentTime, getDayWeekFromDate, sumMinutes, calculePriceTotal } from '../../utils/dataUtils.js';
+import { dateCompare, getDateToday, getCurrentTime, getDayWeekFromDate, sumMinutes, calculePriceTotal, mainColors, numberRandom, firstCaracterName } from '../../utils/dataUtils.js';
 import { phoneValidator, fielsCheckSize } from '../../utils/inputValidators.js';
 import { getUserDetailsBySlug } from '../../services/api/api.userDetails.js';
 import { getAll } from '../../services/api/api.professional.js';
@@ -23,6 +23,7 @@ const isUserExistis = ref(false);
 const isTimes = ref(false);
 const btnReservationDisable = ref(false);
 const step = ref(1);
+const numberRandomColor = ref(0);
 
 const dataUser = reactive([]);
 const dataAllProfessionals = reactive([]);
@@ -257,6 +258,7 @@ const reloadPage = () => {
 
 };
 onMounted(async () => {
+    numberRandomColor.value = numberRandom(mainColors.length);
     await checkUserExists();
         
 });
@@ -267,9 +269,17 @@ onMounted(async () => {
             <Loader />
         </div>
         <div v-else class="home-user">
-            <div class="home-user-details column justify-between"
+            <div class="home-user-details column justify-between items-center"
                 v-if="!isReservation">
-                <h4 class="text-white text-center q-pt-xl q-ma-none">Bem vindo!</h4>
+                <h4 class="text-white text-center q-pt-xl q-ma-none">Bem vindo ao {{dataUser[0]?.name}}!</h4>
+                <q-avatar :style="'width: 10rem; height: 10rem;' +
+                    `background-color: ${mainColors[numberRandomColor].color};`">
+                    <p :style="'font-size: 4rem;' +
+                    `color: ${mainColors[numberRandomColor].colorContrast};`"
+                    class="q-ma-none">
+                    {{ firstCaracterName(dataUser[0]?.name) }}
+                    </p>
+                </q-avatar>
                 <q-btn
                     push
                     :disable='!btnReservationDisable'
@@ -279,7 +289,7 @@ onMounted(async () => {
                         <i class='bx bxs-hand-up q-px-sm' />
                         Agendar
                 </q-btn>
-                <div class="row items-end justify-between q-pb-sm">
+                <div class="row items-end justify-between q-pb-sm full-width">
                     <div class="home-user-details-adress column items-start">
                         <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.state }}</div>
                         <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.city }}</div>
@@ -523,7 +533,7 @@ onMounted(async () => {
 
         .home-user-details{
             min-height: calc(100vh - 5rem);
-            width: 70%;
+            width: 100%;
 
             .home-user-details-contact{
                 i{
@@ -538,6 +548,8 @@ onMounted(async () => {
             }
         }
         .q-btn{
+            width: 50%;
+
             i{
                 font-size: 2rem;
 

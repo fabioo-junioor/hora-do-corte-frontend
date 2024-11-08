@@ -32,7 +32,7 @@ onMounted(() => {
 <template>
     <div id="form-edit-user">
         <q-form @submit="onSubmit">
-            <div class="form-edit-user-inputs">
+            <div v-if="false" class="form-edit-user-inputs">
                 <q-file
                     dark
                     filled
@@ -51,7 +51,7 @@ onMounted(() => {
                         <template v-slot:prepend>
                             <q-icon name="add_photo_alternate" color="white" />
                         </template>
-                    </q-file>
+                </q-file>
             </div>
             <div class="form-edit-user-inputs">
                 <q-input

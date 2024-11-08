@@ -2,11 +2,13 @@
 import { onMounted, reactive, ref } from 'vue';
 import userDefault from '../../assets/imgsDefault/user.png';
 import { formatString } from '../../utils/formatters.js';
+import { mainColors, numberRandom, firstCaracterName } from '../../utils/dataUtils.js';
 
 const props = defineProps(['dataProfessionals', 'professionalEnable']);
 const emit = defineEmits(['checkProfessional']);
 const pkProfessional = defineModel('pkProfessional');
 
+const numberRandomColor = ref(0);
 const dataAvailability = reactive({
   situation: false,
   description: ''
@@ -38,6 +40,7 @@ const onSubmit = () => {
   };
 };
 onMounted(() => {
+  numberRandomColor.value = numberRandom(mainColors.length);
   verifyAvailability();
 
 });
@@ -50,8 +53,12 @@ onMounted(() => {
       @click="onSubmit" >
       <q-badge v-if="dataAvailability.situation" color="red-8" floating>{{dataAvailability.description}}</q-badge>
       <q-card-section>
-        <q-avatar>
-          <img :src="props.dataProfessionals?.image || userDefault">
+        <q-avatar :style="`background-color: ${mainColors[numberRandomColor].color};`">
+          <p :style="'font-size: 1.5rem;' +
+            `color: ${mainColors[numberRandomColor].colorContrast};`"
+            class="q-ma-none">
+            {{ firstCaracterName(props.dataProfessionals.name) }}
+          </p>
         </q-avatar>
         <q-separator vertical class="q-mx-sm" color="white" />
         <div class="text-h6">{{ formatString(props.dataProfessionals.name) }}</div>

@@ -102,14 +102,43 @@ const calculePriceTotal = (data) => {
     return data.reduce((acc, value) => acc + Number(value.price), 0);
     
 };
+const firstCaracterName = (name) => {
+    return `${name.charAt(0).toUpperCase()}${name.at(1)}`;
+
+};
+const numberRandom = (size) => {
+     return Math.floor(Math.random() * size);
+
+};
+
+const mainColors = [
+    { color: "#FFFFFFB3", colorContrast: "#000000" }, // Branco e Preto
+    { color: "#000000B3", colorContrast: "#FFFFFF" }, // Preto e Branco
+    { color: "#FF0000B3", colorContrast: "#FFFFFF" }, // Vermelho e Branco
+    { color: "#00FF00B3", colorContrast: "#000000" }, // Verde e Preto
+    { color: "#0000FFB3", colorContrast: "#FFFFFF" }, // Azul e Branco
+    { color: "#FFFF00B3", colorContrast: "#000000" }, // Amarelo e Preto
+    { color: "#FFA500B3", colorContrast: "#000000" }, // Laranja e Preto
+    { color: "#800080B3", colorContrast: "#FFFFFF" }, // Roxo e Branco
+    { color: "#FFC0CBB3", colorContrast: "#000000" }, // Rosa e Preto
+    { color: "#00FFFFB3", colorContrast: "#000000" }, // Ciano e Preto
+    { color: "#A52A2AB3", colorContrast: "#FFFFFF" }, // Marrom e Branco
+    { color: "#808080B3", colorContrast: "#FFFFFF" }, // Cinza e Branco
+    { color: "#FFD700B3", colorContrast: "#000000" }, // Dourado e Preto
+    { color: "#008000B3", colorContrast: "#FFFFFF" }, // Verde Escuro e Branco
+    { color: "#00008BB3", colorContrast: "#FFFFFF" }  // Azul Escuro e Branco
+];
 
 export {
     scheduleFormatter,
+    mainColors,
     dateCompare,
     getDateToday,
     getCurrentTime,
     getDayWeekFromDate,
     sumMinutes,
-    calculePriceTotal
+    calculePriceTotal,
+    firstCaracterName,
+    numberRandom
 
 };
