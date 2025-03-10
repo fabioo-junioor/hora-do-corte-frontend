@@ -47,6 +47,7 @@ const getReservations = async () =>{
     let dataReservaions = await getReservation(dataUser.pkUser);
     if(dataReservaions.statusCode === 200 & dataReservaions.data.length === 0){
         store.commit('setAlertConfig', {message: dataReservaions.message, type: 'info'});
+        isLoaderReservations.value = true;
         return;
 
     };
