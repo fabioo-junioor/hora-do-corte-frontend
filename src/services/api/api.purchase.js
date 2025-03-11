@@ -16,8 +16,29 @@ const getLastPurchasePlan = async (pkUser) => {
 
     };
 };
+const createPurchasePlan = async (pkUser, pkPlan, dateToday, timeToday) => {
+    try {
+        const response = await fetch(url+`purchasePlan/${pkUser}/createPurchasePlan`, {
+            headers: header,
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                pkPlan: pkPlan,
+                purchaseDate: dateToday,
+                purchaseTime: timeToday
+            })
+        });
+        const data = await response.json();
+        return data;       
+
+    } catch(error){
+        return error;
+
+    };
+};
 
 export {
-    getLastPurchasePlan
+    getLastPurchasePlan,
+    createPurchasePlan
 
 };
