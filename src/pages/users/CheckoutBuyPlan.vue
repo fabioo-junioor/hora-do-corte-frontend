@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
+import { createPurchasePlan } from '../../services/api/api.purchase.js';
 import { getDateToday, getCurrentTime } from '../../utils/dataUtils.js';
 import barbershop from '../../assets/imgsDefault/barbershop-ai.jpg';
 
@@ -21,8 +22,6 @@ const checkoutVerify = () => {
 
     }
     let { pkPlan, pkUser, details } = store.getters.getStateBuyPlan;
-    let dateToday = getDateToday();
-    let timeToday = getCurrentTime();
     dataBuyPlan.pkUser = pkUser;
     dataBuyPlan.pkPlan = pkPlan;
     dataBuyPlan.namePlan = details[0].name;
@@ -31,8 +30,11 @@ const checkoutVerify = () => {
     return;
     
 };
-const buyPlan = () => {
-  console.log('buy ', dataBuyPlan);
+const buyPlan = async () => {
+  let dateToday = getDateToday();
+  let timeToday = getCurrentTime();
+  let dataResult = await createPurchasePlan(dataBuyPlan.pkUser, dataBuyPlan.pkPlan, dateToday, timeToday);
+  console.log(dataResult);
 
 };
 onMounted(() => {
@@ -52,7 +54,7 @@ onMounted(() => {
       <q-card dark flat class="my-card bg-brown-9">
         <q-card-section class="q-pa-none">
           <q-badge floating transparent
-            v-if="dataBuyPlan.pkPlan === 2"
+            v-if="dataBuyPlan.pkPlan === 3"
             label="-10%"
             class="badge-discount q-pa-sm text-subtitle1"
             color="red-10" />

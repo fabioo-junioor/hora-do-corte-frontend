@@ -46,7 +46,8 @@ const addProfessional = () => {
 };
 const saveFormProfessional = async (pkProfessional) => {
     if(pkProfessional == ''){
-        let dataProfessional = await create(dataEditProfessional, 4);
+        let dataUserStorage = getDataUser();
+        let dataProfessional = await create(dataEditProfessional, dataUserStorage.pkUser);
         if(dataProfessional.statusCode !== 201){
             store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
             return;
