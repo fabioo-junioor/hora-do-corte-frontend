@@ -5,18 +5,10 @@ import { FormEditUser, CardNotice } from "../../components";
 import { cepValidator } from "../../utils/inputValidators.js";
 import { cleanSpecialCharacters } from "../../utils/formatters.js";
 import { charactersAndSpaces } from "../../utils/inputValidators.js";
-import {
-  firstCaracterName,
-  mainColors,
-  numberRandom,
-} from "../../utils/dataUtils.js";
+import { firstCaracterName, mainColors, numberRandom } from "../../utils/dataUtils.js";
 import userDefault from "../../assets/imgsDefault/user.png";
 import { getCepUser } from "../../services/api/api.viacep.js";
-import {
-  createUserDetails,
-  getUserDetailsByPk,
-  updateUserDetails,
-} from "../../services/api/api.userDetails.js";
+import { createUserDetails, getUserDetailsByPk, updateUserDetails } from "../../services/api/api.userDetails.js";
 import { getDataUser } from "../../services/storage/settingSession.js";
 
 const store = useStore();

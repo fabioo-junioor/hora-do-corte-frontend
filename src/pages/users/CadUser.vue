@@ -7,35 +7,30 @@ import { createUser } from "../../services/api/api.user.js";
 const store = useStore();
 const isLoaderCad = ref(false);
 const dataFormUser = reactive({
-  email: "fabio@bol.com",
+  email: "maria@bol.com",
   password: "11111111",
-  confirmPassword: "11111111",
+  confirmPassword: "11111111"
+
 });
 const create = async () => {
   isLoaderCad.value = true;
   let dataUser = await createUser(dataFormUser);
   if (dataUser.statusCode === 200) {
     isLoaderCad.value = false;
-    store.commit("setAlertConfig", {
-      message: dataUser.message,
-      type: "warning",
-    });
+    store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
     return;
-  }
+
+  };
   if (dataUser.statusCode === 201) {
     isLoaderCad.value = false;
-    store.commit("setAlertConfig", {
-      message: dataUser.message,
-      type: "positive",
-    });
+    store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
     return;
-  }
+
+  };
   isLoaderCad.value = false;
-  store.commit("setAlertConfig", {
-    message: dataUser.message,
-    type: "negative",
-  });
+  store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
   return;
+
 };
 </script>
 <template>
