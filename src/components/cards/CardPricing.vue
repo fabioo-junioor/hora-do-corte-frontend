@@ -13,7 +13,7 @@ const buyPlan = () => {
       <q-card-section class="flex-column items-center">
         <div class="pricing-about">
             <q-badge
-              v-if="props.dataPricing.pk === 2"
+              v-if="props.dataPricing.pk === 3"
               class="badge-discount q-pa-sm"
               color="red-8">-10%</q-badge>
             <div class="text-h4 q-mb-sm">{{ props.dataPricing.name }}</div>
