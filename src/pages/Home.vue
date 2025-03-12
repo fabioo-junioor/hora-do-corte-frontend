@@ -38,6 +38,7 @@ const pricingPlans = reactive([
 ]);
 const getDetailsPlan = (pk) => {
   return pricingPlans.filter((elem) => elem.pk === pk);
+
 };
 const buyPlan = (data) => {
   let dataUser = getDataUser();
@@ -47,7 +48,8 @@ const buyPlan = (data) => {
       type: "warning",
     });
     return;
-  }
+
+  };
   store.commit("setStateBuyPlan", {
     pkPlan: data,
     pkUser: dataUser.pkUser,
@@ -55,9 +57,11 @@ const buyPlan = (data) => {
   });
   router.push({ path: "/checkoutBuyPlan" });
   return;
+
 };
 const register = () => {
   router.push({ path: "/cadUser" });
+
 };
 </script>
 <template>
@@ -409,7 +413,6 @@ const register = () => {
     }
     .home-pricings {
       width: 99%;
-      background-color: red;
 
     }
   }

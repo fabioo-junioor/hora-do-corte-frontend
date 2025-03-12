@@ -292,7 +292,7 @@ onMounted(async () => {
                         <i class='bx bxs-hand-up q-px-sm' />
                         Agendar
                 </q-btn>
-                <div class="row items-end justify-between q-pb-sm full-width">
+                <div class="home-user-details-locale row items-end justify-between q-pb-sm full-width">
                     <div class="home-user-details-adress column items-start">
                         <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.state }}</div>
                         <div class="text-subtitle1 text-grey-3">{{ dataUser[0]?.city }}</div>
@@ -313,7 +313,7 @@ onMounted(async () => {
                 </div>
             </div>
             <div v-else
-                class="reservation-content">
+                class="reservation-content q-pb-md">
                 <h4 class="text-white text-center q-pa-none q-my-lg">Bem vindo!</h4>
                 <q-stepper
                     bordered
@@ -392,12 +392,13 @@ onMounted(async () => {
                         </div>
                     </q-step>
                     <template v-slot:navigation>
-                        <q-stepper-navigation>
+                        <q-stepper-navigation class="column items-center q-mt-lg">
                             <q-btn
                                 push
                                 v-if="step === 4"
                                 @click="verifyReservationComplete"
                                 :disable='!checkCustomerChoice(step)'
+                                class="q-my-xs"
                                 icon="check_circle"
                                 color="brown-10"
                                 label="Agendar" />
@@ -406,17 +407,18 @@ onMounted(async () => {
                                 v-else
                                 @click="$refs.stepper.next()"
                                 :disable='!checkCustomerChoice(step)'
+                                class="q-my-xs"
                                 icon-right="arrow_forward"
                                 color="brown-10"
                                 label="Proxima etapa" />
                             <q-btn
-                                v-if="step > 1"
                                 flat
+                                v-if="step > 1"
+                                @click="$refs.stepper.previous()"
+                                class="q-my-xs"
                                 icon="arrow_back"
                                 color="brown-8"
-                                @click="$refs.stepper.previous()"
-                                label="Voltar"
-                                class="q-ml-sm" />
+                                label="Voltar" />
                         </q-stepper-navigation>
                     </template>
 
@@ -452,28 +454,25 @@ onMounted(async () => {
                                     Os campos (nome e telefone) são obrigatórios!
                                 </p>
                             </q-banner>
-                            <q-banner class="messages-banner-details bg-brown-8 text-white q-px-md">
-                                <h5 class="q-ma-none q-py-sm">Detalhes da reserva</h5>
-                                <q-separator class="q-my-sm" color="white" inset />
+                            <q-banner class="messages-banner-details bg-brown-8 text-white q-pa-xs">
+                                <h6 class="q-ma-none q-py-sm">Detalhes da reserva</h6>
+                                <q-separator class="q-ma-none q-my-sm" color="white" inset />
                                 <p class="q-ma-none q-py-xs">
-                                    <q-icon class="q-ma-xs" name="person" size="1.5rem" />
-                                    Profissional:
+                                    <q-icon class="q-ma-xs" name="person" size="1.5rem" />/
                                     <span v-if="!!dataReservation.professional"
                                         class="q-ml-xs">
                                         {{ formatString(dataReservation.professional) }}
                                     </span>    
                                 </p>
                                 <p class="q-ma-none q-py-xs">
-                                    <q-icon class="q-ma-xs" name="today" size="1.5rem" />
-                                    Dia:
+                                    <q-icon class="q-ma-xs" name="today" size="1.5rem" />/
                                     <span v-if="!!dataReservation.dateReservation"
                                         class="q-ml-xs">
                                         {{ dataReservation.dateReservation }}
                                     </span>
                                 </p>
                                 <p class="q-ma-none q-py-xs">
-                                    <q-icon class="q-ma-xs" name="alarm" size="1.5rem" />
-                                    Horário:
+                                    <q-icon class="q-ma-xs" name="alarm" size="1.5rem" />/
                                     <span v-if="!!dataReservation.timeReservation"
                                         class="q-ml-xs">
                                         {{ dataReservation.timeReservation }}
@@ -562,7 +561,7 @@ onMounted(async () => {
                 color: $whiteColorPrimary !important;
 
             }
-        }       
+        }      
         .reservation-content{
             height: 100%;
             width: 100%;
@@ -637,6 +636,79 @@ onMounted(async () => {
                     }
                 }
             }
+        }
+    }
+}
+/* Breakpoints - response*/
+@media only screen and (max-width: 1560px) {
+}
+@media only screen and (max-width: 1200px) {
+}
+@media only screen and (max-width: 992px) {
+    #home-user{
+        .home-user{
+            width: 99%;
+
+            .reservation-content{
+                .reservation-content-messages{
+                    .messages-banner-info{
+                        width: 60%;
+
+                    }
+                    .messages-banner-details{
+                        width: 40%;
+
+                    }
+                }
+                
+            }            
+        }
+    }
+}
+@media only screen and (max-width: 720px) {
+    #home-user{
+        .home-user{
+            .q-btn{
+                width: 100% !important;
+                
+            }
+        }
+    }
+}
+@media only screen and (max-width: 481px) {
+    #home-user{
+        .home-user{
+            .reservation-content{
+                .reservation-content-messages{
+                    .messages-banner-info{
+                        width: 50%;
+
+                    }
+                    .messages-banner-details{
+                        width: 50%;
+
+                    }
+                }   
+            }            
+        }
+    }
+}
+@media only screen and (max-width: 360px) {
+    #home-user{
+        .home-user{
+            .home-user-details{
+                .home-user-details-locale{
+                    flex-direction: column;
+
+                    .home-user-details-adress,
+                    .home-user-details-contact{
+                        align-items: flex-start;
+                        margin: .5rem 0;
+                        width: 100%;
+
+                    }
+                }
+            }          
         }
     }
 }

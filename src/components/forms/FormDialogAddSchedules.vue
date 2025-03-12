@@ -24,14 +24,6 @@ const saveFormSchedules = () => {
   emit('saveFormSchedules');
 
 };
-const verifyResponseRows = () => {
-  window.addEventListener("resize", () => {
-  const viewportWidth = window.innerWidth;
-  
-  return viewportWidth <= 720 ? 'col' : 'row';
-
-});
-};
 onMounted(() => {
   isNotice.value = noticeList.length != 0 || false;
 
