@@ -168,8 +168,9 @@ onMounted(() => {
 #navbar {
   .q-header {
     display: flex;
+    min-height: 5rem;
     background-color: $darkColorSecondary;
-
+    
     .q-toolbar {
       .navbar-logo {
         display: flex;

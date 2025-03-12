@@ -10,6 +10,7 @@ const isLoaderTimes = defineModel('isLoaderTimes');
 const splitterModel = ref(40);
 const date = ref(null);
 const timeCheck = ref('');
+const isResolution = ref(false);
 const options = reactive([]);
 const myLocale = reactive({
     days: 'Domingo_Segunda_Terça_Quarta_Quinta_Sexta_Sábado'.split('_'),
@@ -96,6 +97,18 @@ const verifyTimeBeforeToday = (timeSchedule) => {
     return true;
 
 };
+window.addEventListener("resize", () => {
+  const viewportWidth = window.innerWidth;
+  
+  if(viewportWidth <= 720){
+    isResolution.value = true;
+    return;
+
+  };
+  isResolution.value = false;
+  return;
+
+});
 watch(date, () => {
     emit('checkScheduleDate', date.value);
     checkScheduleTime('');
@@ -110,6 +123,7 @@ onMounted(() => {
 <template>
   <div id="calendar-schedules">
     <q-splitter
+        :horizontal="isResolution"
         v-model="splitterModel"
         :limits="[50, 50]"
         separator-class="bg-white"
@@ -171,7 +185,7 @@ onMounted(() => {
     
     .calendar-schedules-times{
         display: flex;
-        justify-content: center;
+        justify-content: flex-start;
         flex-wrap: wrap;
         gap: .5rem;
 

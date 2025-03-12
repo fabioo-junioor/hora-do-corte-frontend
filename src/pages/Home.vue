@@ -409,7 +409,6 @@ const register = () => {
     }
     .home-pricings {
       width: 99%;
-      background-color: red;
 
     }
   }
