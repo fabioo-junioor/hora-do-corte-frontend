@@ -43,10 +43,10 @@ onMounted(() => {
     <q-dialog
       v-model="isDialogAdd"
       full-height
+      full-width
       backdrop-filter="blur(1px)">
-      <q-card 
-        class="bg-brown-6 text-white full-height"
-        style="width: 50%; max-width: 80%;">
+      <q-card
+        class="bg-brown-6 text-white full-height">
         <q-card-section class="row items-center q-pb-none">
           <div class="text-h6">EDITAR PROFISSIONAL</div>
           <q-space />
@@ -110,6 +110,7 @@ onMounted(() => {
                 </template>
               </q-input>
             </div>
+            <!--
             <div class="form-edit-professional-inputs">
               <q-input
                 dark
@@ -127,6 +128,7 @@ onMounted(() => {
                 </template>
               </q-input>
             </div>
+            -->
             <div class="form-edit-professional-inputs">
               <q-checkbox
                 dark
@@ -151,4 +153,23 @@ onMounted(() => {
 <style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
+/* Breakpoints - response*/
+@media only screen and (max-width: 1560px) {
+
+}
+@media only screen and (max-width: 1200px) {
+
+}
+@media only screen and (max-width: 992px) {
+  
+}
+@media only screen and (max-width: 720px) {
+
+}
+@media only screen and (max-width: 481px) {
+
+}
+@media only screen and (max-width: 360px) {
+  
+}
 </style>

@@ -54,6 +54,7 @@ onMounted(() => {
     <q-dialog
       v-model="isDialogServices"
       full-height
+      full-width
       backdrop-filter="blur(1px)">
       <q-card 
         class="bg-brown-6 text-white full-height"
@@ -179,4 +180,23 @@ onMounted(() => {
 <style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
+/* Breakpoints - response*/
+@media only screen and (max-width: 1560px) {
+
+}
+@media only screen and (max-width: 1200px) {
+
+}
+@media only screen and (max-width: 992px) {
+  
+}
+@media only screen and (max-width: 720px) {
+
+}
+@media only screen and (max-width: 481px) {
+
+}
+@media only screen and (max-width: 360px) {
+  
+}
 </style>

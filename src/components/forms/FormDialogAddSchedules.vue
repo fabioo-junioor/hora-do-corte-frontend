@@ -24,6 +24,14 @@ const saveFormSchedules = () => {
   emit('saveFormSchedules');
 
 };
+const verifyResponseRows = () => {
+  window.addEventListener("resize", () => {
+  const viewportWidth = window.innerWidth;
+  
+  return viewportWidth <= 720 ? 'col' : 'row';
+
+});
+};
 onMounted(() => {
   isNotice.value = noticeList.length != 0 || false;
 
@@ -34,6 +42,7 @@ onMounted(() => {
     <q-dialog
       v-model="isDialogSchedules"
       full-height
+      full-width
       backdrop-filter="blur(1px)">
       <q-card 
         class="bg-brown-6 text-white full-height"
@@ -54,8 +63,8 @@ onMounted(() => {
           <q-form>
             <div class="form-edit-schedules-inputs">
               <h6 class="q-my-xs">Segunda-feira</h6>
-              <div class="row">
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+              <div class="col">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
@@ -112,7 +121,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Tarde</p>
                   <div class="row">
                     <q-input
@@ -169,7 +178,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Noite</p>
                   <div class="row">
                     <q-input
@@ -230,8 +239,8 @@ onMounted(() => {
             </div>
             <div class="form-edit-schedules-inputs">
               <h6 class="q-my-xs">Terça-feira</h6>
-              <div class="row">
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+              <div class="col">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
@@ -288,7 +297,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Tarde</p>
                   <div class="row">
                     <q-input
@@ -345,7 +354,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Noite</p>
                   <div class="row">
                     <q-input
@@ -406,8 +415,8 @@ onMounted(() => {
             </div>
             <div class="form-edit-schedules-inputs">
               <h6 class="q-my-xs">Quarta-feira</h6>
-              <div class="row">
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+              <div class="col">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
@@ -464,7 +473,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Tarde</p>
                   <div class="row">
                     <q-input
@@ -521,7 +530,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Noite</p>
                   <div class="row">
                     <q-input
@@ -582,8 +591,8 @@ onMounted(() => {
             </div>
             <div class="form-edit-schedules-inputs">
               <h6 class="q-my-xs">Quinta-feira</h6>
-              <div class="row">
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+              <div class="col">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
@@ -640,7 +649,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Tarde</p>
                   <div class="row">
                     <q-input
@@ -697,7 +706,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Noite</p>
                   <div class="row">
                     <q-input
@@ -758,8 +767,8 @@ onMounted(() => {
             </div>
             <div class="form-edit-schedules-inputs">
               <h6 class="q-my-xs">Sexta-feira</h6>
-              <div class="row">
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+              <div class="col">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
@@ -816,7 +825,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Tarde</p>
                   <div class="row">
                     <q-input
@@ -873,7 +882,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Noite</p>
                   <div class="row">
                     <q-input
@@ -934,8 +943,8 @@ onMounted(() => {
             </div>
             <div class="form-edit-schedules-inputs">
               <h6 class="q-my-xs">Sábado</h6>
-              <div class="row">
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+              <div class="col">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
@@ -992,7 +1001,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Tarde</p>
                   <div class="row">
                     <q-input
@@ -1049,7 +1058,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Noite</p>
                   <div class="row">
                     <q-input
@@ -1110,8 +1119,8 @@ onMounted(() => {
             </div>
             <div class="form-edit-schedules-inputs">
               <h6 class="q-my-xs">Domingo</h6>
-              <div class="row">
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+              <div class="col">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Manhã</p>
                   <div class="row">
                     <q-input
@@ -1168,7 +1177,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs q-mx-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Tarde</p>
                   <div class="row">
                     <q-input
@@ -1225,7 +1234,7 @@ onMounted(() => {
                     </q-input>
                   </div>
                 </div>
-                <div class="col q-pa-xs bg-brown-5 rounded-borders">
+                <div class="col q-pa-xs q-my-sm bg-brown-5 rounded-borders">
                   <p class="q-ma-none">Noite</p>
                   <div class="row">
                     <q-input
@@ -1300,4 +1309,23 @@ onMounted(() => {
 <style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
+/* Breakpoints - response*/
+@media only screen and (max-width: 1560px) {
+
+}
+@media only screen and (max-width: 1200px) {
+
+}
+@media only screen and (max-width: 992px) {
+  
+}
+@media only screen and (max-width: 720px) {
+
+}
+@media only screen and (max-width: 481px) {
+
+}
+@media only screen and (max-width: 360px) {
+  
+}
 </style>

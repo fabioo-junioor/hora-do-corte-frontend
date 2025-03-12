@@ -158,6 +158,7 @@ const checkCustomerChoice = (step) => {
 };
 const getAllProfessionals = async () => {
     let dataProfessional = await getAll(dataUser[0]?.fkUser);
+    console.log(dataProfessional)
     if(dataProfessional.statusCode === 200 && dataProfessional.data?.length !== 0){
         dataAllProfessionals.push(...dataProfessional.data);
         return;
@@ -174,6 +175,7 @@ const getAllProfessionals = async () => {
 const getAllServices = async () => {
     dataAllProfessionals.filter( async (elem) => {
         let dataServices = await getService(elem.pkProfessional);
+        console.log(dataServices)
         if(dataServices.statusCode === 200 && dataServices.data?.length !== 0){
             dataAllServices.push(...dataServices.data);
 
@@ -183,6 +185,7 @@ const getAllServices = async () => {
 const getAllSchedules = async () => {
     dataAllProfessionals.filter( async (elem) => {
         let dataSchedules = await getSchedules(elem.pkProfessional);
+        console.log(dataSchedules)
         if(dataSchedules.statusCode === 200 && dataSchedules.data.length !== 0){
             dataAllSchedules.push(...dataSchedules.data);
 
@@ -234,7 +237,7 @@ const checkUserExists = async () => {
             btnReservationDisable.value = false;
             return;
 
-        };
+        };        
         await getAllProfessionals();
         if(dataAllProfessionals.length !== 0){
             await getAllServices();
@@ -246,7 +249,7 @@ const checkUserExists = async () => {
         btnReservationDisable.value = true;
         return;
 
-    };    
+    };
     return;
 
 };

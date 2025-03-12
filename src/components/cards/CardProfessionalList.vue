@@ -31,8 +31,7 @@ onMounted(() => {
   <div id="card-professional-list">
     <q-card
       dark
-      bordered 
-      style="width: 20rem;"
+      bordered
       class="my-card bg-brown-9 text-white column items-center">
       <q-avatar rounded :style="'width: 100%; height: 10rem;' +
         `background-color: ${mainColors[numberRandomColor].color};`">
@@ -93,6 +92,7 @@ onMounted(() => {
 #card-professional-list{
   .my-card{
     position: relative;
+    width: 20rem;
     
     a{
       text-decoration: none;
@@ -117,15 +117,21 @@ onMounted(() => {
 }
 /* Breakpoints - response*/
 @media only screen and (max-width: 1560px) {
+
 }
 @media only screen and (max-width: 1200px) {
+
 }
-@media only screen and (max-width: 960px) {
+@media only screen and (max-width: 992px) {
+
 }
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 720px) {
+  
 }
-@media only screen and (max-width: 480px) {
+@media only screen and (max-width: 481px) {
+
 }
-@media only screen and (max-width: 320px) {
+@media only screen and (max-width: 360px) {
+  
 }
 </style>
