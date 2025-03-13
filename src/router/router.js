@@ -34,7 +34,7 @@ const routes = [
         component: LoginUser,
         beforeEnter: (_, __, next) => {
             let dataUser = getDataUser();
-            if(!!dataUser){
+            if(!!dataUser?.token){
                 next('/reservations');
                 return;
 
@@ -50,7 +50,7 @@ const routes = [
         component: CadUser,
         beforeEnter: (_, __, next) => {
             let dataUser = getDataUser();
-            if(!!dataUser){
+            if(!!dataUser?.token){
                 next('/reservations');
                 return;
 
@@ -66,7 +66,7 @@ const routes = [
         component: Reservations,
         beforeEnter: (_, __, next) => {
             let dataUser = getDataUser();
-            if(!dataUser){
+            if(!dataUser?.token){
                next('/');
                return; 
 
@@ -82,7 +82,7 @@ const routes = [
         component: EditUser,
         beforeEnter: (_, __, next) => {
             let dataUser = getDataUser();
-            if(!dataUser){
+            if(!dataUser?.token){
                 next('/');
                 return;
 
@@ -98,7 +98,7 @@ const routes = [
         component: EditPasswordUser,
         beforeEnter: (_, __, next) => {
             let dataUser = getDataUser();
-            if(!dataUser){
+            if(!dataUser?.token){
                 next('/');
                 return;
 
@@ -114,7 +114,7 @@ const routes = [
         component: EditProfessional,
         beforeEnter: (_, __, next) => {
             let dataUser = getDataUser();
-            if(!dataUser){
+            if(!dataUser?.token){
                 next('/');
                 return;
 
@@ -130,7 +130,7 @@ const routes = [
         component: CheckoutBuyPlan,
         beforeEnter: (_, __, next) => {
             let dataUser = getDataUser();
-            if(!dataUser){
+            if(!dataUser?.token){
                 next('/');
                 return;
 

@@ -5,18 +5,10 @@ import { FormEditUser, CardNotice } from "../../components";
 import { cepValidator } from "../../utils/inputValidators.js";
 import { cleanSpecialCharacters } from "../../utils/formatters.js";
 import { charactersAndSpaces } from "../../utils/inputValidators.js";
-import {
-  firstCaracterName,
-  mainColors,
-  numberRandom,
-} from "../../utils/dataUtils.js";
+import { firstCaracterName, mainColors, numberRandom } from "../../utils/dataUtils.js";
 import userDefault from "../../assets/imgsDefault/user.png";
 import { getCepUser } from "../../services/api/api.viacep.js";
-import {
-  createUserDetails,
-  getUserDetailsByPk,
-  updateUserDetails,
-} from "../../services/api/api.userDetails.js";
+import { createUserDetails, getUserDetailsByPk, updateUserDetails } from "../../services/api/api.userDetails.js";
 import { getDataUser } from "../../services/storage/settingSession.js";
 
 const store = useStore();
@@ -46,55 +38,43 @@ const saveFormUser = async () => {
   dataEditUser.phone = cleanSpecialCharacters(dataEditUser.phone);
   let dataUserStorage = getDataUser();
 
+  /*
   if (charactersAndSpaces(dataEditUser.slug)) {
-    store.commit("setAlertConfig", {
-      message: "Nome de usuário (link) inválido!",
-      type: "warning",
-    });
+    store.commit("setAlertConfig", { message: "Nome de usuário (link) inválido!", type: "warning" });
     return;
-  }
+
+  };
+  */
   if (isDetailsExists.value) {
-    let dataUser = await updateUserDetails(
-      dataEditUser,
-      dataUserStorage.pkUser
-    );
+    let dataUser = await updateUserDetails(dataEditUser, dataUserStorage.pkUser);
     if (dataUser.statusCode === 201) {
-      store.commit("setAlertConfig", {
-        message: dataUser.message,
-        type: "positive",
-      });
+      store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
       return;
-    }
+
+    };
     if (dataUser.statusCode === 200) {
-      store.commit("setAlertConfig", {
-        message: dataUser.message,
-        type: "warning",
-      });
+      store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
       return;
-    }
-    store.commit("setAlertConfig", {
-      message: dataUser.message,
-      type: "negative",
-    });
+
+    };
+    store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
     return;
-  }
+
+  };
   let dataUser = await createUserDetails(dataEditUser, dataUserStorage.pkUser);
   if (dataUser.statusCode === 201) {
-    store.commit("setAlertConfig", {
-      message: dataUser.message,
-      type: "positive",
-    });
+    store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
     return;
-  }
+
+  };
   if (dataUser.statusCode === 200) {
     store.commit("setAlertConfig", { message: dataUser.message, type: "info" });
     return;
-  }
-  store.commit("setAlertConfig", {
-    message: dataUser.message,
-    type: "negative",
-  });
+
+  };
+  store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
   return;
+
 };
 const previewImage = (event) => {
   var input = event.target;
@@ -121,18 +101,18 @@ const getUserDetails = async () => {
     dataEditUser.number = dataUser.data[0].number;
     isDetailsExists.value = true;
     return;
-  }
+
+  };
   if (dataUser.statusCode === 200 && dataUser.data?.length === 0) {
     store.commit("setAlertConfig", { message: dataUser.message, type: "info" });
     isDetailsExists.value = false;
     return;
+
   }
-  store.commit("setAlertConfig", {
-    message: dataUser.message,
-    type: "negative",
-  });
+  store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
   isDetailsExists.value = false;
   return;
+
 };
 const searchCep = async () => {
   if (!cepValidator(dataEditUser.cep)) {
@@ -140,24 +120,26 @@ const searchCep = async () => {
     dataEditUser.city = "";
     dataEditUser.street = "";
     return;
-  }
+
+  };
   let cleanString = cleanSpecialCharacters(dataEditUser.cep);
   let dataCep = await getCepUser(cleanString);
   dataEditUser.state = dataCep.estado;
   dataEditUser.city = dataCep.localidade;
   dataEditUser.street = dataCep.logradouro;
   return;
+
 };
-watch(
-  () => dataEditUser.image,
-  () => {
+watch(() => dataEditUser.image, () => {
     imageProfile.value = !dataEditUser.image ? userDefault : imageProfile.value;
+
   }
 );
 onMounted(async () => {
   numberRandomColor.value = numberRandom(mainColors.length);
   isNotice.value = noticeList.length != 0 || false;
   await getUserDetails();
+
 });
 </script>
 <template>

@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { fielsRequired, phoneValidator, cepValidator, fielsCheckSize } from '../../utils/inputValidators.js';
+import { fielsRequired, phoneValidator, cepValidator, validStringSlug, fielsCheckSize } from '../../utils/inputValidators.js';
 
 const emit = defineEmits(['saveFormUser', 'previewImage', 'searchCep']);
 const dataEditUser = defineModel('dataEditUser');
@@ -9,8 +9,8 @@ const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório!',
     phone: v => phoneValidator(v) || 'Numero incorreto!',
     cep: v => cepValidator(v) || 'Numero incorreto!',
-    fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!'
-    
+    fielsSize: v => fielsCheckSize(v) || 'Campo deve conter no minimo 3 caracteres!',
+    validSlug: v => validStringSlug(v) || 'O nome de usuário não segue os padrões!'
 });
 const searchCep = () => {
     emit('searchCep');
@@ -82,7 +82,7 @@ onMounted(() => {
                     label="Nome de usuário (link) *"
                     lazy-rules
                     :hint="!!dataEditUser.slug ? urlApp + dataEditUser.slug : ''"
-                    :rules="[rulesUser.required, rulesUser.fielsSize]">
+                    :rules="[rulesUser.required, rulesUser.fielsSize, rulesUser.validSlug]">
                     <template v-slot:prepend>
                         <q-icon name="person_search" color="white" />
                     </template>
