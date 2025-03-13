@@ -3,10 +3,7 @@ import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { AlertUser } from "../components";
-import {
-  getDataUser,
-  deleteDataUser,
-} from "../services/storage/settingSession.js";
+import { getDataUser,deleteDataUser } from "../services/storage/settingSession.js";
 
 const store = useStore();
 const router = useRouter();
@@ -17,40 +14,49 @@ const checkLoginUser = () => {
   if (!dataUser) {
     isUserLogin.value = false;
     return;
+    
   }
   isUserLogin.value = true;
   return;
+
 };
 const getLogin = () => {
   router.push({ path: "/loginUser" });
+
 };
 const getLogout = () => {
   deleteDataUser();
   store.commit("setAlertConfig", { message: "Saindo!", type: "positive" });
-  //store.commit('setStateUser', {login: false});
+  store.commit('setStateUser', {login: false});
   reloadPage();
+
 };
 const getEditUser = () => {
   router.push({ path: "/editUser" });
+
 };
 const getEditPassword = () => {
   router.push({ path: "/editPasswordUser" });
+
 };
 const getEditProfessional = () => {
   router.push({ path: "/editProfessional" });
+
 };
 const getReservations = () => {
   router.push({ path: "/reservations" });
+
 };
 const reloadPage = () => {
   setTimeout(() => {
     location.reload();
+    
   }, 3000);
+
 };
-watch(
-  () => store.getters.getStateUser.isUserLogin,
-  (val) => {
+watch(() => store.getters.getStateUser.isUserLogin, (val) => {
     isUserLogin.value = val;
+
   }
 );
 onMounted(() => {

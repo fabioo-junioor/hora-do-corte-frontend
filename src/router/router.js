@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { Home, LoginUser, 
-        CadUser, HomeUser, 
+        CadUser, RecoverPassUser, HomeUser, 
         EditUser, EditPasswordUser,
         EditProfessional, Reservations,
         CheckoutBuyPlan,
@@ -48,6 +48,22 @@ const routes = [
         path: '/cadUser',
         name: 'cadUser',
         component: CadUser,
+        beforeEnter: (_, __, next) => {
+            let dataUser = getDataUser();
+            if(!!dataUser?.token){
+                next('/reservations');
+                return;
+
+            };
+            next();
+            return;
+
+        }
+    },
+    {
+        path: '/recoverPassUser',
+        name: 'recoverPassUser',
+        component: RecoverPassUser,
         beforeEnter: (_, __, next) => {
             let dataUser = getDataUser();
             if(!!dataUser?.token){

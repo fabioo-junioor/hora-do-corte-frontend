@@ -3,39 +3,27 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { FormUser, Loader } from "../../components";
-import { loginUser } from "../../services/api/api.user.js";
+import { loginUser, recoverPassUser } from "../../services/api/api.user.js";
 import { setDataUser } from "../../services/storage/settingSession.js";
 
 const store = useStore();
 const router = useRouter();
-const isLoaderLogin = ref(false);
+const isLoaderRecover = ref(false);
 const dataFormUser = reactive({
-  email: "fabio@bol.com",
-  password: "55555555"
-
+  email: "fabio@bol.com"
 });
-const login = async () => {
-  isLoaderLogin.value = true;
-  let dataUser = await loginUser(dataFormUser);
-  if (dataUser.data?.length === 0 && dataUser.statusCode === 200) {
-    isLoaderLogin.value = false;
-    store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
+const recoverPass = async () => {
+  isLoaderRecover.value = true;
+  let dataUser = await recoverPassUser(dataFormUser.email);
+  if(dataUser.statusCode !== 201){
+    isLoaderRecover.value = false;
+    store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
     return;
 
   };
-  if (dataUser.data?.length !== 0 && dataUser.statusCode === 200) {
-    isLoaderLogin.value = false;
-    setDataUser(dataUser.data);
-    store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
-    store.commit("setStateUser", { login: true });
-    router.push({ path: "/reservations" });
-    location.reload();
-    return;
-
-  };
-  isLoaderLogin.value = false;
-  store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
-  return;
+  isLoaderRecover.value = false;
+  store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
+  return;  
 
 };
 const reloadPage = () => {
@@ -46,8 +34,8 @@ const reloadPage = () => {
 };
 </script>
 <template>
-  <div id="login-user">
-    <div class="login-user-img">
+  <div id="recover-pass-user">
+    <div class="recover-pass-user-img">
       <q-img
         src="../../assets/logo/logo.png"
         height="70%"
@@ -55,14 +43,13 @@ const reloadPage = () => {
         fit="contain"
       />
     </div>
-    <div class="login-user-forms">
+    <div class="recover-pass-user-forms">
       <FormUser
         class="form-user"
-        typeForm="loginUser"
+        typeForm="recoverPass"
         v-model:email="dataFormUser.email"
-        v-model:password="dataFormUser.password"
-        :isLoaderTime="isLoaderLogin"
-        @loginUser="login"
+        :isLoaderTime="isLoaderRecover"
+        @recoverPass="recoverPass"
       >
         <Loader loaderSize="1.2em" loaderColor="white" />
       </FormUser>
@@ -72,13 +59,13 @@ const reloadPage = () => {
 <style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
-#login-user {
+#recover-pass-user {
   display: flex;
   justify-content: center;
   align-items: center;
   font-family: "Fredoka", sans-serif;
 
-  .login-user-img {
+  .recover-pass-user-img {
     width: 50%;
     min-height: calc(100vh - 5rem);
     display: flex;
@@ -87,7 +74,7 @@ const reloadPage = () => {
     background-color: $darkColorSecondary;
 
   }
-  .login-user-forms {
+  .recover-pass-user-forms {
     width: 50%;
     min-height: calc(100vh - 5rem);
     display: flex;
@@ -116,26 +103,26 @@ const reloadPage = () => {
 @media only screen and (max-width: 992px) {
 }
 @media only screen and (max-width: 720px) {
-  #login-user {
-    .login-user-img {
+  #recover-pass-user {
+    .recover-pass-user-img {
       width: 40%;
 
     }
-    .login-user-forms {
+    .recover-pass-user-forms {
       width: 60%;
 
     }
   }
 }
 @media only screen and (max-width: 481px) {
-  #login-user {
+  #recover-pass-user {
     flex-direction: column;
 
-    .login-user-img {
+    .recover-pass-user-img {
       display: none;
 
     }
-    .login-user-forms {
+    .recover-pass-user-forms {
       width: 100%;
       
     }

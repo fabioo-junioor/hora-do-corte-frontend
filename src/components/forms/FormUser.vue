@@ -4,14 +4,14 @@ import { useRoute } from 'vue-router';
 import { fielsRequired, emailValidator } from '../../utils/inputValidators.js';
 
 const route = useRoute();
-const emit = defineEmits(['loginUser', 'cadUser']);
+const emit = defineEmits(['loginUser', 'cadUser', 'recoverPass']);
 const props = defineProps(['typeForm', 'isLoaderTime']);
 const emailUser = defineModel('email');
 const passwordUser = defineModel('password');
 const confirmPasswordUser = defineModel('confirmPassword');
 const isPwd1 = ref(true);
 const isPwd2 = ref(true);
-const typeFormUser = ref(true);
+const typeFormUser = ref('');
 const rulesUser = reactive({
     required: v => fielsRequired(v) || 'Campo obrigatório!',
     email: v => emailValidator(v) || 'Email inválido!',
@@ -24,12 +24,28 @@ const onSubmit = () => {
         return;
 
     };
-    emit('createUser');
+    if(props.typeForm == 'cadUser'){
+        emit('cadUser');
+        return;
+
+    };
+    emit('recoverPass');
     return;
     
 };
 onMounted(() => {
-    typeFormUser.value = (props.typeForm == 'loginUser') || false;
+    if(props.typeForm == 'loginUser'){
+        typeFormUser.value = 'loginUser';
+        return;
+
+    };
+    if(props.typeForm == 'cadUser'){
+        typeFormUser.value = 'cadUser';
+        return;
+
+    };
+    typeFormUser.value = 'recoverPass';
+    return;
 
 });
 </script>
@@ -51,6 +67,7 @@ onMounted(() => {
             </q-input>
             <q-input
                 dark
+                v-if="typeFormUser == 'loginUser' || typeFormUser == 'cadUser'"
                 class="q-mb-md"
                 color="white"
                 v-model="passwordUser"
@@ -69,7 +86,7 @@ onMounted(() => {
             </q-input>
             <q-input
                 dark
-                v-if="!typeFormUser"
+                v-if="typeFormUser == 'cadUser'"
                 class="q-mb-md"
                 color="white"
                 v-model="confirmPasswordUser"
@@ -88,7 +105,7 @@ onMounted(() => {
             </q-input>
             <q-btn
                 push
-                v-if="typeFormUser"
+                v-if="typeFormUser == 'loginUser'"
                 class="q-mb-md"
                 color="brown-14"
                 :label="!isLoaderTime ? 'Entrar' : ''"
@@ -97,19 +114,38 @@ onMounted(() => {
                 </q-btn>
             <q-btn
                 push
-                v-else
+                v-if="typeFormUser == 'cadUser'"
                 class="q-mb-md"
                 color="brown-14"
                 :label="!isLoaderTime ? 'Cadastrar-se' : ''"
                 type="submit">
                 <slot v-if="isLoaderTime" />
             </q-btn>
-            <div class="links-type-form-user q-pa-sm">
-                <a v-if="typeFormUser" href="#">
+            <q-btn
+                push
+                v-if="typeFormUser == 'recoverPass'"
+                class="q-mb-md"
+                color="brown-14"
+                :label="!isLoaderTime ? 'Enviar' : ''"
+                type="submit">
+                <slot v-if="isLoaderTime" />
+            </q-btn>
+            <div class="links-type-form-user column">
+                <a v-if="typeFormUser == 'loginUser'"
+                 href="#" class="q-my-xs">
                     <router-link to="/cadUser">Não tem uma conta?</router-link>
                 </a>
-                <a v-else href="#">
+                <a v-if="typeFormUser == 'cadUser'"
+                    href="#" class="q-my-xs">
                     <router-link to="/loginUser">Já tem uma conta?</router-link>
+                </a>
+                <a v-if="typeFormUser == 'loginUser'"
+                    href="#" class="q-my-xs">
+                    <router-link to="/recoverPassUser">Esqueci minha senha!</router-link>
+                </a>
+                <a v-if="typeFormUser == 'recoverPass'"
+                 href="#" class="q-my-xs">
+                    <router-link to="/loginUser">Voltar</router-link>
                 </a>
             </div>
         </q-form>
