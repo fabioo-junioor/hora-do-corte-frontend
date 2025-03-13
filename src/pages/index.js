@@ -4,6 +4,7 @@ import NotFoundUser from './NotFoundUser.vue';
 
 import LoginUser from './users/LoginUser.vue';
 import CadUser from './users/CadUser.vue';
+import RecoverPassUser from './users/RecoverPassUser.vue';
 import HomeUser from './users/HomeUser.vue';
 import EditUser from './users/EditUser.vue';
 import EditPasswordUser from './users/EditPasswordUser.vue';
@@ -17,6 +18,7 @@ export {
     NotFoundUser,
     LoginUser,
     CadUser,
+    RecoverPassUser,
     HomeUser,
     EditUser,
     EditPasswordUser,

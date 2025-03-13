@@ -2,10 +2,7 @@
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import { CardReservation, Loader, CardNotice } from "../../components";
-import {
-  getReservation,
-  deleteReservation,
-} from "../../services/api/api.reservation.js";
+import { getReservation, deleteReservation } from "../../services/api/api.reservation.js";
 import { getDataUser } from "../../services/storage/settingSession.js";
 
 const store = useStore();
@@ -55,16 +52,17 @@ const getReservations = async () => {
   let dataReservaions = await getReservation(dataUser.pkUser);
   if ((dataReservaions.statusCode === 200) &
     (dataReservaions?.data.length === 0)) {
+      isLoaderReservations.value = true;
     store.commit("setAlertConfig", { message: dataReservaions.message, type: "info" });
-    isLoaderReservations.value = true;
     return;
 
   };
   if ((dataReservaions.statusCode === 200) &
-    (dataReservaions.data.length !== 0)) {
+    (dataReservaions?.data.length !== 0)) {
     dataCustomerReservation.push(...dataReservaions.data);
     converterDataToJson(dataCustomerReservation);
     isLoaderReservations.value = true;
+    store.commit("setAlertConfig", { message: dataReservaions.message, type: "positive" });
     return;
 
   };
@@ -81,6 +79,7 @@ const converterDataToJson = (data) => {
 const reloadPage = () => {
   setTimeout(() => {
     location.reload();
+
   }, 3000);
 
 };
@@ -100,7 +99,7 @@ onMounted(async () => {
     />
     <h4 class="text-white q-my-lg">Lista de agendamentos</h4>
     <div v-if="!isLoaderReservations">
-      <Loader />
+      <Loader class="row justify-center items-center" />
     </div>
     <div v-else>
       <CardReservation

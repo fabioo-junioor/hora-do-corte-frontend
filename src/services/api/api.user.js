@@ -62,10 +62,29 @@ const updateUser = async (dataUser) => {
 
     };
 };
+const recoverPassUser = async (email) => {
+    try {
+        const response = await fetch(url+`user/recoverPassUser`, {
+            headers: header,
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                email: email
+            })
+        });
+        const data = await response.json();
+        return data;
+
+    } catch(error){
+        return error;
+
+    };
+};
 
 export {
     loginUser,
     createUser,
-    updateUser
+    updateUser,
+    recoverPassUser
 
 };
