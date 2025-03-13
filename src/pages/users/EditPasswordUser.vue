@@ -13,24 +13,18 @@ const dataEditPasswordUser = reactive({
 const saveFormPasswordUser = async () => {
   let dataUser = await updateUser(dataEditPasswordUser);
   if (dataUser.statusCode === 200) {
-    store.commit("setAlertConfig", {
-      message: dataUser.message,
-      type: "warning",
-    });
+    store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
     return;
-  }
+
+  };
   if (dataUser.statusCode === 201) {
-    store.commit("setAlertConfig", {
-      message: dataUser.message,
-      type: "positive",
-    });
+    store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
     return;
-  }
-  store.commit("setAlertConfig", {
-    message: dataUser.message,
-    type: "negative",
-  });
+
+  };
+  store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
   return;
+
 };
 </script>
 <template>

@@ -53,45 +53,41 @@ const groupByDate = (array) => {
 const getReservations = async () => {
   let dataUser = getDataUser();
   let dataReservaions = await getReservation(dataUser.pkUser);
-  if (
-    (dataReservaions.statusCode === 200) &
-    (dataReservaions.data.length === 0)
-  ) {
-    store.commit("setAlertConfig", {
-      message: dataReservaions.message,
-      type: "info",
-    });
+  if ((dataReservaions.statusCode === 200) &
+    (dataReservaions?.data.length === 0)) {
+    store.commit("setAlertConfig", { message: dataReservaions.message, type: "info" });
     isLoaderReservations.value = true;
     return;
-  }
-  if (
-    (dataReservaions.statusCode === 200) &
-    (dataReservaions.data.length !== 0)
-  ) {
+
+  };
+  if ((dataReservaions.statusCode === 200) &
+    (dataReservaions.data.length !== 0)) {
     dataCustomerReservation.push(...dataReservaions.data);
     converterDataToJson(dataCustomerReservation);
     isLoaderReservations.value = true;
     return;
-  }
-  store.commit("setAlertConfig", {
-    message: dataReservaions.message,
-    type: "negative",
-  });
+
+  };
+  store.commit("setAlertConfig", { message: dataReservaions.message, type: "negative" });
   return;
+
 };
 const converterDataToJson = (data) => {
   data.filter((elem) => {
     elem.services = JSON.parse(elem.services);
   });
+
 };
 const reloadPage = () => {
   setTimeout(() => {
     location.reload();
   }, 3000);
+
 };
 onMounted(async () => {
   isNotice.value = noticeList.length != 0 || false;
   await getReservations();
+
 });
 </script>
 <template>

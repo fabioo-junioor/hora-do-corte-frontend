@@ -18,34 +18,30 @@ const login = async () => {
   let dataUser = await loginUser(dataFormUser);
   if (dataUser.data?.length === 0 && dataUser.statusCode === 200) {
     isLoaderLogin.value = false;
-    store.commit("setAlertConfig", {
-      message: dataUser.message,
-      type: "warning",
-    });
+    store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
     return;
-  }
+
+  };
   if (dataUser.data?.length !== 0 && dataUser.statusCode === 200) {
     isLoaderLogin.value = false;
-    store.commit("setAlertConfig", {
-      message: dataUser.message,
-      type: "positive",
-    });
+    store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
     setDataUser(dataUser.data);
+    console.log(dataUser.data);
     store.commit("setStateUser", { login: true });
     router.push({ path: "/reservations" });
     return;
-  }
+
+  };
   isLoaderLogin.value = false;
-  store.commit("setAlertConfig", {
-    message: dataUser.message,
-    type: "negative",
-  });
+  store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
   return;
+
 };
 const reloadPage = () => {
   setTimeout(() => {
     location.reload();
   }, 3000);
+
 };
 </script>
 <template>

@@ -1,5 +1,7 @@
 const url = import.meta.env.VITE_ROOT_API;
-const header = { "Content-Type" : "application/json" };
+import { getDataUser } from '../storage/settingSession.js';
+const dataUser = getDataUser();
+const header = { "Content-Type" : "application/json", Authorization: `Bearer ${dataUser?.token}` };
 
 const getReservation = async (pkUser) => {
     try {

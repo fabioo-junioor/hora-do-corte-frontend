@@ -15,13 +15,12 @@ const dataBuyPlan = reactive({
 });
 
 const checkoutVerify = () => {
-  if (
-    store.getters.getStateBuyPlan.pkPlan == null ||
-    store.getters.getStateBuyPlan.pkUser == null
-  ) {
+  if (store.getters.getStateBuyPlan.pkPlan == null ||
+    store.getters.getStateBuyPlan.pkUser == null){
     console.log("algo deu errado!");
     isParamsStore.value = false;
     return;
+
   }
   let { pkPlan, pkUser, details } = store.getters.getStateBuyPlan;
   dataBuyPlan.pkUser = pkUser;
@@ -30,20 +29,18 @@ const checkoutVerify = () => {
   dataBuyPlan.details.push(...details);
   isParamsStore.value = true;
   return;
+
 };
 const buyPlan = async () => {
   let dateToday = getDateToday();
   let timeToday = getCurrentTime();
-  let dataResult = await createPurchasePlan(
-    dataBuyPlan.pkUser,
-    dataBuyPlan.pkPlan,
-    dateToday,
-    timeToday
-  );
+  let dataResult = await createPurchasePlan(dataBuyPlan.pkUser, dataBuyPlan.pkPlan, dateToday, timeToday);
   console.log(dataResult);
+
 };
 onMounted(() => {
   checkoutVerify();
+
 });
 </script>
 <template>
