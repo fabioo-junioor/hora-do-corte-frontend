@@ -35,7 +35,18 @@ const buyPlan = async () => {
   let dateToday = getDateToday();
   let timeToday = getCurrentTime();
   let dataResult = await createPurchasePlan(dataBuyPlan.pkUser, dataBuyPlan.pkPlan, dateToday, timeToday);
-  console.log(dataResult);
+  if(dataResult.statusCode === 200){
+    store.commit("setAlertConfig", { message: dataResult.message, type: "warning" });
+    return;
+
+  };
+  if(dataResult.statusCode === 201){
+    store.commit("setAlertConfig", { message: dataResult.message, type: "positive" });
+    return;
+    
+  }
+  store.commit("setAlertConfig", { message: dataResult.message, type: "negative" });
+  return;
 
 };
 onMounted(() => {

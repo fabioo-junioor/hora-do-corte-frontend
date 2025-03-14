@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 import { fielsRequired, emailValidator } from '../../utils/inputValidators.js';
 
 const route = useRoute();
-const emit = defineEmits(['loginUser', 'cadUser', 'recoverPass']);
+const emit = defineEmits(['loginUser', 'createUser', 'recoverPass']);
 const props = defineProps(['typeForm', 'isLoaderTime']);
 const emailUser = defineModel('email');
 const passwordUser = defineModel('password');
@@ -25,7 +25,7 @@ const onSubmit = () => {
 
     };
     if(props.typeForm == 'cadUser'){
-        emit('cadUser');
+        emit('createUser');
         return;
 
     };
