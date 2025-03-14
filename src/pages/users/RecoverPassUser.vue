@@ -10,7 +10,7 @@ const store = useStore();
 const router = useRouter();
 const isLoaderRecover = ref(false);
 const dataFormUser = reactive({
-  email: "fabio@bol.com"
+  email: "fabio.junior@acad.ufsm.br"
 });
 const recoverPass = async () => {
   isLoaderRecover.value = true;
