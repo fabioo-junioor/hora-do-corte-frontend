@@ -106,6 +106,7 @@ onMounted(() => {
             <q-btn
                 push
                 v-if="typeFormUser == 'loginUser'"
+                :disable="isLoaderTime"
                 class="q-mb-md"
                 color="brown-14"
                 :label="!isLoaderTime ? 'Entrar' : ''"
@@ -115,6 +116,7 @@ onMounted(() => {
             <q-btn
                 push
                 v-if="typeFormUser == 'cadUser'"
+                :disable="isLoaderTime"
                 class="q-mb-md"
                 color="brown-14"
                 :label="!isLoaderTime ? 'Cadastrar-se' : ''"
@@ -124,6 +126,7 @@ onMounted(() => {
             <q-btn
                 push
                 v-if="typeFormUser == 'recoverPass'"
+                :disable="isLoaderTime"
                 class="q-mb-md"
                 color="brown-14"
                 :label="!isLoaderTime ? 'Enviar' : ''"

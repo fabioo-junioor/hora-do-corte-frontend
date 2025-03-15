@@ -7,6 +7,7 @@ import { getDataUser } from "../../services/storage/settingSession.js";
 
 const store = useStore();
 const isLoaderReservations = ref(false);
+const isLoaderCancelReservations = ref(false);
 const isNotice = ref(false);
 const dataCustomerReservation = reactive([]);
 const noticeList = reactive([
@@ -15,20 +16,19 @@ const noticeList = reactive([
 ]);
 
 const cancelReservation = async (pkReservation) => {
+  isLoaderCancelReservations.value = true;
   let dataReservaions = await deleteReservation(pkReservation);
   if (dataReservaions.statusCode !== 200) {
-    store.commit("setAlertConfig", {
-      message: dataReservaions.message,
-      type: "warning",
-    });
+    isLoaderCancelReservations.value = false;
+    store.commit("setAlertConfig", { message: dataReservaions.message, type: "warning" });
     return;
-  }
-  store.commit("setAlertConfig", {
-    message: dataReservaions.message,
-    type: "positive",
-  });
+
+  };
+  isLoaderCancelReservations.value = false;
+  store.commit("setAlertConfig", { message: dataReservaions.message, type: "positive" });
   reloadPage();
   return;
+
 };
 const orderbyDate = (array) => {
   return array.sort((a, b) => {
@@ -106,8 +106,10 @@ onMounted(async () => {
         v-for="i in groupByDate(orderbyDate(dataCustomerReservation))"
         :key="i"
         :dataCustomerReservation="i"
-        @cancelReservation="cancelReservation"
-      />
+        :isLoaderTime="isLoaderCancelReservations"
+        @cancelReservation="cancelReservation">
+        <Loader loaderSize="1.2em" loaderColor="white" />  
+      </CardReservation>
     </div>
   </div>
 </template>

@@ -15,7 +15,10 @@ const store = useStore();
 const isDialogAdd = ref(false);
 const isDialogSchedules = ref(false);
 const isDialogServices = ref(false);
+const isLoaderProfessionals = ref(false);
 const isLoaderEditProfessional = ref(false);
+const isLoaderEditServices = ref(false);
+const isLoaderEditSchedules = ref(false);
 
 const pkProfessional = ref(null);
 const pkProfessionalServices = ref(null);
@@ -44,14 +47,17 @@ const addProfessional = () => {
 
 };
 const saveFormProfessional = async (pkProfessional) => {
+  isLoaderEditProfessional.value = true;
   if (pkProfessional == "") {
     let dataUserStorage = getDataUser();
     let dataProfessional = await create(dataEditProfessional, dataUserStorage.pkUser);
     if (dataProfessional.statusCode !== 201) {
+      isLoaderEditProfessional.value = false;
       store.commit("setAlertConfig", { message: dataProfessional.message, type: "negative" });
       return;
 
     };
+    isLoaderEditProfessional.value = false;
     store.commit("setAlertConfig", { message: dataProfessional.message, type: "positive" });
     reloadPage();
     return;
@@ -59,23 +65,28 @@ const saveFormProfessional = async (pkProfessional) => {
   };
   let dataProfessional = await update(dataEditProfessional, pkProfessional);
   if (dataProfessional.statusCode !== 201) {
+    isLoaderEditProfessional.value = false;
     store.commit("setAlertConfig", { message: dataProfessional.message, type: "negative" });
     return;
 
   };
+  isLoaderEditProfessional.value = false;
   store.commit("setAlertConfig", { message: dataProfessional.message, type: "positive" });
   reloadPage();
   return;
 
 };
 const saveFormServices = async () => {
+  isLoaderEditServices.value = true;
   if (pkProfessionalServices.value) {
     let dataService = await updateService(newServices, dataServices[0].pkProfessionalServices);
     if (dataService.statusCode !== 201) {
+      isLoaderEditServices.value = false;
       store.commit("setAlertConfig", { message: dataService.message, type: "negative" });
       return;
 
     };
+    isLoaderEditServices.value = false;
     store.commit("setAlertConfig", { message: dataService.message, type: "positive" });
     reloadPage();
     return;
@@ -83,17 +94,21 @@ const saveFormServices = async () => {
   };
   let dataService = await createService(newServices, pkProfessional.value);
   if (dataService.statusCode === 201) {
+    isLoaderEditServices.value = false;
     store.commit("setAlertConfig", { message: dataService.message, type: "positive" });
     reloadPage();
     return;
 
   };
+  isLoaderEditServices.value = false;
   store.commit("setAlertConfig", { message: dataService.message, type: "negative" });
   return;
 
 };
 const saveFormSchedules = async () => {
+  isLoaderEditSchedules.value = true;
   if (!isAnyShiftOpen(dataEditSchedules)) {
+    isLoaderEditSchedules.value = false;
     store.commit("setAlertConfig", { message: "Preencher pelo menos um turno!", type: "warning" });
     return;
 
@@ -101,10 +116,12 @@ const saveFormSchedules = async () => {
   if (pkProfessionalSchedule.value) {
     let dataSchedule = await updateSchedules(dataEditSchedules, pkProfessionalSchedule.value);
     if (dataSchedule.statusCode !== 201) {
+      isLoaderEditSchedules.value = false;
       store.commit("setAlertConfig", { message: dataSchedule.message, type: "negative"});
       return;
 
     };
+    isLoaderEditSchedules.value = false;
     store.commit("setAlertConfig", { message: dataSchedule.message, type: "positive" });
     reloadPage();
     return;
@@ -112,10 +129,12 @@ const saveFormSchedules = async () => {
   };
   let dataSchedule = await createSchedules(dataEditSchedules, pkProfessional.value);
   if (dataSchedule.statusCode !== 201) {
+    isLoaderEditSchedules.value = false;
     store.commit("setAlertConfig", { message: dataSchedule.message, type: "negative" });
     return;
 
   };
+  isLoaderEditSchedules.value = false;
   store.commit("setAlertConfig", { message: dataSchedule.message, type: "positive" });
   reloadPage();
   return;
@@ -212,16 +231,17 @@ const previewImage = (event) => {
   };
 };
 const getAllProfessionals = async () => {
+  isLoaderProfessionals.value = true;
   let dataUserStorage = getDataUser();
   let dataProfessional = await getAll(dataUserStorage.pkUser);
   if (dataProfessional.statusCode !== 200) {
-    isLoaderEditProfessional.value = true;
+    isLoaderProfessionals.value = false;
     store.commit("setAlertConfig", { message: dataProfessional.message, type: "negative" });
     return;
 
   };
   dataProfessionals.push(...dataProfessional.data);
-  isLoaderEditProfessional.value = true;
+  isLoaderProfessionals.value = false;
   store.commit("setAlertConfig", { message: dataProfessional.message, type: "info" });
   return;
 
@@ -268,11 +288,10 @@ onMounted(async () => {
           text-color="white"
           size="md"
           icon="person_add"
-          label="Adicionar"
-        />
+          label="Adicionar" />
       </div>
       <div class="edit-professional-list q-my-lg">
-        <div v-if="!isLoaderEditProfessional">
+        <div v-if="isLoaderProfessionals">
           <Loader class="row justify-center items-center" />
         </div>
         <div v-else class="edit-professional-list-card">
@@ -291,22 +310,28 @@ onMounted(async () => {
         v-model:isDialogAdd="isDialogAdd"
         v-model:dataEditProfessional="dataEditProfessional"
         :imageProfile="imageProfile || userDefault"
+        :isLoaderTime="isLoaderEditProfessional"
         @saveFormProfessional="saveFormProfessional"
-        @previewImage="previewImage"
-      />
+        @previewImage="previewImage">
+        <Loader loaderSize="1.2em" loaderColor="white" /> 
+      </FormDialogAddProfessional>
       <FormDialogAddServices
         v-model:isDialogServices="isDialogServices"
         v-model:dataEditServices="dataEditServices"
         :newServices="newServices"
+        :isLoaderTime="isLoaderEditServices"
         @addService="addService"
         @deleteService="deleteService"
-        @saveFormServices="saveFormServices"
-      />
+        @saveFormServices="saveFormServices">
+        <Loader loaderSize="1.2em" loaderColor="white" />  
+      </FormDialogAddServices>
       <FormDialogAddSchedules
         v-model:isDialogSchedules="isDialogSchedules"
         v-model:dataEditSchedules="dataEditSchedules"
-        @saveFormSchedules="saveFormSchedules"
-      />
+        :isLoaderTime="isLoaderEditSchedules"
+        @saveFormSchedules="saveFormSchedules">
+        <Loader loaderSize="1.2em" loaderColor="white" />  
+      </FormDialogAddSchedules>
     </div>
   </div>
 </template>

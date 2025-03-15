@@ -3,6 +3,7 @@ import { onMounted, reactive, ref, watch } from 'vue';
 import { fielsRequired, phoneValidator, cepValidator, validStringSlug, fielsCheckSize } from '../../utils/inputValidators.js';
 
 const emit = defineEmits(['saveFormUser', 'previewImage', 'searchCep']);
+const props = defineProps(['isLoaderTime']);
 const dataEditUser = defineModel('dataEditUser');
 const urlApp = ref('');
 const rulesUser = reactive({
@@ -216,10 +217,13 @@ onMounted(() => {
             </div>
             <q-btn
                 push
+                :disable="isLoaderTime"
                 class="q-my-lg"
                 color="brown-9"
-                label="Salvar"
-                type="submit" />
+                :label="!isLoaderTime ? 'Salvar' : ''"
+                type="submit">
+                <slot v-if="isLoaderTime" />
+            </q-btn>
         </q-form>
     </div>
 </template>
