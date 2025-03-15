@@ -1,27 +1,33 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { FormEditPasswordUser } from "../../components";
+import { FormEditPasswordUser, Loader } from "../../components";
 import { updateUser } from "../../services/api/api.user.js";
 
 const store = useStore();
+const isLoaderEditPassword = ref(false);
 const dataEditPasswordUser = reactive({
   password: "",
   newPassword: "",
-  confirmPassword: "",
+  confirmPassword: ""
+
 });
 const saveFormPasswordUser = async () => {
+  isLoaderEditPassword.value = true;
   let dataUser = await updateUser(dataEditPasswordUser);
   if (dataUser.statusCode === 200) {
+    isLoaderEditPassword.value = false;
     store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
     return;
 
   };
   if (dataUser.statusCode === 201) {
+    isLoaderEditPassword.value = false;
     store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
     return;
 
   };
+  isLoaderEditPassword.value = false;
   store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
   return;
 
@@ -33,8 +39,10 @@ const saveFormPasswordUser = async () => {
       <h4 class="q-mb-md">Alterar senha</h4>
       <FormEditPasswordUser
         v-model:dataEditPasswordUser="dataEditPasswordUser"
-        @saveFormPasswordUser="saveFormPasswordUser"
-      />
+        :isLoaderTime="isLoaderEditPassword"
+        @saveFormPasswordUser="saveFormPasswordUser">
+        <Loader loaderSize="1.2em" loaderColor="white" />  
+      </FormEditPasswordUser>
     </div>
   </div>
 </template>

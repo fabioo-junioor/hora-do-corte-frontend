@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(["dataCustomerReservation"]);
+const props = defineProps(["dataCustomerReservation", "isLoaderTime"]);
 const emit = defineEmits(["cancelReservation"]);
 import userDefault from "../../assets/imgsDefault/user.png";
 
@@ -92,13 +92,15 @@ const cancelReservation = (pkReservation) => {
               dark
               stack
               push
+              :disable="isLoaderTime"
               @click="cancelReservation(i.pkReservation)"
               class="full-height"
               size=".8rem"
               color="brown-5"
-              icon="delete"
-              label="Cancelar reserva"
-            />
+              :icon="!isLoaderTime ? 'delete' : ''"
+              :label="!isLoaderTime ? 'Cancelar reserva' : ''">
+              <slot v-if="isLoaderTime" />
+            </q-btn>
           </div>
         </q-card-section>
       </q-card-section>

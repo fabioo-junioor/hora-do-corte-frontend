@@ -1,12 +1,14 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
+import { Loader } from '../../components';
 import { createPurchasePlan } from "../../services/api/api.purchase.js";
 import { getDateToday, getCurrentTime } from "../../utils/dataUtils.js";
 import barbershop from "../../assets/imgsDefault/barbershop-ai.jpg";
 
 const store = useStore();
 const isParamsStore = ref(false);
+const isLoaderBuyPlan = ref(false);
 const dataBuyPlan = reactive({
   pkUser: null,
   pkPlan: null,
@@ -32,19 +34,23 @@ const checkoutVerify = () => {
 
 };
 const buyPlan = async () => {
+  isLoaderBuyPlan.value = true;
   let dateToday = getDateToday();
   let timeToday = getCurrentTime();
   let dataResult = await createPurchasePlan(dataBuyPlan.pkUser, dataBuyPlan.pkPlan, dateToday, timeToday);
   if(dataResult.statusCode === 200){
+    isLoaderBuyPlan.value = false;
     store.commit("setAlertConfig", { message: dataResult.message, type: "warning" });
     return;
 
   };
   if(dataResult.statusCode === 201){
+    isLoaderBuyPlan.value = false;
     store.commit("setAlertConfig", { message: dataResult.message, type: "positive" });
     return;
     
-  }
+  };
+  isLoaderBuyPlan.value = false;
   store.commit("setAlertConfig", { message: dataResult.message, type: "negative" });
   return;
 
@@ -111,11 +117,13 @@ onMounted(() => {
           <q-btn
             push
             style="height: 3rem"
+            :disable="isLoaderBuyPlan"
             @click="buyPlan"
             class="full-width q-my-xs"
-            label="Adquirir plano"
-            color="brown-5"
-          />
+            :label="!isLoaderBuyPlan ? 'Adquirir plano' : ''"
+            color="brown-5">
+            <Loader v-if="isLoaderBuyPlan" loaderSize="1.2em" loaderColor="white" />
+          </q-btn>
         </q-card-actions>
       </q-card>
     </div>

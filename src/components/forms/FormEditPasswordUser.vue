@@ -3,6 +3,7 @@ import { reactive, ref } from 'vue';
 import { fielsRequired, phoneValidator, charactersAndSpaces } from '../../utils/inputValidators.js';
 
 const emit = defineEmits(['saveFormPasswordUser']);
+const props = defineProps(['isLoaderTime']);
 const isPwd1 = ref(true);
 const isPwd2 = ref(true);
 const isPwd3 = ref(true);
@@ -94,10 +95,13 @@ const onSubmit = () => {
             </div>
             <q-btn
                 push
+                :disable="isLoaderTime"
                 class="q-my-lg"
                 color="brown-9"
-                label="Salvar"
-                type="submit" />
+                :label="!isLoaderTime ? 'Salvar' : ''"
+                type="submit">
+                <slot v-if="isLoaderTime" />    
+            </q-btn>
         </q-form>
     </div>
 </template>

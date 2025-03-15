@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { FormEditUser, CardNotice } from "../../components";
+import { FormEditUser, CardNotice, Loader } from "../../components";
 import { cepValidator } from "../../utils/inputValidators.js";
 import { cleanSpecialCharacters } from "../../utils/formatters.js";
 import { charactersAndSpaces } from "../../utils/inputValidators.js";
@@ -14,6 +14,7 @@ import { getDataUser } from "../../services/storage/settingSession.js";
 const store = useStore();
 const isNotice = ref(false);
 const isDetailsExists = ref(false);
+const isLoaderEditUser = ref(false);
 const imageProfile = ref(null);
 const numberRandomColor = ref(0);
 const dataEditUser = reactive({
@@ -34,6 +35,7 @@ const noticeList = reactive([
   "2.1. O campo 'nome de usuário (link)' é como os clientes vão achar o seu estabelecimento!",
 ]);
 const saveFormUser = async () => {
+  isLoaderEditUser.value = true;
   dataEditUser.cep = cleanSpecialCharacters(dataEditUser.cep);
   dataEditUser.phone = cleanSpecialCharacters(dataEditUser.phone);
   let dataUserStorage = getDataUser();
@@ -48,30 +50,36 @@ const saveFormUser = async () => {
   if (isDetailsExists.value) {
     let dataUser = await updateUserDetails(dataEditUser, dataUserStorage.pkUser);
     if (dataUser.statusCode === 201) {
+      isLoaderEditUser.value = false;
       store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
       return;
 
     };
     if (dataUser.statusCode === 200) {
+      isLoaderEditUser.value = false;
       store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
       return;
 
     };
+    isLoaderEditUser.value = false;
     store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
     return;
 
   };
   let dataUser = await createUserDetails(dataEditUser, dataUserStorage.pkUser);
   if (dataUser.statusCode === 201) {
+    isLoaderEditUser.value = false;
     store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
     return;
 
   };
   if (dataUser.statusCode === 200) {
+    isLoaderEditUser.value = false;
     store.commit("setAlertConfig", { message: dataUser.message, type: "info" });
     return;
 
   };
+  isLoaderEditUser.value = false;
   store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
   return;
 
@@ -166,10 +174,12 @@ onMounted(async () => {
       </div>
       <FormEditUser
         v-model:dataEditUser="dataEditUser"
+        :isLoaderTime="isLoaderEditUser"
         @previewImage="previewImage"
         @saveFormUser="saveFormUser"
-        @searchCep="searchCep"
-      />
+        @searchCep="searchCep">
+        <Loader loaderSize="1.2em" loaderColor="white" />
+      </FormEditUser>
     </div>
   </div>
 </template>

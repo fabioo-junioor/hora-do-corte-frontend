@@ -3,7 +3,7 @@ import { reactive, ref, onMounted } from 'vue';
 import { fielsRequired, fielsCheckSize } from '../../utils/inputValidators.js';
 import { CardNotice } from '../../components';
 
-const props = defineProps(['newServices']);
+const props = defineProps(['newServices', 'isLoaderTime']);
 const emit = defineEmits(['saveFormServices', 'addService', 'deleteService']);
 const isDialogServices = defineModel('isDialogServices');
 const dataEditServices = defineModel('dataEditServices');
@@ -165,12 +165,14 @@ onMounted(() => {
             </div>
             <q-btn
               push
-              :disable="props.newServices.length == 0"
+              :disable="props.newServices.length == 0 || isLoaderTime"
               @click="saveFormServices()"
               class="q-my-lg full-width"
               size="lg"
               color="brown-9"
-              label="Salvar alterações" />
+              :label="!isLoaderTime ? 'Salvar alterações' : ''">
+              <slot v-if="isLoaderTime" />  
+            </q-btn>
           </q-form>
         </q-card-section>
       </q-card>

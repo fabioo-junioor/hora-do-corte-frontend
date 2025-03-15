@@ -3,6 +3,7 @@ import { reactive, ref, onMounted } from 'vue';
 import { fielsRequired } from '../../utils/inputValidators.js';
 import { CardNotice } from '../../components';
 
+const props = defineProps(['isLoaderTime']);
 const emit = defineEmits(['saveFormSchedules']);
 const isDialogSchedules = defineModel('isDialogSchedules');
 const dataEditSchedules = defineModel('dataEditSchedules');
@@ -1287,11 +1288,14 @@ onMounted(() => {
             </div>
             <q-btn
               push
+              :disable="isLoaderTime"
               @click="saveFormSchedules"
               class="q-my-xl full-width"
               size="lg"
               color="brown-9"
-              label="Salvar alterações" />
+              :label="!isLoaderTime ? 'Salvar alterações' : ''">
+              <slot v-if="isLoaderTime" />
+            </q-btn>
           </q-form>
         </q-card-section>
       </q-card>

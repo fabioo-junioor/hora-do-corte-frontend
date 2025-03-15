@@ -5,7 +5,7 @@ import { CardNotice } from '../../components';
 import { mainColors, numberRandom, firstCaracterName } from '../../utils/dataUtils.js';
 
 const emit = defineEmits(['saveFormProfessional', 'previewImage']);
-const props = defineProps(['imageProfile']);
+const props = defineProps(['imageProfile', 'isLoaderTime']);
 const isDialogAdd = defineModel('isDialogAdd');
 const dataEditProfessional = defineModel('dataEditProfessional');
 const isNotice = ref(false);
@@ -139,11 +139,14 @@ onMounted(() => {
             </div>
             <q-btn
               push
+              :disable="isLoaderTime"
               class="q-my-lg full-width"
               size="lg"
               color="brown-9"
-              label="Salvar dados"
-              type="submit" />
+              :label="!isLoaderTime ? 'Salvar dados' : ''"
+              type="submit">
+              <slot v-if="isLoaderTime" />
+            </q-btn>
           </q-form>
         </q-card-section>
       </q-card>

@@ -21,6 +21,7 @@ const store = useStore();
 const isReservation = ref(false);
 const isUserExistis = ref(false);
 const isTimes = ref(false);
+const isLoaderReservation = ref(false);
 const btnReservationDisable = ref(false);
 const step = ref(1);
 const numberRandomColor = ref(0);
@@ -115,16 +116,19 @@ const checkScheduleTime = (data) => {
 
 };
 const verifyReservationComplete = async () => {
+    isLoaderReservation.value = true;
     if(fielsCheckSize(dataFormReservation.name) && phoneValidator(dataFormReservation.phone)){
         dataReservation.price = calculePriceTotal(dataReservation.services);
         dataReservation.duration = sumMinutes(dataReservation.services);
         dataFormReservation.phone = cleanSpecialCharacters(dataFormReservation.phone);
         let dataReser = await createReservation(dataUser[0]?.fkUser, dataReservation, dataFormReservation);
         if(dataReser.statusCode !== 201){
+            isLoaderReservation.value = false;
             store.commit('setAlertConfig', {message: dataReser.message, type: 'warning'});
             return;
 
         };
+        isLoaderReservation.value = false;
         store.commit('setAlertConfig', {message: dataReser.message, type: 'positive'});
         reloadPage();
         return;
@@ -388,7 +392,10 @@ onMounted(async () => {
                         :done="step > 4">
                         <div class="reservation-content-confirm">
                             <FormReservation
-                                v-model:dataFormReservation="dataFormReservation" />
+                                v-model:dataFormReservation="dataFormReservation"
+                                :isLoaderTime="isLoaderReservation">
+                                <Loader loaderSize="1.2em" loaderColor="white" />    
+                            </FormReservation>
                         </div>
                     </q-step>
                     <template v-slot:navigation>
@@ -397,11 +404,13 @@ onMounted(async () => {
                                 push
                                 v-if="step === 4"
                                 @click="verifyReservationComplete"
-                                :disable='!checkCustomerChoice(step)'
+                                :disable='!checkCustomerChoice(step) || isLoaderReservation'
                                 class="q-my-xs"
-                                icon="check_circle"
+                                :icon="!isLoaderReservation ? 'check_circle' : ''"
                                 color="brown-10"
-                                label="Agendar" />
+                                :label="!isLoaderReservation ? 'Agendar' : ''">
+                                <Loader v-if="isLoaderReservation" loaderSize="1.2em" loaderColor="white" />
+                            </q-btn>
                             <q-btn
                                 push
                                 v-else
@@ -413,6 +422,7 @@ onMounted(async () => {
                                 label="Proxima etapa" />
                             <q-btn
                                 flat
+                                :disable="isLoaderReservation"
                                 v-if="step > 1"
                                 @click="$refs.stepper.previous()"
                                 class="q-my-xs"
