@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { FormDialogAddProfessional, FormDialogAddServices,
-  FormDialogAddSchedules, CardProfessionalList, Loader } from "../../components";
+  FormDialogAddSchedules, CardProfessionalList, Loader, CardMessage } from "../../components";
 import { isAnyShiftOpen } from "../../utils/inputValidators.js";
 import { scheduleFormatter } from "../../utils/dataUtils.js";
 import userDefault from "../../assets/imgsDefault/user.png";
@@ -19,6 +19,7 @@ const isLoaderProfessionals = ref(false);
 const isLoaderEditProfessional = ref(false);
 const isLoaderEditServices = ref(false);
 const isLoaderEditSchedules = ref(false);
+const isMessage = ref('');
 
 const pkProfessional = ref(null);
 const pkProfessionalServices = ref(null);
@@ -51,28 +52,40 @@ const saveFormProfessional = async (pkProfessional) => {
   if (pkProfessional == "") {
     let dataUserStorage = getDataUser();
     let dataProfessional = await create(dataEditProfessional, dataUserStorage.pkUser);
-    if (dataProfessional.statusCode !== 201) {
+    if (dataProfessional.statusCode === 201) {
       isLoaderEditProfessional.value = false;
-      store.commit("setAlertConfig", { message: dataProfessional.message, type: "negative" });
+      store.commit("setAlertConfig", { message: dataProfessional.message, type: "positive" });
+      reloadPage();
       return;
 
     };
+    if (dataProfessional.statusCode === 200) {
+      isLoaderEditProfessional.value = false;
+      store.commit("setAlertConfig", { message: dataProfessional.message, type: "warning" });
+      return;
+
+    };
+    isLoaderEditProfessional.value = false;
+    store.commit("setAlertConfig", { message: dataProfessional.message, type: "positive" });
+    return;
+
+  };
+  let dataProfessional = await update(dataEditProfessional, pkProfessional);
+  if (dataProfessional.statusCode === 201) {
     isLoaderEditProfessional.value = false;
     store.commit("setAlertConfig", { message: dataProfessional.message, type: "positive" });
     reloadPage();
     return;
 
   };
-  let dataProfessional = await update(dataEditProfessional, pkProfessional);
-  if (dataProfessional.statusCode !== 201) {
+  if (dataProfessional.statusCode === 200) {
     isLoaderEditProfessional.value = false;
-    store.commit("setAlertConfig", { message: dataProfessional.message, type: "negative" });
+    store.commit("setAlertConfig", { message: dataProfessional.message, type: "warning" });
     return;
 
   };
   isLoaderEditProfessional.value = false;
-  store.commit("setAlertConfig", { message: dataProfessional.message, type: "positive" });
-  reloadPage();
+  //store.commit("setAlertConfig", { message: dataProfessional.message, type: "warning" });
   return;
 
 };
@@ -80,15 +93,21 @@ const saveFormServices = async () => {
   isLoaderEditServices.value = true;
   if (pkProfessionalServices.value) {
     let dataService = await updateService(newServices, dataServices[0].pkProfessionalServices);
-    if (dataService.statusCode !== 201) {
+    if (dataService.statusCode === 201) {
       isLoaderEditServices.value = false;
-      store.commit("setAlertConfig", { message: dataService.message, type: "negative" });
+      store.commit("setAlertConfig", { message: dataService.message, type: "positive" });
+      reloadPage();
+      return;
+
+    };
+    if (dataService.statusCode === 200) {
+      isLoaderEditServices.value = false;
+      store.commit("setAlertConfig", { message: dataService.message, type: "warning" });
       return;
 
     };
     isLoaderEditServices.value = false;
-    store.commit("setAlertConfig", { message: dataService.message, type: "positive" });
-    reloadPage();
+    //store.commit("setAlertConfig", { message: dataService.message, type: "positive" });
     return;
 
   };
@@ -100,8 +119,14 @@ const saveFormServices = async () => {
     return;
 
   };
+  if (dataService.statusCode === 200) {
+    isLoaderEditServices.value = false;
+    store.commit("setAlertConfig", { message: dataService.message, type: "warning" });
+    return;
+
+  };
   isLoaderEditServices.value = false;
-  store.commit("setAlertConfig", { message: dataService.message, type: "negative" });
+  //store.commit("setAlertConfig", { message: dataService.message, type: "negative" });
   return;
 
 };
@@ -115,28 +140,40 @@ const saveFormSchedules = async () => {
   };
   if (pkProfessionalSchedule.value) {
     let dataSchedule = await updateSchedules(dataEditSchedules, pkProfessionalSchedule.value);
-    if (dataSchedule.statusCode !== 201) {
+    if (dataSchedule.statusCode === 201) {
       isLoaderEditSchedules.value = false;
-      store.commit("setAlertConfig", { message: dataSchedule.message, type: "negative"});
+      store.commit("setAlertConfig", { message: dataSchedule.message, type: "positive"});
+      reloadPage();
       return;
 
     };
+    if (dataSchedule.statusCode === 200) {
+      isLoaderEditSchedules.value = false;
+      store.commit("setAlertConfig", { message: dataSchedule.message, type: "warning"});
+      return;
+
+    };
+    isLoaderEditSchedules.value = false;
+    //store.commit("setAlertConfig", { message: dataSchedule.message, type: "positive" });
+    return;
+
+  };
+  let dataSchedule = await createSchedules(dataEditSchedules, pkProfessional.value);
+  if(dataSchedule.statusCode === 201) {
     isLoaderEditSchedules.value = false;
     store.commit("setAlertConfig", { message: dataSchedule.message, type: "positive" });
     reloadPage();
     return;
 
   };
-  let dataSchedule = await createSchedules(dataEditSchedules, pkProfessional.value);
-  if (dataSchedule.statusCode !== 201) {
+  if(dataSchedule.statusCode === 200) {
     isLoaderEditSchedules.value = false;
-    store.commit("setAlertConfig", { message: dataSchedule.message, type: "negative" });
+    store.commit("setAlertConfig", { message: dataSchedule.message, type: "warning" });
     return;
 
   };
   isLoaderEditSchedules.value = false;
-  store.commit("setAlertConfig", { message: dataSchedule.message, type: "positive" });
-  reloadPage();
+  //store.commit("setAlertConfig", { message: dataSchedule.message, type: "positive" });
   return;
 
 };
@@ -209,14 +246,13 @@ const editServicesProfessional = async (services) => {
 };
 const deleteProfessional = async (pkProfessional) => {
   let dataProfessional = await deleteProf(pkProfessional);
-  if (dataProfessional.statusCode !== 200) {
-    store.commit("setAlertConfig", { message: dataProfessional.message, type: "negative" });
+  if (dataProfessional.statusCode === 200) {
+    store.commit("setAlertConfig", { message: dataProfessional.message, type: "positive" });
+    reloadPage();
     return;
 
   };
-  store.commit("setAlertConfig", { message: dataProfessional.message, type: "positive" });
-  reloadPage();
-  return;
+  //store.commit("setAlertConfig", { message: dataProfessional.message, type: "negative" });
 
 };
 const previewImage = (event) => {
@@ -233,18 +269,25 @@ const previewImage = (event) => {
 const getAllProfessionals = async () => {
   isLoaderProfessionals.value = true;
   let dataUserStorage = getDataUser();
-  let dataProfessional = await getAll(dataUserStorage.pkUser);
-  if (dataProfessional.statusCode !== 200) {
+  let dataProfessional = await getAll(dataUserStorage?.pkUser);
+  if ((dataProfessional?.statusCode === 200) &
+    (dataProfessional?.data.length === 0)) {
     isLoaderProfessionals.value = false;
-    store.commit("setAlertConfig", { message: dataProfessional.message, type: "negative" });
+    isMessage.value = dataProfessional.message;
+    console.log(dataProfessional)
+    
+    //store.commit("setAlertConfig", { message: dataProfessional.message, type: "info" });
     return;
 
   };
-  dataProfessionals.push(...dataProfessional.data);
-  isLoaderProfessionals.value = false;
-  store.commit("setAlertConfig", { message: dataProfessional.message, type: "info" });
-  return;
+  if ((dataProfessional?.statusCode === 200) &
+    (dataProfessional?.data.length !== 0)) {
+      dataProfessionals.push(...dataProfessional.data);
+      isLoaderProfessionals.value = false;
+      //store.commit("setAlertConfig", { message: dataProfessional.message, type: "positive" });
+      return;
 
+  };
 };
 const cleanFormProfessional = () => {
   dataEditProfessional.name = "";
@@ -270,7 +313,7 @@ watch(() => dataEditProfessional.image, () => {
 
   }
 );
-onMounted(async () => {
+onMounted( async () => {
   dataEditSchedules.push(...scheduleFormatter);
   await getAllProfessionals();
 
@@ -293,6 +336,11 @@ onMounted(async () => {
       <div class="edit-professional-list q-my-lg">
         <div v-if="isLoaderProfessionals">
           <Loader class="row justify-center items-center" />
+        </div>
+        <div v-if="!isLoaderProfessionals && !!isMessage">
+          <CardMessage
+            :message="isMessage"
+            class="row justify-center items-center" />
         </div>
         <div v-else class="edit-professional-list-card">
           <CardProfessionalList

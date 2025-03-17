@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
-import { CardReservation, Loader, CardNotice } from "../../components";
+import { CardReservation, Loader, CardNotice, CardMessage } from "../../components";
 import { getReservation, deleteReservation } from "../../services/api/api.reservation.js";
 import { getDataUser } from "../../services/storage/settingSession.js";
 
@@ -9,6 +9,7 @@ const store = useStore();
 const isLoaderReservations = ref(false);
 const isLoaderCancelReservations = ref(false);
 const isNotice = ref(false);
+const isMessage = ref('');
 const dataCustomerReservation = reactive([]);
 const noticeList = reactive([
   "1. Para o seu estabelecimento ficar disponivel para as pessoas agendarem, adquira um de nossos planos!",
@@ -18,15 +19,15 @@ const noticeList = reactive([
 const cancelReservation = async (pkReservation) => {
   isLoaderCancelReservations.value = true;
   let dataReservaions = await deleteReservation(pkReservation);
-  if (dataReservaions.statusCode !== 200) {
+  if(dataReservaions?.statusCode === 200) {
     isLoaderCancelReservations.value = false;
-    store.commit("setAlertConfig", { message: dataReservaions.message, type: "warning" });
+    store.commit("setAlertConfig", { message: dataReservaions.message, type: "positive" });
+    reloadPage();
     return;
 
   };
   isLoaderCancelReservations.value = false;
-  store.commit("setAlertConfig", { message: dataReservaions.message, type: "positive" });
-  reloadPage();
+  store.commit("setAlertConfig", { message: dataReservaions.message, type: "warning" });
   return;
 
 };
@@ -50,23 +51,25 @@ const groupByDate = (array) => {
 const getReservations = async () => {
   let dataUser = getDataUser();
   let dataReservaions = await getReservation(dataUser.pkUser);
-  if ((dataReservaions.statusCode === 200) &
+  if((dataReservaions?.statusCode === 200) &
     (dataReservaions?.data.length === 0)) {
-      isLoaderReservations.value = true;
-    store.commit("setAlertConfig", { message: dataReservaions.message, type: "info" });
+    isLoaderReservations.value = true;
+    isMessage.value = dataReservaions.message;
+    //store.commit("setAlertConfig", { message: dataReservaions.message, type: "info" });
     return;
 
   };
-  if ((dataReservaions.statusCode === 200) &
+  if((dataReservaions.statusCode === 200) &
     (dataReservaions?.data.length !== 0)) {
     dataCustomerReservation.push(...dataReservaions.data);
     converterDataToJson(dataCustomerReservation);
     isLoaderReservations.value = true;
-    store.commit("setAlertConfig", { message: dataReservaions.message, type: "positive" });
+    //store.commit("setAlertConfig", { message: dataReservaions.message, type: "positive" });
     return;
 
   };
-  store.commit("setAlertConfig", { message: dataReservaions.message, type: "negative" });
+  isLoaderReservations.value = true;
+  //store.commit("setAlertConfig", { message: dataReservaions.message, type: "negative" });
   return;
 
 };
@@ -97,9 +100,14 @@ onMounted(async () => {
       v-model:isNotice="isNotice"
       :noticeList="noticeList"
     />
-    <h4 class="text-white q-my-lg">Lista de agendamentos</h4>
+    <h4 class="text-white q-my-lg">Lista de agendamentos!</h4>
     <div v-if="!isLoaderReservations">
       <Loader class="row justify-center items-center" />
+    </div>
+    <div v-if="isLoaderReservations && !!isMessage">
+      <CardMessage
+        :message="isMessage"
+        class="row justify-center items-center" />
     </div>
     <div v-else>
       <CardReservation

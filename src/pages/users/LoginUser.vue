@@ -26,7 +26,7 @@ const login = async () => {
   if (dataUser.data?.length !== 0 && dataUser.statusCode === 200) {
     isLoaderLogin.value = false;
     setDataUser(dataUser.data);
-    store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
+    //store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
     store.commit("setStateUser", { login: true });
     router.push({ path: "/reservations" });
     location.reload();
@@ -34,7 +34,7 @@ const login = async () => {
 
   };
   isLoaderLogin.value = false;
-  store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
+  //store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
   return;
 
 };

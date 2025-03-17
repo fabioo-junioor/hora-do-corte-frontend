@@ -15,21 +15,20 @@ const dataFormUser = reactive({
 const create = async () => {
   isLoaderCad.value = true;
   let dataUser = await createUser(dataFormUser);
-  if (dataUser.statusCode === 200) {
-    isLoaderCad.value = false;
-    store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
-    return;
-
-  };
   if (dataUser.statusCode === 201) {
     isLoaderCad.value = false;
     store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
     return;
 
   };
+  if (dataUser.statusCode === 200) {
+    isLoaderCad.value = false;
+    store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
+    return;
+
+  };
   isLoaderCad.value = false;
-  store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
-  return;
+  //store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
 
 };
 </script>

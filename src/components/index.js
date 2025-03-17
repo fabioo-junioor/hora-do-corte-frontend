@@ -14,6 +14,7 @@ import CardProfessionalList from './cards/CardProfessionalList.vue';
 import CardPricing from './cards/CardPricing.vue';
 import CardReservation from './cards/CardReservation.vue';
 import CardNotice from './cards/CardNotice.vue';
+import CardMessage from './cards/CardMessage.vue';
 
 import CardProfessional from './strepper-content/CardProfessional.vue';
 import CalendarSchedule from './strepper-content/CalendarSchedule.vue';
@@ -35,6 +36,7 @@ export {
     CardProfessional,
     CardReservation,
     CardNotice,
+    CardMessage,
     CalendarSchedule,
     TimeSchedule
 }
