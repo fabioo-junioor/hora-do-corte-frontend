@@ -1,5 +1,5 @@
 const setDataUser = (dataUser) => {
-    localStorage.setItem('dataUser', JSON.stringify(dataUser));
+   localStorage.setItem('dataUser', JSON.stringify(dataUser));
 
 };
 const getDataUser = () => {
@@ -14,7 +14,7 @@ const getDataUser = () => {
 };
 const deleteDataUser = () => {
     localStorage.removeItem('dataUser');
-
+    
 };
 
 export {

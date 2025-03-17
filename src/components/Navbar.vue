@@ -3,40 +3,51 @@ import { onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { AlertUser } from "../components";
-import { getDataUser,deleteDataUser } from "../services/storage/settingSession.js";
+import { authUser } from '../services/api/api.user.js';
+import { getDataUser, deleteDataUser } from "../services/storage/settingSession.js";
 
 const store = useStore();
 const router = useRouter();
 const isUserLogin = ref(false);
 
-const checkLoginUser = () => {
+const checkLoginUser = async () => {
   let dataUser = getDataUser();
-  if (!dataUser) {
-    isUserLogin.value = false;
+  if(!!dataUser?.token){
+    isUserLogin.value = true;
+    store.commit('setStateUser', { login: true });
     return;
-    
-  }
-  isUserLogin.value = true;
+
+  };
+  deleteDataUser();
+  router.push({ path: "/" });
+  //store.commit("setAlertConfig", { message: "Sessão expirou!", type: "info" });
+  store.commit('setStateUser', { login: false });
+  isUserLogin.value = false;
   return;
 
 };
 const getLogin = () => {
   router.push({ path: "/loginUser" });
+  return;
 
 };
 const getLogout = () => {
   deleteDataUser();
+  router.push({ path: "/" });
   store.commit("setAlertConfig", { message: "Saindo!", type: "positive" });
-  store.commit('setStateUser', {login: false});
-  reloadPage();
+  store.commit('setStateUser', { login: false });
+  //reloadPage();
+  return;
 
 };
 const getEditUser = () => {
   router.push({ path: "/editUser" });
+  return;
 
 };
 const getEditPassword = () => {
   router.push({ path: "/editPasswordUser" });
+  return;
 
 };
 const getEditProfessional = () => {
@@ -59,8 +70,9 @@ watch(() => store.getters.getStateUser.isUserLogin, (val) => {
 
   }
 );
-onMounted(() => {
-  checkLoginUser();
+onMounted( async () => {
+  await checkLoginUser();
+
 });
 </script>
 <template>
