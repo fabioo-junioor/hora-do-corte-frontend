@@ -16,12 +16,11 @@ import { authUser } from './services/api/api.user.js';
 import { getDataUser, deleteDataUser } from './services/storage/settingSession.js';
 
 const validAuth = await authUser(getDataUser()?.token || 'notToken');
-if(validAuth.statusCode !== 200){
-    //localStorage.removeItem('dataUser');
+if(validAuth?.statusCode !== 200){
     deleteDataUser();
     store.commit('setStateUser', { login: false });
-    //console.log(validAuth);
-
+    //console.log('main:', validAuth);
+    
 };
 
 createApp(App)

@@ -19,7 +19,6 @@ const checkLoginUser = async () => {
 
   };
   deleteDataUser();
-  router.push({ path: "/" });
   //store.commit("setAlertConfig", { message: "Sessão expirou!", type: "info" });
   store.commit('setStateUser', { login: false });
   isUserLogin.value = false;
@@ -52,10 +51,12 @@ const getEditPassword = () => {
 };
 const getEditProfessional = () => {
   router.push({ path: "/editProfessional" });
+  return;
 
 };
 const getReservations = () => {
   router.push({ path: "/reservations" });
+  return;
 
 };
 const reloadPage = () => {

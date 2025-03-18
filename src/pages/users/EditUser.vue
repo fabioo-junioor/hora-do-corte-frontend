@@ -96,7 +96,7 @@ const previewImage = (event) => {
 };
 const getUserDetails = async () => {
   let dataUserStorage = getDataUser();
-  let dataUser = await getUserDetailsByPk(dataUserStorage.pkUser);
+  let dataUser = await getUserDetailsByPk(dataUserStorage?.pkUser);
   if (dataUser.statusCode === 200 && dataUser.data?.length !== 0) {
     dataEditUser.name = dataUser.data[0].name;
     dataEditUser.slug = dataUser.data[0].slug;

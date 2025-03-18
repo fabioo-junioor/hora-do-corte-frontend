@@ -50,7 +50,7 @@ const groupByDate = (array) => {
 };
 const getReservations = async () => {
   let dataUser = getDataUser();
-  let dataReservaions = await getReservation(dataUser.pkUser);
+  let dataReservaions = await getReservation(dataUser?.pkUser);
   if((dataReservaions?.statusCode === 200) &
     (dataReservaions?.data.length === 0)) {
     isLoaderReservations.value = true;
