@@ -10,37 +10,36 @@ const store = useStore();
 const router = useRouter();
 const isLoaderLogin = ref(false);
 const dataFormUser = reactive({
-  email: "fabio.junior@acad.ufsm.br",
-  password: "4r0#u4s%(ZlA"
+  email: "",
+  password: ""
 
 });
 const login = async () => {
   isLoaderLogin.value = true;
   let dataUser = await loginUser(dataFormUser);
-  if (dataUser.data?.length === 0 && dataUser.statusCode === 200) {
+  if(dataUser?.data.length !== 0 && dataUser?.statusCode === 200) {
     isLoaderLogin.value = false;
-    store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
-    return;
-
-  };
-  if (dataUser.data?.length !== 0 && dataUser.statusCode === 200) {
-    isLoaderLogin.value = false;
-    setDataUser(dataUser.data);
-    //store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
+    setDataUser(dataUser?.data);
     store.commit("setStateUser", { login: true });
     router.push({ path: "/reservations" });
     location.reload();
     return;
 
   };
+  if(dataUser?.data.length === 0 && dataUser?.statusCode === 200) {
+    isLoaderLogin.value = false;
+    store.commit("setAlertConfig", { message: dataUser?.message, type: "warning" });
+    return;
+
+  };
   isLoaderLogin.value = false;
-  //store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
   return;
 
 };
 const reloadPage = () => {
   setTimeout(() => {
     location.reload();
+
   }, 3000);
 
 };

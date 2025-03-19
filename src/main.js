@@ -19,9 +19,9 @@ const validAuth = await authUser(getDataUser()?.token || 'notToken');
 if(validAuth?.statusCode !== 200){
     deleteDataUser();
     store.commit('setStateUser', { login: false });
-    //console.log('main:', validAuth);
     
 };
+//console.log('main:', validAuth);
 
 createApp(App)
     .use(Quasar, {

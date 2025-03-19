@@ -21,15 +21,17 @@ const cancelReservation = async (pkReservation) => {
   let dataReservaions = await deleteReservation(pkReservation);
   if(dataReservaions?.statusCode === 200) {
     isLoaderCancelReservations.value = false;
-    store.commit("setAlertConfig", { message: dataReservaions.message, type: "positive" });
+    store.commit("setAlertConfig", { message: dataReservaions?.message, type: "positive" });
     reloadPage();
     return;
 
   };
-  isLoaderCancelReservations.value = false;
-  store.commit("setAlertConfig", { message: dataReservaions.message, type: "warning" });
-  return;
+  if(dataReservaions?.statusCode === 403){
+    isLoaderCancelReservations.value = false;
+    store.commit("setAlertConfig", { message: dataReservaions?.message, type: "warning" });
+    return;
 
+  };
 };
 const orderbyDate = (array) => {
   return array.sort((a, b) => {
@@ -55,23 +57,23 @@ const getReservations = async () => {
     (dataReservaions?.data.length === 0)) {
     isLoaderReservations.value = true;
     isMessage.value = dataReservaions.message;
-    //store.commit("setAlertConfig", { message: dataReservaions.message, type: "info" });
     return;
 
   };
-  if((dataReservaions.statusCode === 200) &
+  if((dataReservaions?.statusCode === 200) &
     (dataReservaions?.data.length !== 0)) {
-    dataCustomerReservation.push(...dataReservaions.data);
+    dataCustomerReservation.push(...dataReservaions?.data);
     converterDataToJson(dataCustomerReservation);
     isLoaderReservations.value = true;
-    //store.commit("setAlertConfig", { message: dataReservaions.message, type: "positive" });
     return;
 
   };
-  isLoaderReservations.value = true;
-  //store.commit("setAlertConfig", { message: dataReservaions.message, type: "negative" });
-  return;
+  if(dataReservaions?.statusCode === 403){
+    store.commit("setAlertConfig", { message: dataReservaions?.message, type: "warning" });
+    isLoaderReservations.value = true;
+    return;
 
+  };
 };
 const converterDataToJson = (data) => {
   data.filter((elem) => {

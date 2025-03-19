@@ -10,25 +10,25 @@ const store = useStore();
 const router = useRouter();
 const isLoaderRecover = ref(false);
 const dataFormUser = reactive({
-  email: "fabio.junior@acad.ufsm.br"
+  email: ""
+
 });
 const recoverPass = async () => {
   isLoaderRecover.value = true;
   let dataUser = await recoverPassUser(dataFormUser.email);
-  if(dataUser.statusCode === 201){
+  if(dataUser?.statusCode === 201){
     isLoaderRecover.value = false;
-    store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
+    store.commit("setAlertConfig", { message: dataUser?.message, type: "positive" });
     return;  
 
   };
-  if(dataUser.statusCode === 200){
+  if(dataUser?.statusCode === 200){
     isLoaderRecover.value = false;
-    store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
+    store.commit("setAlertConfig", { message: dataUser?.message, type: "warning" });
     return;  
 
   };
   isLoaderRecover.value = false;
-  //store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
   return;
 
 };

@@ -17,9 +17,8 @@ const dataBuyPlan = reactive({
 });
 
 const checkoutVerify = () => {
-  if (store.getters.getStateBuyPlan.pkPlan == null ||
+  if(store.getters.getStateBuyPlan.pkPlan == null ||
     store.getters.getStateBuyPlan.pkUser == null){
-    console.log("algo deu errado!");
     isParamsStore.value = false;
     return;
 
@@ -38,22 +37,24 @@ const buyPlan = async () => {
   let dateToday = getDateToday();
   let timeToday = getCurrentTime();
   let dataResult = await createPurchasePlan(dataBuyPlan.pkUser, dataBuyPlan.pkPlan, dateToday, timeToday);
-  if(dataResult.statusCode === 200){
+  if(dataResult?.statusCode === 201){
     isLoaderBuyPlan.value = false;
-    store.commit("setAlertConfig", { message: dataResult.message, type: "warning" });
-    return;
-
-  };
-  if(dataResult.statusCode === 201){
-    isLoaderBuyPlan.value = false;
-    store.commit("setAlertConfig", { message: dataResult.message, type: "positive" });
+    store.commit("setAlertConfig", { message: dataResult?.message, type: "positive" });
     return;
     
   };
-  isLoaderBuyPlan.value = false;
-  store.commit("setAlertConfig", { message: dataResult.message, type: "negative" });
-  return;
+  if(dataResult?.statusCode === 200){
+    isLoaderBuyPlan.value = false;
+    store.commit("setAlertConfig", { message: dataResult?.message, type: "warning" });
+    return;
 
+  };
+  if(dataResult?.statusCode === 403){
+    isLoaderBuyPlan.value = false;
+    store.commit("setAlertConfig", { message: dataResult?.message, type: "warning" });
+    return;
+
+  };
 };
 onMounted(() => {
   checkoutVerify();
