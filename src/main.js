@@ -21,7 +21,6 @@ if(validAuth?.statusCode !== 200){
     store.commit('setStateUser', { login: false });
     
 };
-//console.log('main:', validAuth);
 
 createApp(App)
     .use(Quasar, {

@@ -19,7 +19,6 @@ const checkLoginUser = async () => {
 
   };
   deleteDataUser();
-  //store.commit("setAlertConfig", { message: "Sessão expirou!", type: "info" });
   store.commit('setStateUser', { login: false });
   isUserLogin.value = false;
   return;

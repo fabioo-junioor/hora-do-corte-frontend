@@ -2,7 +2,7 @@
 import { reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
-import { CardPricing } from "../components";
+import { CardPricing, Loader } from "../components";
 import { getDataUser } from "../services/storage/settingSession.js";
 
 const router = useRouter();
@@ -61,133 +61,139 @@ const buyPlan = (data) => {
 };
 const register = () => {
   router.push({ path: "/cadUser" });
+  return;
 
 };
 </script>
 <template>
   <div id="home">
-    <div class="home-about q-pt-xl">
-      <h1 class="q-ma-xl">Hora do corte</h1>
-      <p class="q-mb-xl">
-        Plataforma de agendamentos online para barbearias. Simplifique o
-        atendimento e organize os horários dos seus clientes de forma
-        automática!
-      </p>
-
-      <q-img
-        src="../assets/icon/navalha.svg"
-        height="9rem"
-        width="9rem"
-        class="home-icon-navalha"
-      />
-      <q-img
-        src="../assets/icon/maquina-cortar-cabelo.svg"
-        height="9rem"
-        width="9rem"
-        class="home-icon-maquina-cortar-cabelo"
-      />
-
-      <q-btn
-        push
-        @click="register"
-        class="q-my-xl"
-        size="xl"
-        color="brown-8"
-        text-color="grey-3"
-        label="Resgistre-se gratuitamente"
-        icon-right="trending_flat"
-      />
+    <div v-if="store.getters.getStateLoader.isLoader" class="home-loader">
+      <Loader />
     </div>
-    <div class="home-works q-py-xl q-my-xl">
-      <h3 class="q-ma-none">Como funciona?</h3>
-      <div class="home-work-profesional">
-        <q-img
-          src="https://www.cbvl.esp.br/upload/post/default.jpg"
-          class="rounded-borders"
-          height="auto"
-          width="50%"
-        />
-        <p class="q-pa-sm">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with
-          the release of Letraset sheets containing Lorem Ipsum passages, and
-          more recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum.
+    <div v-else class="home-page">
+      <div class="home-about q-pt-xl">
+        <h1 class="q-ma-xl">Hora do corte</h1>
+        <p class="q-mb-xl">
+          Plataforma de agendamentos online para barbearias. Simplifique o
+          atendimento e organize os horários dos seus clientes de forma
+          automática!
         </p>
-      </div>
-      <div class="home-work-services">
-        <q-img
-          src="https://www.cbvl.esp.br/upload/post/default.jpg"
-          class="rounded-borders"
-          height="auto"
-          width="50%"
-        />
-        <p class="q-pa-sm">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with
-          the release of Letraset sheets containing Lorem Ipsum passages, and
-          more recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum.
-        </p>
-      </div>
-    </div>
-    <div class="home-pricings row q-py-xl q-my-xl">
-      <CardPricing
-        v-for="i in pricingPlans"
-        :key="i.pk"
-        class="home-pricing"
-        :dataPricing="i"
-        @buyPlan="buyPlan"
-      />
 
-      <q-img
-        src="../assets/icon/navalha2.svg"
-        height="9rem"
-        width="9rem"
-        class="home-icon-navalha2"
-      />
-      <q-img
-        src="../assets/icon/barbearia.svg"
-        height="9rem"
-        width="9rem"
-        class="home-icon-barbearia"
-      />
-      <q-img
-        src="../assets/icon/escova-barbear.svg"
-        height="9rem"
-        width="9rem"
-        class="home-icon-escova-barbear"
-      />
-    </div>
-    <div class="home-footer row full-width q-pa-md q-mt-xl">
-      <div class="col column justify-end">
-        <div class="col row items-end">
-          <a href="https://www.instagram.com/horadocorte.real/" target="_blank">
-            <i class="bx bxl-instagram" />
-          </a>
+        <q-img
+          src="../assets/icon/navalha.svg"
+          height="9rem"
+          width="9rem"
+          class="home-icon-navalha"
+        />
+        <q-img
+          src="../assets/icon/maquina-cortar-cabelo.svg"
+          height="9rem"
+          width="9rem"
+          class="home-icon-maquina-cortar-cabelo"
+        />
+
+        <q-btn
+          push
+          @click="register"
+          class="q-my-xl"
+          size="xl"
+          color="brown-8"
+          text-color="grey-3"
+          label="Resgistre-se gratuitamente"
+          icon-right="trending_flat"
+        />
+      </div>
+      <div class="home-works q-py-xl q-my-xl">
+        <h3 class="q-ma-none">Como funciona?</h3>
+        <div class="home-work-profesional">
+          <q-img
+            src="https://www.cbvl.esp.br/upload/post/default.jpg"
+            class="rounded-borders"
+            height="auto"
+            width="50%"
+          />
+          <p class="q-pa-sm">
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+            industry. Lorem Ipsum has been the industry's standard dummy text ever
+            since the 1500s, when an unknown printer took a galley of type and
+            scrambled it to make a type specimen book. It has survived not only
+            five centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged. It was popularised in the 1960s with
+            the release of Letraset sheets containing Lorem Ipsum passages, and
+            more recently with desktop publishing software like Aldus PageMaker
+            including versions of Lorem Ipsum.
+          </p>
         </div>
-        <div class="col text-subtitle1 row items-end">
-          Contato: contato@gmail.com
-        </div>
-        <div class="col text-subtitle2 row items-end">
-          Hora do Corte, 2024. All Rights Reserved.
+        <div class="home-work-services">
+          <q-img
+            src="https://www.cbvl.esp.br/upload/post/default.jpg"
+            class="rounded-borders"
+            height="auto"
+            width="50%"
+          />
+          <p class="q-pa-sm">
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+            industry. Lorem Ipsum has been the industry's standard dummy text ever
+            since the 1500s, when an unknown printer took a galley of type and
+            scrambled it to make a type specimen book. It has survived not only
+            five centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged. It was popularised in the 1960s with
+            the release of Letraset sheets containing Lorem Ipsum passages, and
+            more recently with desktop publishing software like Aldus PageMaker
+            including versions of Lorem Ipsum.
+          </p>
         </div>
       </div>
-      <div class="col row justify-end">
-        <q-img
-          height="10rem"
-          width="10rem"
-          src="../assets/logo/logo.png"
-          fit="contain"
+      <div class="home-pricings row q-py-xl q-my-xl">
+        <CardPricing
+          v-for="i in pricingPlans"
+          :key="i.pk"
+          class="home-pricing"
+          :dataPricing="i"
+          @buyPlan="buyPlan"
         />
+
+        <q-img
+          src="../assets/icon/navalha2.svg"
+          height="9rem"
+          width="9rem"
+          class="home-icon-navalha2"
+        />
+        <q-img
+          src="../assets/icon/barbearia.svg"
+          height="9rem"
+          width="9rem"
+          class="home-icon-barbearia"
+        />
+        <q-img
+          src="../assets/icon/escova-barbear.svg"
+          height="9rem"
+          width="9rem"
+          class="home-icon-escova-barbear"
+        />
+      </div>
+      <div class="home-footer row full-width q-pa-md q-mt-xl">
+        <div class="col column justify-end">
+          <div class="col row items-end">
+            <a href="https://www.instagram.com/horadocorte.real/" target="_blank">
+              <i class="bx bxl-instagram" />
+            </a>
+          </div>
+          <div class="col text-subtitle1 row items-end">
+            Contato: contato@gmail.com
+          </div>
+          <div class="col text-subtitle2 row items-end">
+            Hora do Corte, 2024. All Rights Reserved.
+          </div>
+        </div>
+        <div class="col row justify-end">
+          <q-img
+            height="10rem"
+            width="10rem"
+            src="../assets/logo/logo.png"
+            fit="contain"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -205,6 +211,13 @@ const register = () => {
     url("../assets/background/background-wave.png") no-repeat fixed center;
   background-size: cover;
 
+  .home-loader{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 5rem);
+
+  }    
   .home-about {
     position: relative;
     display: flex;
