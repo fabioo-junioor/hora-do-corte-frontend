@@ -10,7 +10,7 @@ const trigger = () => {
         message: store.getters.getAlertConfig.message,
         type: store.getters.getAlertConfig.type,
         progress: true,
-        position: 'bottom',
+        position: 'top-right',
         timeout: 2000
     });
 };

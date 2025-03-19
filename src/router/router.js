@@ -22,7 +22,7 @@ const routes = [
         path: '/:nameUser',
         name: 'homeUser',
         component: HomeUser,
-        beforeEnter: async (_, __, next) => {
+        beforeEnter: (_, __, next) => {
             next();
             return;
 

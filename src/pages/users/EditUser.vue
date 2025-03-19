@@ -39,7 +39,6 @@ const saveFormUser = async () => {
   dataEditUser.cep = cleanSpecialCharacters(dataEditUser.cep);
   dataEditUser.phone = cleanSpecialCharacters(dataEditUser.phone);
   let dataUserStorage = getDataUser();
-
   /*
   if (charactersAndSpaces(dataEditUser.slug)) {
     store.commit("setAlertConfig", { message: "Nome de usuário (link) inválido!", type: "warning" });
@@ -47,80 +46,91 @@ const saveFormUser = async () => {
 
   };
   */
-  if (isDetailsExists.value) {
+  if(isDetailsExists.value) {
     let dataUser = await updateUserDetails(dataEditUser, dataUserStorage.pkUser);
-    if (dataUser.statusCode === 201) {
+    if(dataUser?.statusCode === 201) {
       isLoaderEditUser.value = false;
-      store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
+      store.commit("setAlertConfig", { message: dataUser?.message, type: "positive" });
       return;
 
     };
-    if (dataUser.statusCode === 200) {
+    if(dataUser?.statusCode === 200) {
       isLoaderEditUser.value = false;
-      store.commit("setAlertConfig", { message: dataUser.message, type: "warning" });
+      store.commit("setAlertConfig", { message: dataUser?.message, type: "warning" });
       return;
 
     };
-    isLoaderEditUser.value = false;
-    store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
+    if(dataUser?.statusCode === 403){
+      isLoaderEditUser.value = false;
+      store.commit("setAlertConfig", { message: dataUser?.message, type: "warning" });
+      return;
+
+    };
     return;
 
   };
+
   let dataUser = await createUserDetails(dataEditUser, dataUserStorage.pkUser);
-  if (dataUser.statusCode === 201) {
+  if(dataUser?.statusCode === 201) {
     isLoaderEditUser.value = false;
-    store.commit("setAlertConfig", { message: dataUser.message, type: "positive" });
+    store.commit("setAlertConfig", { message: dataUser?.message, type: "positive" });
     return;
 
   };
-  if (dataUser.statusCode === 200) {
+  if(dataUser?.statusCode === 200) {
     isLoaderEditUser.value = false;
-    store.commit("setAlertConfig", { message: dataUser.message, type: "info" });
+    store.commit("setAlertConfig", { message: dataUser?.message, type: "info" });
     return;
 
   };
-  isLoaderEditUser.value = false;
-  store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
-  return;
+  if(dataUser?.statusCode === 403){
+    isLoaderEditUser.value = false;
+    store.commit("setAlertConfig", { message: dataUser?.message, type: "warning" });
+    return;
 
+  };
 };
 const previewImage = (event) => {
   var input = event.target;
-  if (input.files && input.files[0]) {
+  if(input.files && input.files[0]) {
     var render = new FileReader();
     render.onload = (e) => {
       imageProfile.value = e.target.result;
+
     };
     render.readAsDataURL(input.files[0]);
-  }
+
+  };
 };
 const getUserDetails = async () => {
   let dataUserStorage = getDataUser();
-  let dataUser = await getUserDetailsByPk(dataUserStorage.pkUser);
-  if (dataUser.statusCode === 200 && dataUser.data?.length !== 0) {
-    dataEditUser.name = dataUser.data[0].name;
-    dataEditUser.slug = dataUser.data[0].slug;
-    dataEditUser.phone = dataUser.data[0].phone;
-    dataEditUser.instagram = dataUser.data[0].instagram;
-    dataEditUser.cep = dataUser.data[0].cep;
-    dataEditUser.state = dataUser.data[0].state;
-    dataEditUser.city = dataUser.data[0].city;
-    dataEditUser.street = dataUser.data[0].street;
-    dataEditUser.number = dataUser.data[0].number;
+  let dataUser = await getUserDetailsByPk(dataUserStorage?.pkUser);
+  if(dataUser?.statusCode === 200 && dataUser?.data.length !== 0) {
+    dataEditUser.name = dataUser?.data[0].name;
+    dataEditUser.slug = dataUser?.data[0].slug;
+    dataEditUser.phone = dataUser?.data[0].phone;
+    dataEditUser.instagram = dataUser?.data[0].instagram;
+    dataEditUser.cep = dataUser?.data[0].cep;
+    dataEditUser.state = dataUser?.data[0].state;
+    dataEditUser.city = dataUser?.data[0].city;
+    dataEditUser.street = dataUser?.data[0].street;
+    dataEditUser.number = dataUser?.data[0].number;
     isDetailsExists.value = true;
     return;
 
   };
-  if (dataUser.statusCode === 200 && dataUser.data?.length === 0) {
-    store.commit("setAlertConfig", { message: dataUser.message, type: "info" });
+  if(dataUser?.statusCode === 200 && dataUser?.data.length === 0) {
+    store.commit("setAlertConfig", { message: dataUser?.message, type: "info" });
     isDetailsExists.value = false;
     return;
 
   }
-  store.commit("setAlertConfig", { message: dataUser.message, type: "negative" });
-  isDetailsExists.value = false;
-  return;
+  if(dataUser?.statusCode === 403){
+    isDetailsExists.value = false;
+    store.commit("setAlertConfig", { message: dataUser?.message, type: "warning" });
+    return;
 
+  };
 };
 const searchCep = async () => {
   if (!cepValidator(dataEditUser.cep)) {

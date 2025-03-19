@@ -1,7 +1,7 @@
 const url = import.meta.env.VITE_ROOT_API;
 import { getDataUser } from '../storage/settingSession.js';
 const dataUser = getDataUser();
-const header = { "Content-Type" : "application/json", Authorization: `Bearer ${dataUser?.token}` };
+const header = { "Content-Type" : "application/json", Authorization: `Bearer ${dataUser?.token || ''}` };
 
 const getSchedules = async (pkProfessional) => {
     try {
