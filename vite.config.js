@@ -19,10 +19,16 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
+  build: {
+    target: 'esnext'
+
+  },
   server: {
     port: 3000
+
   },
   preview: {
     port: 3001
+
   }
 })
