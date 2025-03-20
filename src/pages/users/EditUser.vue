@@ -39,13 +39,6 @@ const saveFormUser = async () => {
   dataEditUser.cep = cleanSpecialCharacters(dataEditUser.cep);
   dataEditUser.phone = cleanSpecialCharacters(dataEditUser.phone);
   let dataUserStorage = getDataUser();
-  /*
-  if (charactersAndSpaces(dataEditUser.slug)) {
-    store.commit("setAlertConfig", { message: "Nome de usuário (link) inválido!", type: "warning" });
-    return;
-
-  };
-  */
   if(isDetailsExists.value) {
     let dataUser = await updateUserDetails(dataEditUser, dataUserStorage.pkUser);
     if(dataUser?.statusCode === 201) {
@@ -119,12 +112,14 @@ const getUserDetails = async () => {
     return;
 
   };
+  /*
   if(dataUser?.statusCode === 200 && dataUser?.data.length === 0) {
     store.commit("setAlertConfig", { message: dataUser?.message, type: "info" });
     isDetailsExists.value = false;
     return;
 
-  }
+  };
+  */
   if(dataUser?.statusCode === 403){
     isDetailsExists.value = false;
     store.commit("setAlertConfig", { message: dataUser?.message, type: "warning" });

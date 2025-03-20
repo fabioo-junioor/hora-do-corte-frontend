@@ -53,7 +53,7 @@ const cancelReservation = (pkReservation) => {
               transition-show="scale"
               transition-hide="scale"
             >
-              <div class="q-py-sm">
+              <div class="q-my-sm">
                 <div class="text-subtitle1">Telefone:</div>
                 <div class="text-subtitle2 text-grey-4">
                   {{ i.phoneCustomer }}
@@ -66,7 +66,7 @@ const cancelReservation = (pkReservation) => {
                 </div>
               </div>
               <div class="q-my-sm">
-                <div class="text-subtitle1">Serviços</div>
+                <div class="text-subtitle1">Serviços:</div>
                 <div
                   class="text-subtitle2 text-grey-4"
                   v-for="j in i.services"
