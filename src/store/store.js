@@ -14,6 +14,9 @@ const store = createStore({
             pkPlan: null,
             pkUser: null,
             details: []
+        },
+        stateLoader: {
+            isLoader: false
         }
     },
     mutations: {
@@ -39,6 +42,10 @@ const store = createStore({
             state.stateBuyPlan.pkUser = data.pkUser;
             state.stateBuyPlan.details = data.details;
 
+        },
+        setStateLoader(state, data){
+            state.stateLoader.isLoader = data.isLoader;
+
         }
     },
     getters: {
@@ -52,6 +59,11 @@ const store = createStore({
         },
         getStateBuyPlan(state){
             return state.stateBuyPlan;
+
+        },
+        getStateLoader(state){
+            return state.stateLoader;
+
         }
     }
 });

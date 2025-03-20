@@ -1,12 +1,12 @@
 const url = import.meta.env.VITE_ROOT_API;
 import { getDataUser } from '../storage/settingSession.js';
 const dataUser = getDataUser();
-const header = { "Content-Type" : "application/json", Authorization: `Bearer ${dataUser?.token || ''}` };
+const header = { "Content-Type" : "application/json", Authorization: `Bearer ${dataUser?.token || 'notToken'}` };
 
 const authUser = async (token) => {
     try {
         const response = await fetch(url+'user/authUser', {
-            headers: { "Content-Type" : "application/json", Authorization: `Bearer ${token}` },
+            headers: header,
             method: 'GET',
             mode: 'cors'
         });

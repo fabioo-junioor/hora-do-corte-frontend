@@ -2,7 +2,7 @@
 import { reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
-import { CardPricing } from "../components";
+import { CardPricing, Loader } from "../components";
 import { getDataUser } from "../services/storage/settingSession.js";
 
 const router = useRouter();
@@ -61,6 +61,7 @@ const buyPlan = (data) => {
 };
 const register = () => {
   router.push({ path: "/cadUser" });
+  return;
 
 };
 </script>
@@ -204,7 +205,7 @@ const register = () => {
   background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)),
     url("../assets/background/background-wave.png") no-repeat fixed center;
   background-size: cover;
-
+  
   .home-about {
     position: relative;
     display: flex;

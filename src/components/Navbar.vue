@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { onBeforeMount, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { AlertUser } from "../components";
@@ -11,19 +11,30 @@ const router = useRouter();
 const isUserLogin = ref(false);
 
 const checkLoginUser = async () => {
-  let dataUser = getDataUser();
-  if(!!dataUser?.token){
-    isUserLogin.value = true;
-    store.commit('setStateUser', { login: true });
+  let validAuth = await authUser();
+  if(validAuth?.statusCode === 200){
+      store.commit('setStateUser', { login: true });
+      isUserLogin.value = true;
+      console.log(validAuth?.statusCode);
+      return;
+      
+  };
+  if(validAuth?.statusCode === 403){
+    deleteDataUser();
+    store.commit('setStateUser', { login: false });
+    isUserLogin.value = false;
+    location.reload();
+    console.log(validAuth?.statusCode);
     return;
 
   };
-  deleteDataUser();
-  //store.commit("setAlertConfig", { message: "Sessão expirou!", type: "info" });
-  store.commit('setStateUser', { login: false });
-  isUserLogin.value = false;
-  return;
+  if(validAuth?.statusCode === 401){
+    store.commit('setStateUser', { login: false });
+    isUserLogin.value = false;
+    console.log(validAuth?.statusCode);
+    return;
 
+  };  
 };
 const getLogin = () => {
   router.push({ path: "/loginUser" });
@@ -32,10 +43,10 @@ const getLogin = () => {
 };
 const getLogout = () => {
   deleteDataUser();
-  router.push({ path: "/" });
+  //router.push({ path: "/" });
   store.commit("setAlertConfig", { message: "Saindo!", type: "positive" });
-  store.commit('setStateUser', { login: false });
-  //reloadPage();
+  //store.commit('setStateUser', { login: false });
+  reloadPage();
   return;
 
 };
@@ -59,6 +70,13 @@ const getReservations = () => {
   return;
 
 };
+const verifyResponseNavbar = () => {
+  const navbar = document.querySelector(".navbar-area-user");
+  if(navbar){
+    navbar.classList.toggle("active");
+
+  };
+};
 const reloadPage = () => {
   setTimeout(() => {
     location.reload();
@@ -71,10 +89,11 @@ watch(() => store.getters.getStateUser.isUserLogin, (val) => {
 
   }
 );
-onMounted( async () => {
+onBeforeMount(async () => {
   await checkLoginUser();
-
+  
 });
+
 </script>
 <template>
   <div id="navbar">
@@ -93,11 +112,15 @@ onMounted( async () => {
               </q-toolbar-title>
             </router-link>
           </div>
+          <q-btn flat dense
+            class="navbar-menu-toggle"
+            @click="verifyResponseNavbar()">
+            <q-icon name="menu" size="md" color="brown-10" />
+          </q-btn>
           <div class="col-11 navbar-area-user">
             <div
               v-if="!isUserLogin"
-              class="navbar-area-user-login row justify-end"
-            >
+              class="navbar-area-user-login row justify-end">
               <q-btn
                 push
                 stack
@@ -115,15 +138,13 @@ onMounted( async () => {
                   @click="getReservations"
                   color="brown-8"
                   icon="event_available"
-                  label="Agendamentos"
-                />
+                  label="Agendamentos"/>
                 <q-btn-dropdown
                   push
                   stack
                   color="brown-8"
                   icon="settings"
-                  label="Configuração"
-                >
+                  label="Configuração">
                   <q-list class="bg-brown-5">
                     <q-item clickable v-close-popup @click="getEditUser">
                       <q-item-section avatar>
@@ -157,8 +178,7 @@ onMounted( async () => {
                   @click="getEditProfessional"
                   color="brown-8"
                   icon="manage_accounts"
-                  label="Profissionais"
-                />
+                  label="Profissionais"/>
               </div>
               <div class="col-1 row justify-center">
                 <q-btn
@@ -167,8 +187,7 @@ onMounted( async () => {
                   @click="getLogout"
                   color="brown-10"
                   icon="logout"
-                  label="Sair"
-                />
+                  label="Sair"/>
               </div>
             </div>
           </div>
@@ -197,12 +216,20 @@ onMounted( async () => {
         align-items: center;
 
       }
+      .navbar-menu-toggle{
+        display: none;
+
+      }
       .navbar-area-user {
+        display: flex;
+
         .navbar-area-user-login {
+          width: 100%;
           margin: 0.3rem 0;
 
         }
         .navbar-area-user-notLogin {
+          width: 100%;
           margin: 0.3rem 0;
 
           div {
@@ -237,18 +264,61 @@ onMounted( async () => {
   #navbar {
     .q-header {
       .q-toolbar {
-        .navbar-area-user {
-          .navbar-area-user-login {
-            padding: 0 1rem;
+        .navbar-menu-toggle{
+          display: block;
 
-          }
-          .navbar-area-user-notLogin {
-            .col-11 {
-              padding: 0 1rem;
-              flex-direction: column;
+        }
+        .navbar-area-user {
+          display: none;
+          position: absolute;
+          top: 100%;
+          right: 0;
+          width: 100%;
+          background: $darkColorSecondary;
+          flex-direction: column;
+          align-items: center;
+          padding: 1rem 0;
+          box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+          border-radius: 0 0 10px 10px;
+
+          .navbar-area-user-login {
+            width: 95%;
+            justify-content: center;
+
+            .q-btn{
+              width: 100%;
 
             }
           }
+          .navbar-area-user-notLogin {
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+
+            .col-11 {
+              width: 95%;
+              padding: 0;
+              flex-direction: column;
+              
+              .q-btn{
+                width: 100%;
+
+              }
+            }
+            .col-1{
+              width: 80%;
+              margin: 1rem 0 .3rem 0;
+
+              .q-btn{
+                width: 100%;
+
+              }
+            }
+          }
+        }
+        .navbar-area-user.active{
+          display: flex;
+
         }
       }
     }
@@ -258,36 +328,15 @@ onMounted( async () => {
   #navbar {
     .q-header {
       .q-toolbar {
-        flex-direction: column;
-        padding: 0;
+        padding: 0 1.5rem;
 
         .navbar-area-user {
           .navbar-area-user-login {
             justify-content: center;
-            padding: 0;
 
             button {
               width: 100%;
 
-            }
-          }
-          .navbar-area-user-notLogin {
-            flex-direction: column;
-            width: 100%;
-
-            .col-11 {
-              padding: 0 1rem;
-              width: 100%;
-
-            }
-            .col-1 {
-              width: 100%;
-
-              button {
-                width: 100%;
-                margin: 1rem 0;
-                
-              }
             }
           }
         }
