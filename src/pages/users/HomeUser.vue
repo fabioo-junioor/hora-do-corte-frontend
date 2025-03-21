@@ -43,12 +43,14 @@ const dataReservation = reactive({
         timeReservation: '',
         price: null,
         duration: null
+
 });
 const dataFormReservation = reactive({
-    name: 'fabio',
-    email: 'fabio@bol.com',
-    phone: '11999900022',
-    observation: 'sem'
+    name: '',
+    email: '',
+    phone: '',
+    observation: ''
+
 });
 const checkProfessional = async (data) => {
     dataServiceSelected.splice(0, dataServiceSelected.length);
@@ -122,17 +124,19 @@ const verifyReservationComplete = async () => {
         dataReservation.duration = sumMinutes(dataReservation.services);
         dataFormReservation.phone = cleanSpecialCharacters(dataFormReservation.phone);
         let dataReser = await createReservation(dataUser[0]?.fkUser, dataReservation, dataFormReservation);
-        if(dataReser.statusCode !== 201){
+        if(dataReser?.statusCode === 201){
             isLoaderReservation.value = false;
-            store.commit('setAlertConfig', {message: dataReser.message, type: 'warning'});
+            store.commit('setAlertConfig', { message: dataReser?.message, type: 'positive' });
+            reloadPage();
             return;
 
         };
-        isLoaderReservation.value = false;
-        store.commit('setAlertConfig', {message: dataReser.message, type: 'positive'});
-        reloadPage();
-        return;
+        if(dataReser?.statusCode === 200){
+            isLoaderReservation.value = false;
+            store.commit('setAlertConfig', { message: dataReser?.message, type: 'warning' });
+            return;
 
+        };
     };
 };
 const checkCustomerChoice = (step) => {
@@ -162,9 +166,8 @@ const checkCustomerChoice = (step) => {
 };
 const getAllProfessionals = async () => {
     let dataProfessional = await getAll(dataUser[0]?.fkUser);
-    //console.log(dataProfessional)
-    if(dataProfessional.statusCode === 200 && dataProfessional.data?.length !== 0){
-        dataAllProfessionals.push(...dataProfessional.data);
+    if(dataProfessional?.statusCode === 200 && dataProfessional?.data.length !== 0){
+        dataAllProfessionals.push(...dataProfessional?.data);
         return;
 
     };
@@ -172,26 +175,21 @@ const getAllProfessionals = async () => {
         return;
 
     };
-    store.commit('setAlertConfig', {message: dataProfessional.message, type: 'negative'});
-    return;
-
 };
 const getAllServices = async () => {
-    dataAllProfessionals.filter( async (elem) => {
+    dataAllProfessionals.filter(async (elem) => {
         let dataServices = await getService(elem.pkProfessional);
-        //console.log(dataServices)
-        if(dataServices.statusCode === 200 && dataServices.data?.length !== 0){
-            dataAllServices.push(...dataServices.data);
+        if(dataServices?.statusCode === 200 && dataServices?.data.length !== 0){
+            dataAllServices.push(...dataServices?.data);
 
         };
     });
 };
 const getAllSchedules = async () => {
-    dataAllProfessionals.filter( async (elem) => {
+    dataAllProfessionals.filter(async (elem) => {
         let dataSchedules = await getSchedules(elem.pkProfessional);
-        //console.log(dataSchedules)
-        if(dataSchedules.statusCode === 200 && dataSchedules.data.length !== 0){
-            dataAllSchedules.push(...dataSchedules.data);
+        if(dataSchedules?.statusCode === 200 && dataSchedules?.data.length !== 0){
+            dataAllSchedules.push(...dataSchedules?.data);
 
         };
     });
@@ -218,23 +216,23 @@ const schedulesExistsByProfessional = (pkProfessional) => {
 };
 const checkUserExists = async () => {
     let dataU = await getUserDetailsBySlug(route.params.nameUser);
-    if(dataU.statusCode !== 200 || dataU.data?.length === 0){
+    if(dataU?.statusCode !== 200 || dataU?.data.length === 0){
         isUserExistis.value = false;
         router.push({ name: 'notFoundUser' });
         return;
 
     };
     isUserExistis.value = true;
-    dataUser.push(...dataU.data);   
-    let dataLastPurchase = await getLastPurchasePlan(dataU.data[0]?.fkUser);
-    if(dataLastPurchase.statusCode === 200 && dataLastPurchase.data?.length === 0){
+    dataUser.push(...dataU?.data);   
+    let dataLastPurchase = await getLastPurchasePlan(dataU?.data[0].fkUser);
+    if(dataLastPurchase?.statusCode === 200 && dataLastPurchase?.data.length === 0){
         btnReservationDisable.value = false;
         return;
 
     };
-    if(dataLastPurchase.statusCode === 200 && dataLastPurchase.data?.length !== 0){
-        let dateValidity = dataLastPurchase.data[0]?.purchaseValidity;
-        let timeValidity = dataLastPurchase.data[0]?.purchaseTime;
+    if(dataLastPurchase?.statusCode === 200 && dataLastPurchase?.data.length !== 0){
+        let dateValidity = dataLastPurchase?.data[0].purchaseValidity;
+        let timeValidity = dataLastPurchase?.data[0].purchaseTime;
         let dateToday = getDateToday();
         let timeToday = getCurrentTime();
         if(!dateCompare(dateValidity, timeValidity, dateToday, timeToday)){

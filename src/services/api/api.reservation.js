@@ -65,12 +65,15 @@ const createReservation = async (pkUser, dataReservation, dataFormReservation) =
     };
 };
 
-const deleteReservation = async (pkReservation) => {
+const deleteReservation = async (pkReservation, pkUser) => {
     try {
         const response = await fetch(url+`reservation/${pkReservation}/deleteReservation`, {
             headers: header,
             method: 'DELETE',
-            mode: 'cors'
+            mode: 'cors',
+            body: JSON.stringify({
+                pkUser: pkUser
+            })
         });
         const data = await response.json();
         return data;       

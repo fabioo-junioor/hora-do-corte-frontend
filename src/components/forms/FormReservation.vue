@@ -13,7 +13,7 @@ const rulesUser = reactive({
 </script>
 <template>
     <div id="form-user" class="q-ma-sm q-pa-sm">
-        <q-form @submit="onSubmit">
+        <q-form>
             <q-input
                 dark
                 filled
@@ -37,7 +37,8 @@ const rulesUser = reactive({
                 bg-color="brown-8"
                 v-model="dataFormReservation.email"
                 type="text"
-                label="Seu email "
+                label="Seu email"
+                hint="Informar email para receber confirmação!"
                 lazy-rules
                 :rules="[rulesUser.email]">
                 <template v-slot:prepend>
