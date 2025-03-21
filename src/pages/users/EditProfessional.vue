@@ -49,9 +49,9 @@ const addProfessional = () => {
 };
 const saveFormProfessional = async (pkProfessional) => {
   isLoaderEditProfessional.value = true;
+  let dataUserStorage = getDataUser();
   if(pkProfessional == "") {
-    let dataUserStorage = getDataUser();
-    let dataProfessional = await create(dataEditProfessional, dataUserStorage.pkUser);
+    let dataProfessional = await create(dataEditProfessional, dataUserStorage?.pkUser);
     if(dataProfessional?.statusCode === 201) {
       isLoaderEditProfessional.value = false;
       store.commit("setAlertConfig", { message: dataProfessional?.message, type: "positive" });
@@ -71,11 +71,17 @@ const saveFormProfessional = async (pkProfessional) => {
       return;
 
     };
+    if(dataProfessional?.statusCode === 400){
+      isLoaderEditProfessional.value = false;
+      store.commit("setAlertConfig", { message: dataProfessional?.message, type: "negative" });
+      return;
+
+    };
     return;
 
   };
 
-  let dataProfessional = await update(dataEditProfessional, pkProfessional);
+  let dataProfessional = await update(dataEditProfessional, pkProfessional, dataUserStorage?.pkUser);
   if(dataProfessional?.statusCode === 201) {
     isLoaderEditProfessional.value = false;
     store.commit("setAlertConfig", { message: dataProfessional?.message, type: "positive" });
@@ -95,11 +101,18 @@ const saveFormProfessional = async (pkProfessional) => {
     return;
 
   };
+  if(dataProfessional?.statusCode === 400){
+    isLoaderEditProfessional.value = false;
+    store.commit("setAlertConfig", { message: dataProfessional?.message, type: "negative" });
+    return;
+
+  };
 };
 const saveFormServices = async () => {
   isLoaderEditServices.value = true;
+  let dataUserStorage = getDataUser();
   if(pkProfessionalServices.value) {
-    let dataService = await updateService(newServices, dataServices[0].pkProfessionalServices);
+    let dataService = await updateService(dataServices[0].pkProfessionalServices, newServices, dataUserStorage?.pkUser);
     if (dataService?.statusCode === 201) {
       isLoaderEditServices.value = false;
       store.commit("setAlertConfig", { message: dataService?.message, type: "positive" });
@@ -119,11 +132,17 @@ const saveFormServices = async () => {
       return;
 
     };
+    if(dataService?.statusCode === 400){
+      isLoaderEditServices.value = false;
+      store.commit("setAlertConfig", { message: dataService?.message, type: "negative" });
+      return;
+
+    };
     return;
 
   };
 
-  let dataService = await createService(newServices, pkProfessional.value);
+  let dataService = await createService(pkProfessional.value, newServices, dataUserStorage?.pkUser);
   if(dataService?.statusCode === 201) {
     isLoaderEditServices.value = false;
     store.commit("setAlertConfig", { message: dataService?.message, type: "positive" });
@@ -139,6 +158,12 @@ const saveFormServices = async () => {
   };
   if(dataService?.statusCode === 403){
     isLoaderEditServices.value = false;
+    store.commit("setAlertConfig", { message: dataService?.message, type: "warning" });
+    return;
+
+  };
+  if(dataService?.statusCode === 400){
+    isLoaderEditServices.value = false;
     store.commit("setAlertConfig", { message: dataService?.message, type: "negative" });
     return;
 
@@ -146,6 +171,7 @@ const saveFormServices = async () => {
 };
 const saveFormSchedules = async () => {
   isLoaderEditSchedules.value = true;
+  let dataUserStorage = getDataUser();
   if(!isAnyShiftOpen(dataEditSchedules)) {
     isLoaderEditSchedules.value = false;
     store.commit("setAlertConfig", { message: "Preencher pelo menos um turno!", type: "warning" });
@@ -153,7 +179,7 @@ const saveFormSchedules = async () => {
 
   };
   if(pkProfessionalSchedule.value) {
-    let dataSchedule = await updateSchedules(dataEditSchedules, pkProfessionalSchedule.value);
+    let dataSchedule = await updateSchedules(pkProfessionalSchedule.value, dataEditSchedules, dataUserStorage?.pkUser);
     if(dataSchedule?.statusCode === 201) {
       isLoaderEditSchedules.value = false;
       store.commit("setAlertConfig", { message: dataSchedule?.message, type: "positive"});
@@ -173,11 +199,17 @@ const saveFormSchedules = async () => {
       return;
 
     };
+    if(dataSchedule?.statusCode === 400){
+      isLoaderEditSchedules.value = false;
+      store.commit("setAlertConfig", { message: dataSchedule?.message, type: "negative" });
+      return;
+
+    };
     return;
 
   };
 
-  let dataSchedule = await createSchedules(dataEditSchedules, pkProfessional.value);
+  let dataSchedule = await createSchedules(pkProfessional.value, dataEditSchedules, dataUserStorage?.pkUser);
   if(dataSchedule?.statusCode === 201) {
     isLoaderEditSchedules.value = false;
     store.commit("setAlertConfig", { message: dataSchedule?.message, type: "positive" });
@@ -194,6 +226,12 @@ const saveFormSchedules = async () => {
   if(dataSchedule?.statusCode === 403){
     isLoaderEditSchedules.value = false;
     store.commit("setAlertConfig", { message: dataSchedule?.message, type: "warning" });
+    return;
+
+  };
+  if(dataSchedule?.statusCode === 400){
+    isLoaderEditSchedules.value = false;
+    store.commit("setAlertConfig", { message: dataSchedule?.message, type: "negative" });
     return;
 
   };
@@ -276,7 +314,8 @@ const editServicesProfessional = async (services) => {
   };
 };
 const deleteProfessional = async (pkProfessional) => {
-  let dataProfessional = await deleteProf(pkProfessional);
+  let dataUserStorage = getDataUser();
+  let dataProfessional = await deleteProf(pkProfessional, dataUserStorage?.pkUser);
   if(dataProfessional?.statusCode === 200) {
     store.commit("setAlertConfig", { message: dataProfessional?.message, type: "positive" });
     reloadPage();
@@ -285,6 +324,11 @@ const deleteProfessional = async (pkProfessional) => {
   };
   if(dataProfessional?.statusCode === 403){
     store.commit("setAlertConfig", { message: dataProfessional?.message, type: "warning" });
+    return;
+
+  };
+  if(dataProfessional?.statusCode === 400){
+    store.commit("setAlertConfig", { message: dataProfessional?.message, type: "negative" });
     return;
 
   };
@@ -308,7 +352,7 @@ const getAllProfessionals = async () => {
     (dataProfessional?.data.length === 0)) {
     isLoaderProfessionals.value = false;
     isMessage.value = dataProfessional.message;
-    console.log(dataProfessional)
+    //console.log(dataProfessional)
     return;
 
   };

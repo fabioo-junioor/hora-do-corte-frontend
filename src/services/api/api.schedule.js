@@ -18,15 +18,16 @@ const getSchedules = async (pkProfessional) => {
 
     };
 };
-const createSchedules = async (schedules, pkProfessional) => {
+const createSchedules = async (pkProfessional, schedules, pkUser) => {
     try {
         const response = await fetch(url+`schedules/createSchedule`, {
             headers: header,
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
+                pkProfessional: pkProfessional,
                 schedules: schedules,
-                pkProfessional: pkProfessional
+                pkUser: pkUser
             })
         });
         const data = await response.json();
@@ -37,14 +38,15 @@ const createSchedules = async (schedules, pkProfessional) => {
 
     };
 };
-const updateSchedules = async (schedules, pkProfessionalSchedule) => {
+const updateSchedules = async (pkProfessionalSchedule, schedules, pkUser) => {
     try {
         const response = await fetch(url+`schedules/${pkProfessionalSchedule}/updateSchedule`, {
             headers: header,
             method: 'PUT',
             mode: 'cors',
             body: JSON.stringify({
-                schedules: schedules
+                schedules: schedules,
+                pkUser: pkUser
             })
         });
         const data = await response.json();

@@ -18,15 +18,16 @@ const getService = async (pkProfessional) => {
 
     };
 };
-const createService = async (services, pkProfessional) => {
+const createService = async (pkProfessional, services, pkUser) => {
     try {
         const response = await fetch(url+`services/createService`, {
             headers: header,
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify({
+                pkProfessional: pkProfessional,
                 services: services,
-                pkProfessional: pkProfessional
+                pkUser: pkUser
             })
         });
         const data = await response.json();
@@ -37,14 +38,15 @@ const createService = async (services, pkProfessional) => {
 
     };
 };
-const updateService = async (services, pkProfessionalServices) => {
+const updateService = async (pkProfessionalServices, services, pkUser) => {
     try {
         const response = await fetch(url+`services/${pkProfessionalServices}/updateService`, {
             headers: header,
             method: 'PUT',
             mode: 'cors',
             body: JSON.stringify({
-                services: services
+                services: services,
+                pkUser: pkUser
             })
         });
         const data = await response.json();

@@ -18,7 +18,8 @@ const noticeList = reactive([
 
 const cancelReservation = async (pkReservation) => {
   isLoaderCancelReservations.value = true;
-  let dataReservaions = await deleteReservation(pkReservation);
+  let dataUserStorage = getDataUser();
+  let dataReservaions = await deleteReservation(pkReservation, dataUserStorage?.pkUser);
   if(dataReservaions?.statusCode === 200) {
     isLoaderCancelReservations.value = false;
     store.commit("setAlertConfig", { message: dataReservaions?.message, type: "positive" });
@@ -29,6 +30,12 @@ const cancelReservation = async (pkReservation) => {
   if(dataReservaions?.statusCode === 403){
     isLoaderCancelReservations.value = false;
     store.commit("setAlertConfig", { message: dataReservaions?.message, type: "warning" });
+    return;
+
+  };
+  if(dataReservaions?.statusCode === 400){
+    isLoaderCancelReservations.value = false;
+    store.commit("setAlertConfig", { message: dataReservaions?.message, type: "negative" });
     return;
 
   };

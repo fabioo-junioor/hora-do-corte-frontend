@@ -40,7 +40,7 @@ const create = async (dataProfessional, pkUser) => {
 
     };
 };
-const update = async (dataProfessional, pkProfessional) => {
+const update = async (dataProfessional, pkProfessional, pkUser) => {
     try {
         const response = await fetch(url+`professional/${pkProfessional}/updateProfessional`, {
             headers: header,
@@ -50,7 +50,8 @@ const update = async (dataProfessional, pkProfessional) => {
                 name: dataProfessional.name,
                 image: dataProfessional.image,
                 instagram: dataProfessional.instagram,
-                isUnavailable: dataProfessional.isUnavailable
+                isUnavailable: dataProfessional.isUnavailable,
+                pkUser: pkUser
             })
         });
         const data = await response.json();
@@ -61,12 +62,15 @@ const update = async (dataProfessional, pkProfessional) => {
 
     };
 };
-const deleteProf = async (pkProfessional) => {
+const deleteProf = async (pkProfessional, pkUser) => {
     try {
         const response = await fetch(url+`professional/${pkProfessional}/deleteProfessional`, {
             headers: header,
             method: 'DELETE',
-            mode: 'cors'
+            mode: 'cors',
+            body: JSON.stringify({
+                pkUser: pkUser
+            })
         });
         const data = await response.json();
         return data;       
