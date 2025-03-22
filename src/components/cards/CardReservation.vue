@@ -94,12 +94,12 @@ const cancelReservation = (pkReservation) => {
               push
               :disable="isLoaderTime"
               @click="cancelReservation(i.pkReservation)"
-              class="full-height"
+              class="full-height full-width"
               size=".8rem"
-              color="brown-5"
-              :icon="!isLoaderTime ? 'delete' : ''"
-              :label="!isLoaderTime ? 'Cancelar reserva' : ''">
-              <slot v-if="isLoaderTime" />
+              color="brown-5">
+              <q-icon v-if="!isLoaderTime" class="q-ma-xs" name="delete" color="white" size="1.5rem" />
+              <slot v-else />
+              {{ !isLoaderTime ? 'Cancelar reserva' : '' }}
             </q-btn>
           </div>
         </q-card-section>

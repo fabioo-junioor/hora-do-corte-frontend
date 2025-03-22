@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { FormEditPasswordUser, Loader } from "../../components";
+import { FormEditPasswordUser, Loader, CardAlertNotice } from "../../components";
 import { updateUser } from "../../services/api/api.user.js";
 
 const store = useStore();
@@ -46,6 +46,7 @@ const saveFormPasswordUser = async () => {
         <Loader loaderSize="1.2em" loaderColor="white" />  
       </FormEditPasswordUser>
     </div>
+    <CardAlertNotice v-if="store.getters.getAlertNotice.isAlertNotice" />
   </div>
 </template>
 <style lang="scss" scoped>

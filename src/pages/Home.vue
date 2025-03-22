@@ -179,7 +179,7 @@ const register = () => {
           Contato: contato@gmail.com
         </div>
         <div class="col text-subtitle2 row items-end">
-          Hora do Corte, 2024. All Rights Reserved.
+          Hora do Corte, 2025. All Rights Reserved.
         </div>
       </div>
       <div class="col row justify-end">

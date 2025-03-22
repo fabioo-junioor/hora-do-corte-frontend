@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
-import { Loader } from '../../components';
+import { Loader, CardAlertNotice } from '../../components';
 import { createPurchasePlan } from "../../services/api/api.purchase.js";
 import { getDateToday, getCurrentTime } from "../../utils/dataUtils.js";
 import barbershop from "../../assets/imgsDefault/barbershop-ai.jpg";
@@ -128,6 +128,7 @@ onMounted(() => {
         </q-card-actions>
       </q-card>
     </div>
+    <CardAlertNotice v-if="store.getters.getAlertNotice.isAlertNotice" />
   </div>
 </template>
 <style lang="scss" scoped>
