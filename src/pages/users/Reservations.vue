@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
-import { CardReservation, Loader, CardNotice, CardMessage } from "../../components";
+import { CardReservation, Loader, CardNotice, CardMessage, CardAlertNotice } from "../../components";
 import { getReservation, deleteReservation } from "../../services/api/api.reservation.js";
 import { getDataUser } from "../../services/storage/settingSession.js";
 
@@ -102,7 +102,7 @@ onMounted(async () => {
 });
 </script>
 <template>
-  <div id="reservations" class="column items-center q-mt-sm">
+  <div id="reservations">
     <CardNotice
       class="full-width q-pa-md"
       v-if="isNotice"
@@ -110,15 +110,18 @@ onMounted(async () => {
       :noticeList="noticeList"
     />
     <h4 class="text-white q-my-lg">Lista de agendamentos!</h4>
-    <div v-if="!isLoaderReservations">
+    <div v-if="!isLoaderReservations"
+      class="reservations-loader">
       <Loader class="row justify-center items-center" />
     </div>
-    <div v-if="isLoaderReservations && !!isMessage">
+    <div v-if="isLoaderReservations && !!isMessage"
+      class="reservations-card-message">
       <CardMessage
         :message="isMessage"
         class="row justify-center items-center" />
     </div>
-    <div v-else>
+    <div v-else
+      class="reservations-card-reservation">
       <CardReservation
         v-for="i in groupByDate(orderbyDate(dataCustomerReservation))"
         :key="i"
@@ -128,16 +131,29 @@ onMounted(async () => {
         <Loader loaderSize="1.2em" loaderColor="white" />  
       </CardReservation>
     </div>
+    <CardAlertNotice v-if="store.getters.getAlertNotice.isAlertNotice" />
   </div>
 </template>
 <style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
 #reservations {
-  div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: calc(100vh - 5rem);
+  font-family: "Fredoka", sans-serif;
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05)),
+    url("../../assets/background/background-wave.png") no-repeat fixed bottom;
+  background-size: cover;
+  position: relative;
+
+  .reservations-loader,
+  .reservations-card-message,
+  .reservations-card-reservation{
     width: 100%;
 
-  }
+  }  
 }
 /* Breakpoints - response*/
 @media only screen and (max-width: 1560px) {

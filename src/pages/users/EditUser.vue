@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
-import { FormEditUser, CardNotice, Loader } from "../../components";
+import { FormEditUser, CardNotice, Loader, CardAlertNotice } from "../../components";
 import { cepValidator } from "../../utils/inputValidators.js";
 import { cleanSpecialCharacters } from "../../utils/formatters.js";
 import { charactersAndSpaces } from "../../utils/inputValidators.js";
@@ -163,7 +163,7 @@ onMounted(async () => {
       v-model:isNotice="isNotice"
       :noticeList="noticeList"
     />
-    <div class="edit-user q-mt-xl text-white">
+    <div class="edit-user q-mt-md q-mb-xl text-white">
       <h4 class="q-ma-none">Informações do estabelecimento</h4>
       <div class="edit-user-image q-my-md">
         <q-avatar
@@ -186,6 +186,7 @@ onMounted(async () => {
         <Loader loaderSize="1.2em" loaderColor="white" />
       </FormEditUser>
     </div>
+    <CardAlertNotice v-if="store.getters.getAlertNotice.isAlertNotice" />
   </div>
 </template>
 <style lang="scss" scoped>

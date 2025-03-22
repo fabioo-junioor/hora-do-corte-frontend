@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { FormDialogAddProfessional, FormDialogAddServices,
-  FormDialogAddSchedules, CardProfessionalList, Loader, CardMessage } from "../../components";
+  FormDialogAddSchedules, CardProfessionalList, Loader, CardMessage, CardAlertNotice } from "../../components";
 import { isAnyShiftOpen } from "../../utils/inputValidators.js";
 import { scheduleFormatter } from "../../utils/dataUtils.js";
 import userDefault from "../../assets/imgsDefault/user.png";
@@ -461,6 +461,7 @@ onMounted(async () => {
         <Loader loaderSize="1.2em" loaderColor="white" />  
       </FormDialogAddSchedules>
     </div>
+    <CardAlertNotice v-if="store.getters.getAlertNotice.isAlertNotice" />
   </div>
 </template>
 <style lang="scss" scoped>
@@ -474,6 +475,7 @@ onMounted(async () => {
   background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.05)),
     url("../../assets/background/background-wave.png") no-repeat fixed bottom;
   background-size: cover;
+  position: relative;
 
   .edit-professional {
     width: 80%;

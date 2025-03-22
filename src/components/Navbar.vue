@@ -12,8 +12,16 @@ const isUserLogin = ref(false);
 
 const checkLoginUser = async () => {
   let validAuth = await authUser();
+  let dataUser = getDataUser();
+  if(!dataUser){
+    store.commit('setStateUser', { login: false });
+    isUserLogin.value = false;
+    return;
+
+  }
   if(validAuth?.statusCode === 200){
       store.commit('setStateUser', { login: true });
+      store.commit('setAlertNotice', { isAlertNotice: !!dataUser?.isBlocked || false, message: 'Serviços indisponiveis no momento!' });
       isUserLogin.value = true;
       console.log(validAuth?.statusCode);
       return;

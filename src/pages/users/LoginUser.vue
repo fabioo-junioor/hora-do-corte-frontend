@@ -10,8 +10,8 @@ const store = useStore();
 const router = useRouter();
 const isLoaderLogin = ref(false);
 const dataFormUser = reactive({
-  email: "",
-  password: ""
+  email: "fabio.junior@acad.ufsm.br",
+  password: "RwiabI#_tc*d"
 
 });
 const login = async () => {

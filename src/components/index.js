@@ -1,6 +1,8 @@
 import Navbar from './Navbar.vue';
-import AlertUser from './AlertUser.vue';
 import Loader from './Loader.vue';
+
+import AlertUser from './alerts/AlertUser.vue';
+import CardAlertNotice from './alerts/CardAlertNotice.vue';
 
 import FormUser from './forms/FormUser.vue';
 import FormReservation from './forms/FormReservation.vue';
@@ -23,6 +25,7 @@ import TimeSchedule from './strepper-content/TimeSchedule.vue';
 export {
     Navbar,
     AlertUser,
+    CardAlertNotice,
     Loader,
     FormUser,
     FormReservation,

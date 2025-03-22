@@ -7,6 +7,10 @@ const store = createStore({
             message: '',
             type: ''
         },
+        alertNoticeUser: {
+            isAlertNotice: false,
+            message: ''
+        },
         stateUser: {
             isUserLogin: false
         },
@@ -33,6 +37,11 @@ const store = createStore({
 
             }, 2000);
         },
+        setAlertNotice(state, data){
+            state.alertNoticeUser.isAlertNotice = data.isAlertNotice;
+            state.alertNoticeUser.message = data.message;
+
+        },
         setStateUser(state, data){
             state.stateUser.isUserLogin = data.login;
 
@@ -51,6 +60,10 @@ const store = createStore({
     getters: {
         getAlertConfig(state){
             return state.alertConfig;
+
+        },
+        getAlertNotice(state){
+            return state.alertNoticeUser;
 
         },
         getStateUser(state){
