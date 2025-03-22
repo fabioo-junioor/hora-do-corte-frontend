@@ -3,40 +3,6 @@ import { getDataUser } from '../storage/settingSession.js';
 const dataUser = getDataUser();
 const header = { "Content-Type" : "application/json", Authorization: `Bearer ${dataUser?.token || 'notToken'}` };
 
-const authUser = async (token) => {
-    try {
-        const response = await fetch(url+'user/authUser', {
-            headers: header,
-            method: 'GET',
-            mode: 'cors'
-        });
-        const data = await response.json();
-        return data;       
-
-    } catch(error){
-        return null;
-
-    };
-};
-const loginUser = async (dataUser) => {
-    try {
-        const response = await fetch(url+'user/login', {
-            headers: header,
-            method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify({
-                email: dataUser.email,
-                password: dataUser.password
-            })
-        });
-        const data = await response.json();
-        return data;       
-
-    } catch(error){
-        return error;
-
-    };
-};
 const createUser = async (dataUser) => {
     try {
         const response = await fetch(url+'user/create', {
@@ -97,8 +63,6 @@ const recoverPassUser = async (email) => {
 };
 
 export {
-    authUser,
-    loginUser,
     createUser,
     updateUser,
     recoverPassUser

@@ -3,7 +3,7 @@ import { onBeforeMount, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { AlertUser } from "../components";
-import { authUser } from '../services/api/api.user.js';
+import { authUser } from '../services/api/api.auth.js';
 import { getDataUser, deleteDataUser } from "../services/storage/settingSession.js";
 
 const store = useStore();
@@ -11,38 +11,42 @@ const router = useRouter();
 const isUserLogin = ref(false);
 
 const checkLoginUser = async () => {
-  let validAuth = await authUser();
-  let dataUser = getDataUser();
+  let validStatusUser = await authUser();
+  /*
   if(!dataUser){
     store.commit('setStateUser', { login: false });
     isUserLogin.value = false;
     return;
 
   }
-  if(validAuth?.statusCode === 200){
+  */
+  if(validStatusUser?.statusCode === 200){
       store.commit('setStateUser', { login: true });
-      store.commit('setAlertNotice', { isAlertNotice: !!dataUser?.isBlocked || false, message: 'Serviços indisponiveis no momento!' });
+      store.commit('setAlertNotice', { isAlertNotice: !!validStatusUser?.data[0].isBlocked || false, message: 'Serviços indisponiveis no momento!' });
       isUserLogin.value = true;
-      console.log(validAuth?.statusCode);
+      console.log(validStatusUser?.statusCode);
       return;
       
   };
-  if(validAuth?.statusCode === 403){
+  if(validStatusUser?.statusCode === 403){
     deleteDataUser();
     store.commit('setStateUser', { login: false });
     isUserLogin.value = false;
     location.reload();
-    console.log(validAuth?.statusCode);
+    console.log(validStatusUser?.statusCode);
     return;
 
   };
-  if(validAuth?.statusCode === 401){
+  if(validStatusUser?.statusCode === 401){
     store.commit('setStateUser', { login: false });
     isUserLogin.value = false;
-    console.log(validAuth?.statusCode);
+    console.log(validStatusUser?.statusCode);
     return;
 
-  };  
+  };
+  store.commit('setStateUser', { login: false });
+  isUserLogin.value = false;
+
 };
 const getLogin = () => {
   router.push({ path: "/loginUser" });

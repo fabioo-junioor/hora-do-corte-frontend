@@ -3,7 +3,7 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { FormUser, Loader } from "../../components";
-import { loginUser } from "../../services/api/api.user.js";
+import { loginUser } from "../../services/api/api.auth.js";
 import { setDataUser } from "../../services/storage/settingSession.js";
 
 const store = useStore();

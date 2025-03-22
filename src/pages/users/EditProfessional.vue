@@ -352,7 +352,6 @@ const getAllProfessionals = async () => {
     (dataProfessional?.data.length === 0)) {
     isLoaderProfessionals.value = false;
     isMessage.value = dataProfessional.message;
-    //console.log(dataProfessional)
     return;
 
   };
