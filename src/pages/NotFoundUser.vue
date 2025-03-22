@@ -1,28 +1,117 @@
 <script setup>
 </script>
 <template>
-    <div id="not-found-user">
-        <q-img
-            src="../assets/imgsDefault/404.png"
-            style="filter: drop-shadow(2px 2px 2px white);"
-            width="50%" />
-        <h4 class="q-ma-md text-black">Opss! Esse usuário não existe.</h4>
+    <div id="not-found-page">
+        <div class="not-found-page-alert">
+            <img
+                src="../assets/draw/undraw_page_not_found.svg" />
+            <h4 class="q-mt-md text-white">Opss! Esse usuário não existe.</h4>
+        </div>
+        <div class="not-found-page-footer row full-width q-pa-md">
+            <div class="col column justify-end">
+                <div class="col row items-end">
+                    <a href="https://www.instagram.com/horadocorte.real/" target="_blank">
+                        <i class="bx bxl-instagram" />
+                    </a>
+                </div>
+                <div class="col text-subtitle1 row items-end">
+                    Contato: contato@gmail.com
+                </div>
+                <div class="col text-subtitle2 row items-end">
+                    Hora do Corte, 2025. All Rights Reserved.
+                </div>
+            </div>
+            <div class="col row justify-end">
+                <q-img
+                height="10rem"
+                width="10rem"
+                src="../assets/logo/logo.png"
+                fit="contain"
+                />
+            </div>
+        </div>
     </div>
 </template>
 <style lang="scss" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
-#not-found-user{
+#not-found-page{
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     min-height: calc(100vh - 5rem);
 
-    h4{
-        font-weight: 600;
-        filter: drop-shadow(2px 2px 2px white);
+    .not-found-page-alert{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        min-height: calc(100vh - 17rem);
 
+        img{
+            width: 40%;
+            height: 40%;
+
+        }        
+        h4{
+            font-weight: 600;
+    
+        }
     }
+    .not-found-page-footer {
+        background-color: $darkColorSecondary;
+        border-top: 2px solid $brown-8;
+        box-shadow: 0px -1px 3px 1px $brown-7;
+
+        i {
+        font-size: 2.5rem;
+        color: $brown-10;
+
+            &:hover {
+                color: $brown-8;
+
+            }
+        }
+    }
+}
+/* Breakpoints - response*/
+@media only screen and (max-width: 1560px) {
+}
+@media only screen and (max-width: 1200px) {
+    #not-found-page{
+        .not-found-page-alert{
+            img{
+                width: 60%;
+                height: 60%;
+                
+            }       
+            h4{
+                font-size: 1.5rem;
+        
+            }
+        }
+    }
+}
+@media only screen and (max-width: 992px) {
+}
+@media only screen and (max-width: 720px) {
+    #not-found-page{
+        .not-found-page-alert{
+            img{
+                width: 80%;
+                height: 80%;
+
+            }         
+            h4{
+                font-size: 1.2rem;
+        
+            }
+        }
+    }
+}
+@media only screen and (max-width: 481px) {
+}
+@media only screen and (max-width: 360px) {
 }
 </style>
