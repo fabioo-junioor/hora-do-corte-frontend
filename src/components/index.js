@@ -17,10 +17,16 @@ import CardPricing from './cards/CardPricing.vue';
 import CardReservation from './cards/CardReservation.vue';
 import CardNotice from './cards/CardNotice.vue';
 import CardMessage from './cards/CardMessage.vue';
+import CardContent from './cards/CardContent.vue';
+import CardStatusAccount from './cards/CardStatusAccount.vue';
 
 import CardProfessional from './strepper-content/CardProfessional.vue';
 import CalendarSchedule from './strepper-content/CalendarSchedule.vue';
 import TimeSchedule from './strepper-content/TimeSchedule.vue';
+
+import MonthReservations from './charts/MonthReservations.vue';
+import WeekReservations from './charts/WeekReservations.vue';
+import BestProfessional from './charts/BestProfessional.vue';
 
 export {
     Navbar,
@@ -40,6 +46,11 @@ export {
     CardReservation,
     CardNotice,
     CardMessage,
+    CardContent,
+    CardStatusAccount,
     CalendarSchedule,
-    TimeSchedule
+    TimeSchedule,
+    MonthReservations,
+    WeekReservations,
+    BestProfessional
 }
