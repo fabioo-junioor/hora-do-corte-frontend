@@ -110,7 +110,6 @@ const numberRandom = (size) => {
      return Math.floor(Math.random() * size);
 
 };
-
 const mainColors = [
     { color: "#FFFFFFB3", colorContrast: "#000000" }, // Branco e Preto
     { color: "#000000B3", colorContrast: "#FFFFFF" }, // Preto e Branco

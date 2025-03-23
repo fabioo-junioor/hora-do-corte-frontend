@@ -11,6 +11,7 @@ import EditPasswordUser from './users/EditPasswordUser.vue';
 import EditProfessional from './users/EditProfessional.vue';
 import Reservations from './users/Reservations.vue';
 import CheckoutBuyPlan from './users/CheckoutBuyPlan.vue';
+import Dashboard from './users/Dashboard.vue';
 
 export {
     Home,
@@ -24,5 +25,6 @@ export {
     EditPasswordUser,
     EditProfessional,
     Reservations,
-    CheckoutBuyPlan
+    CheckoutBuyPlan,
+    Dashboard
 };
