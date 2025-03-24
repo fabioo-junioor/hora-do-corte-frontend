@@ -6,7 +6,7 @@ const props = defineProps(['title', 'legend', 'txtColor', 'dataChart', 'icon']);
 const config = {
     type: 'line',
     data: {
-        labels: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+        labels: ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'],
         datasets: [{
                 label: props.legend || 'Legenda',
                 data: props.dataChart,

@@ -94,6 +94,21 @@ const getDayWeekFromDate = (date) => {
     return dayWeek;
 
 };
+const checkDaysUntilDate = (date, time, days) => {
+    let [day, month, year] = date.split('-').map(Number);
+    let [hour, minute] = time.split(':').map(Number);
+
+    let target = new Date(year, month - 1, day, hour, minute);
+    let today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+    target.setHours(0, 0, 0, 0);
+
+    let differenceTime = target - today;
+    let differenceDays = differenceTime / (1000 * 60 * 60 * 24);
+    return differenceDays >= 0 && differenceDays <= days;
+
+};
 const sumMinutes = (data) => {
     return data.reduce((acc, minutes) => acc + Number(minutes.time), 0);
 
@@ -135,6 +150,7 @@ export {
     getDateToday,
     getCurrentTime,
     getDayWeekFromDate,
+    checkDaysUntilDate,
     sumMinutes,
     calculePriceTotal,
     firstCaracterName,

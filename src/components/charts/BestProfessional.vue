@@ -11,14 +11,14 @@ const config = {
                 label: props.legend || 'Legenda!',
                 data: props.dataChart,
                 borderWidth: 2,
-                backgroundColor: props.color.map((elem) => {
+                backgroundColor: props.color.length > 1 ? props.color.map((elem) => {
                     return (elem.slice(0, -2)) + '50';
 
-                }),
-                borderColor: props.color.map((elem) => {
+                }) : props.color,
+                borderColor: props.color.length > 1 ? props.color.map((elem) => {
                     return elem.slice(0, -2);
 
-                })
+                }) : props.color
         }]
     },
     options: {

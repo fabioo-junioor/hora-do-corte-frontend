@@ -1,39 +1,48 @@
 <script setup>
-import { onBeforeMount, reactive, ref } from "vue";
+import { onBeforeMount, onMounted, reactive, ref, watch } from "vue";
 import { MonthReservations, WeekReservations, BestProfessional, CardContent, CardStatusAccount } from '../../components';
-import { numberRandom, mainColors } from '../../utils/dataUtils.js';
+import { getStatsReservations, getLastPurchasePlan, getBestProfessionals } from '../../services/api/api.dashboard.js';
+import { numberRandom, mainColors, getDateToday, checkDaysUntilDate } from '../../utils/dataUtils.js';
 
-const dataStatusUser = reactive({
-    pkUser: 1,
-    purchaseDate: '23-03-2025',
-    purchaseTime: '12:00',
-    namePlan: 'Basic',
-    pricePlan: '25',
-    purchaseValidity: '22-04-2025'
+const isDataChartWeek = ref(false);
+const isDataChartMonth = ref(false);
+const isDataChartBestProfesional = ref(false);
+const isDataStatusPlan = ref(false);
+const dataReservations = reactive([]);
+const dataPurchasePlan = reactive([]);
+const dataBestProfessionals = reactive([]);
+const dataStatusPlan = reactive({
+    pkUser: null,
+    purchaseDate: '',
+    purchaseTime: '',
+    namePlan: '',
+    pricePlan: '',
+    purchaseValidity: '',
+    closeToExpiration: false
 })
 const dataCardTop = reactive([
-    {title: 'Reservas do dia!', value: '20', icon: 'bx bx-user-check', color: 'blue-9'},
-    {title: 'Reservas do mês!', value: '300', icon: 'bx bx-chart', color: 'red-9'},
-    {title: 'Faturamento total!', value: '10000', icon: 'bx bx-dollar', color: 'orange-9'},
-    {title: 'Total de reservas!', value: '5000', icon: 'bx bx-group', color: 'green-9'}
+    {title: 'Reservas do dia!', value: 0, icon: 'bx bx-user-check', color: 'blue-9'},
+    {title: 'Reservas do mês!', value: 0, icon: 'bx bx-chart', color: 'red-9'},
+    {title: 'Faturamento total!', value: 0, icon: 'bx bx-dollar', color: 'orange-9'},
+    {title: 'Total de reservas!', value: 0, icon: 'bx bx-group', color: 'green-9'}
 ]);
 const dataChartWeek = reactive({
     title: 'Reservas na semana!',
     legend: 'Total de reservas a cada dia!',
     txtColor: '#EEEEEE',
-    dataChart: [40, 15, 4, 55, 7, 40, 15],
+    dataChart: Array(7).fill(0),
     icon: 'bx bx-line-chart'
 });
 const dataChartMonth = reactive({
     title: 'Reservas no ano!',
     legend: 'Total de reservas a cada mês!',
     txtColor: '#EEEEEE',
-    dataChart: [40, 0, 4, 55, 7, 40, 15, 70, 5, 13, 100, 2],
+    dataChart: Array(12).fill(0),
     icon: 'bx bx-line-chart'
 });
 const dataChartBestProfessional = reactive({
-    title: 'Profissionais da semana!',
-    legend: 'Total de reservas por profissional!',
+    title: 'Profissionais do mês!',
+    legend: 'Profissionais com mais reservas!',
     txtColor: '#EEEEEE',
     color: [],
     dataChart: [],
@@ -46,12 +55,99 @@ const sortColor = () => {
     return jsonColors;
 
 };
-onBeforeMount(() => {
-    dataChartBestProfessional.color.push(sortColor().color);
-    dataChartBestProfessional.color.push(sortColor().color);
-    dataChartBestProfessional.dataChart.push(10, 25);
-    dataChartBestProfessional.professionals.push('João', 'Maria');
+const statsReservations = async (data) => {
+    let today = getDateToday();
+    let month = (new Date()).getMonth() + 1;
+    month = (month < 10) ? `0${month}` : `${month}`;
     
+    data.filter((elem) => {
+        if(elem.dateReservation == today){
+            dataCardTop[0].value += 1;
+
+        };
+        let monthReservation = (elem.dateReservation).split('-');
+        monthReservation = monthReservation[1];
+        if(monthReservation == month){
+            dataCardTop[1].value += 1;
+
+        };
+        dataCardTop[2].value += Number(elem.price);
+        dataCardTop[3].value += 1;
+    });
+};
+const statsReservationsWeek = async (data) => {
+    let today = new Date();
+    let firstDayOfWeek = new Date(today);
+    firstDayOfWeek.setDate(today.getDate() - (today.getDate() === 0 ? 6 : today.getDay() - 1));
+    firstDayOfWeek.setHours(0, 0, 0, 0);
+    let lastDayOfWeek = new Date(firstDayOfWeek);
+    lastDayOfWeek.setDate(lastDayOfWeek.getDate() + 6);
+
+    data.forEach(elem => {
+        let [day, month, year] = elem.dateReservation.split('-').map(Number);
+        let date = new Date(year, month - 1, day);
+        date.setHours(0, 0, 0, 0);
+
+        if(date >= firstDayOfWeek && date <= lastDayOfWeek){
+            let weekDay = (date.getDay() === 0 ? 6 : date.getDay() - 1);
+            dataChartWeek.dataChart[weekDay]++;
+
+        };
+    });
+    isDataChartWeek.value = true;
+
+};
+const statsReservationsMonth = async (data) => {
+    data.forEach(elem => {
+        let reservation = new Date(elem.dateReservation.split('-').reverse().join('-'));
+        let month = reservation.getMonth();
+        dataChartMonth.dataChart[month]++;
+
+    });
+    isDataChartMonth.value = true;
+
+};
+const bestProfessionals = async (data) => {
+    data.filter((elem) => {
+        dataChartBestProfessional.color.push(sortColor().color);
+        dataChartBestProfessional.dataChart.push(elem.total);
+        dataChartBestProfessional.professionals.push(elem.name);
+
+    });
+    isDataChartBestProfesional.value = true;
+
+};
+const lastPurchasePlan = async (data) => {
+    dataStatusPlan.pkUser = data[0].fkUser;
+    dataStatusPlan.purchaseDate = data[0].purchaseDate;
+    dataStatusPlan.purchaseTime = data[0].purchaseTime;
+    dataStatusPlan.namePlan = data[0].namePlan;
+    dataStatusPlan.pricePlan = data[0].pricePlan;
+    dataStatusPlan.purchaseValidity = data[0].purchaseValidity;
+    dataStatusPlan.closeToExpiration = checkDaysUntilDate(data[0].purchaseValidity, data[0].purchaseTime, 5);
+    isDataStatusPlan.value = true;
+    
+};
+onMounted(async () => {
+    let dataStats = await getStatsReservations(1);
+    if(dataStats?.statusCode == 200 && dataStats?.data.length !== 0){
+        await statsReservations(dataStats?.data);
+        await statsReservationsMonth(dataStats?.data);
+        await statsReservationsWeek(dataStats?.data);
+
+    };    
+    
+    let lastPurchase = await getLastPurchasePlan(1);
+    if(lastPurchase?.statusCode === 200 && lastPurchase?.data.length !== 0){
+        await lastPurchasePlan(lastPurchase?.data);
+
+    };
+
+    let bestProfessional = await getBestProfessionals(1);
+    if(bestProfessional?.statusCode === 200 && bestProfessional?.data.length !== 0){
+        await bestProfessionals(bestProfessional?.data);
+        
+    };   
 });
 </script>
 <template>
@@ -65,26 +161,10 @@ onBeforeMount(() => {
             :icon='i.icon'
             :color="i.color" />
     </div>
-    <div class="dashboard-data-status-account q-px-md q-pt-md">
-        <CardStatusAccount
-            :purchaseDate='dataStatusUser.purchaseDate'
-            :purchaseTime='dataStatusUser.purchaseTime'
-            :namePlan='dataStatusUser.namePlan'
-            :pricePlan='dataStatusUser.pricePlan'
-            :purchaseValidity="dataStatusUser.purchaseValidity" />
-    </div>
     <div class="dashboard-data-charts q-px-md q-py-xl">
         <div class="">
-            <MonthReservations
-                class="dashboard-data-charts-chart"
-                :title='dataChartMonth.title'
-                :legend='dataChartMonth.legend'
-                :txtColor='dataChartMonth.txtColor'
-                :dataChart='dataChartMonth.dataChart'
-                :icon='dataChartMonth.icon' />
-        </div>
-        <div class="">
             <WeekReservations
+                v-if="isDataChartWeek"
                 class="dashboard-data-charts-chart"
                 :title='dataChartWeek.title'
                 :legend='dataChartWeek.legend'
@@ -93,7 +173,28 @@ onBeforeMount(() => {
                 :icon='dataChartWeek.icon' />
         </div>
         <div class="">
+            <MonthReservations
+                v-if="isDataChartMonth"
+                class="dashboard-data-charts-chart"
+                :title='dataChartMonth.title'
+                :legend='dataChartMonth.legend'
+                :txtColor='dataChartMonth.txtColor'
+                :dataChart='dataChartMonth.dataChart'
+                :icon='dataChartMonth.icon' />
+        </div>
+        <div class="dashboard-data-charts-status-account">
+            <CardStatusAccount
+                v-if="isDataStatusPlan"
+                :purchaseDate='dataStatusPlan.purchaseDate'
+                :purchaseTime='dataStatusPlan.purchaseTime'
+                :namePlan='dataStatusPlan.namePlan'
+                :pricePlan='dataStatusPlan.pricePlan'
+                :purchaseValidity="dataStatusPlan.purchaseValidity"
+                :closeToExpiration='dataStatusPlan.closeToExpiration' />
+        </div>
+        <div class="">
             <BestProfessional
+                v-if="isDataChartBestProfesional"
                 class="dashboard-data-charts-chart"
                 :title="dataChartBestProfessional.title"
                 :legend='dataChartBestProfessional.legend'
@@ -130,13 +231,13 @@ onBeforeMount(() => {
     display: grid;
     grid-template-columns: repeat(3, 33%);
     justify-content: center;
-    gap: .5rem;
+    gap: .8rem;
 
     div{
         .dashboard-data-charts-chart{
-            border: 1px solid rgba(0, 0, 0, .3);
+            border: 1px solid #EEEEEEA6;
+            box-shadow: 2px 2px 0px 0px #EEEEEE;
             border-radius: 5px;
-            box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, .2);
             width: 100%;
 
         }

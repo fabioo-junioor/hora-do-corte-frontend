@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(['purchaseDate', 'purchaseTime', 'namePlan', 'pricePlan', 'purchaseValidity']);
+const props = defineProps(['purchaseDate', 'purchaseTime', 'namePlan', 'pricePlan', 'purchaseValidity', 'closeToExpiration']);
 
 </script>
 <template>
@@ -12,18 +12,21 @@ const props = defineProps(['purchaseDate', 'purchaseTime', 'namePlan', 'pricePla
             <div class="text-subtitle1 q-my-xs">
                 Data da compra: {{ props.purchaseDate }} / {{props.purchaseTime}}
             </div>
-            <q-separator vertical color="white" />
             <div class="text-subtitle1 q-my-xs">
                 Nome do plano: {{ props.namePlan }}
             </div>
-            <q-separator vertical color="white" />
             <div class="text-subtitle1 q-my-xs">
                 Valor: R${{ props.pricePlan }}
             </div>
-            <q-separator vertical color="white" />
             <div class="text-subtitle1 q-my-xs">
-                Data da validade: {{ props.purchaseValidity }}
+                Data da validade:
+                <q-badge transparent class="text-subtitle2 text-white"
+                  :color="!props.closeToExpiration ? 'green-10' : 'red-10'"
+                  :label="props.purchaseValidity" />
             </div>
+        </q-card-section>
+        <q-card-section class="card-status-account-icon q-pa-none">
+          <i class='bx bxs-user-account' />
         </q-card-section>
     </q-card>
   </div>
@@ -32,10 +35,16 @@ const props = defineProps(['purchaseDate', 'purchaseTime', 'namePlan', 'pricePla
 @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 
 #card-status-account{
+  height: 100%;
+
   .my-card{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     background-color: transparent;
-    border: 1px solid rgba(0, 0, 0, .3);
-    box-shadow: 2px 2px 0px 0px rgba(0, 0, 0, .8);
+    border: 1px solid #EEEEEEA6;
+    box-shadow: 2px 2px 0px 0px #EEEEEE;
     border-radius: 5px;
 
     .text-h6{
@@ -46,8 +55,18 @@ const props = defineProps(['purchaseDate', 'purchaseTime', 'namePlan', 'pricePla
     .card-status-account-infos{
       width: 100%;
       display: flex;
-      justify-content: space-evenly;
+      flex-direction: column;
 
+    }
+    .card-status-account-icon{
+      display: flex;
+      justify-content: flex-end;
+      
+      i{
+        font-size: 4rem;
+        color: #EEEEEEA6;
+  
+      }
     }
   }
 }

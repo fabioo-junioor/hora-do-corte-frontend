@@ -4,7 +4,7 @@ const props = defineProps(['title', 'value', 'icon', 'color']);
 </script>
 <template>
   <div id="card-content">
-    <q-card dark bordered flat :class="'my-card bg-'+props.color">
+    <q-card dark flat :class="'my-card bg-'+props.color">
       <q-card-section class="card-content-infos">
         <div class="text-h5">{{ props.value }}</div>
         <div class="text-subtitle1">{{ props.title }}</div>
@@ -24,6 +24,7 @@ const props = defineProps(['title', 'value', 'icon', 'color']);
 #card-content{
     .my-card{
         display: flex;
+        border: 1px solid #EEEEEE;
 
         .card-content-infos{
             width: 85%;
