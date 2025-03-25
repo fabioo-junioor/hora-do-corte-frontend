@@ -38,7 +38,7 @@ const rulesUser = reactive({
                 v-model="dataFormReservation.email"
                 type="text"
                 label="Seu email"
-                hint="Informar email para receber confirmação!"
+                hint="Informar email para receber notificação!"
                 lazy-rules
                 :rules="[rulesUser.email]">
                 <template v-slot:prepend>

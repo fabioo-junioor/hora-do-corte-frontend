@@ -20,7 +20,9 @@ const props = defineProps(['purchaseDate', 'purchaseTime', 'namePlan', 'pricePla
             </div>
             <div class="text-subtitle1 q-my-xs">
                 Data da validade:
-                <q-badge transparent class="text-subtitle2 text-white"
+                <q-badge transparent
+                  v-if="props.purchaseValidity !== ''"
+                  class="text-subtitle2 text-white"
                   :color="!props.closeToExpiration ? 'green-10' : 'red-10'"
                   :label="props.purchaseValidity" />
             </div>
