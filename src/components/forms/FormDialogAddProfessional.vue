@@ -66,7 +66,7 @@ onMounted(() => {
               <p :style="'font-size: 4rem;' +
                 `color: ${mainColors[numberRandomColor].colorContrast};`"
                 class="q-ma-none">
-                {{!!dataEditProfessional.name ? firstCaracterName(dataEditProfessional.name) : 'Hc'}}
+                {{ firstCaracterName(dataEditProfessional.name) }}
               </p>
             </q-avatar>
           </div>

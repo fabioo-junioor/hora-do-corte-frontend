@@ -170,6 +170,18 @@ onMounted(async () => {
             :color="i.color" />
     </div>
     <div class="dashboard-data-charts q-px-md q-py-xl">
+        <div class="dashboard-data-charts-status-account">
+            <CardStatusAccount
+                v-if="isDataStatusPlan"
+                :purchaseDate='dataStatusPlan.purchaseDate'
+                :purchaseTime='dataStatusPlan.purchaseTime'
+                :namePlan='dataStatusPlan.namePlan'
+                :pricePlan='dataStatusPlan.pricePlan'
+                :purchaseValidity="dataStatusPlan.purchaseValidity"
+                :closeToExpiration='dataStatusPlan.closeToExpiration' />
+            <SkeletonStatus
+                v-else />
+        </div>
         <div class="">
             <WeekReservations
                 v-if="isDataChartWeek"
@@ -192,18 +204,6 @@ onMounted(async () => {
                 :dataChart='dataChartMonth.dataChart'
                 :icon='dataChartMonth.icon' />
             <SkeletonCharts
-                v-else />
-        </div>
-        <div class="dashboard-data-charts-status-account">
-            <CardStatusAccount
-                v-if="isDataStatusPlan"
-                :purchaseDate='dataStatusPlan.purchaseDate'
-                :purchaseTime='dataStatusPlan.purchaseTime'
-                :namePlan='dataStatusPlan.namePlan'
-                :pricePlan='dataStatusPlan.pricePlan'
-                :purchaseValidity="dataStatusPlan.purchaseValidity"
-                :closeToExpiration='dataStatusPlan.closeToExpiration' />
-            <SkeletonStatus
                 v-else />
         </div>
         <div class="">
