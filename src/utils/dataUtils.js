@@ -94,6 +94,21 @@ const getDayWeekFromDate = (date) => {
     return dayWeek;
 
 };
+const checkDaysUntilDate = (date, time, days) => {
+    let [day, month, year] = date.split('-').map(Number);
+    let [hour, minute] = time.split(':').map(Number);
+
+    let target = new Date(year, month - 1, day, hour, minute);
+    let today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+    target.setHours(0, 0, 0, 0);
+
+    let differenceTime = target - today;
+    let differenceDays = differenceTime / (1000 * 60 * 60 * 24);
+    return differenceDays >= 0 && differenceDays <= days;
+
+};
 const sumMinutes = (data) => {
     return data.reduce((acc, minutes) => acc + Number(minutes.time), 0);
 
@@ -103,6 +118,10 @@ const calculePriceTotal = (data) => {
     
 };
 const firstCaracterName = (name) => {
+    if(name.length <= 1){
+        return '**';
+        
+    };
     return `${name.charAt(0).toUpperCase()}${name.at(1)}`;
 
 };
@@ -110,7 +129,6 @@ const numberRandom = (size) => {
      return Math.floor(Math.random() * size);
 
 };
-
 const mainColors = [
     { color: "#FFFFFFB3", colorContrast: "#000000" }, // Branco e Preto
     { color: "#000000B3", colorContrast: "#FFFFFF" }, // Preto e Branco
@@ -136,6 +154,7 @@ export {
     getDateToday,
     getCurrentTime,
     getDayWeekFromDate,
+    checkDaysUntilDate,
     sumMinutes,
     calculePriceTotal,
     firstCaracterName,

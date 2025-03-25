@@ -82,6 +82,11 @@ const getReservations = () => {
   return;
 
 };
+const getDashboard = () => {
+  router.push({ path: "/dashboard" });
+  return;
+
+};
 const verifyResponseNavbar = () => {
   const navbar = document.querySelector(".navbar-area-user");
   if(navbar){
@@ -144,19 +149,42 @@ onBeforeMount(async () => {
             </div>
             <div v-else class="navbar-area-user-notLogin row">
               <div class="col-11 row justify-center">
-                <q-btn
+                <q-btn-dropdown
                   push
                   stack
-                  @click="getReservations"
                   color="brown-8"
-                  icon="event_available"
-                  label="Agendamentos"/>
+                  icon="query_stats"
+                  label="Estatisticas">
+                  <q-list class="bg-brown-5">
+                    <q-item clickable v-close-popup @click="getReservations">
+                      <q-item-section avatar>
+                        <q-icon
+                          name="event_available"
+                          size="md"
+                          color="white" />
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-white text-h6"
+                          >Agendamentos</q-item-label >
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable v-close-popup @click="getDashboard">
+                      <q-item-section avatar>
+                        <q-icon name="insert_chart" size="md" color="white" />
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label class="text-white text-h6"
+                          >Dashboard</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-btn-dropdown>
                 <q-btn-dropdown
                   push
                   stack
                   color="brown-8"
                   icon="settings"
-                  label="Configuração">
+                  label="Configurações">
                   <q-list class="bg-brown-5">
                     <q-item clickable v-close-popup @click="getEditUser">
                       <q-item-section avatar>

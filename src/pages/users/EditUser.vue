@@ -112,14 +112,11 @@ const getUserDetails = async () => {
     return;
 
   };
-  /*
-  if(dataUser?.statusCode === 200 && dataUser?.data.length === 0) {
-    store.commit("setAlertConfig", { message: dataUser?.message, type: "info" });
+  if(dataUser?.statusCode === 200 && dataUser?.data.length === 0){
     isDetailsExists.value = false;
     return;
 
   };
-  */
   if(dataUser?.statusCode === 403){
     isDetailsExists.value = false;
     store.commit("setAlertConfig", { message: dataUser?.message, type: "warning" });
@@ -170,19 +167,18 @@ onMounted(async () => {
           :style="
             `background-color: ${mainColors[numberRandomColor].color};` +
             `border: 1px solid ${mainColors[numberRandomColor].colorContrast};`
-          "
-        >
+          ">
           <p :style="`color: ${mainColors[numberRandomColor].colorContrast};`">
             {{ firstCaracterName(dataEditUser.name) }}
           </p>
         </q-avatar>
       </div>
       <FormEditUser
-        v-model:dataEditUser="dataEditUser"
-        :isLoaderTime="isLoaderEditUser"
-        @previewImage="previewImage"
-        @saveFormUser="saveFormUser"
-        @searchCep="searchCep">
+        v-model:dataEditUser='dataEditUser'
+        :isLoaderTime='isLoaderEditUser'
+        @previewImage='previewImage'
+        @saveFormUser='saveFormUser'
+        @searchCep='searchCep'>
         <Loader loaderSize="1.2em" loaderColor="white" />
       </FormEditUser>
     </div>

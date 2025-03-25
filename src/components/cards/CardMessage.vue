@@ -4,7 +4,7 @@ const props = defineProps(['message']);
 </script>
 <template>
   <div id="card-message">
-    <q-card dark bordered class="my-card q-mt-lg">
+    <q-card dark flat bordered class="my-card q-mt-lg">
         <q-card-section>
             <div class="text-h6 row justify-center">
                 {{ props.message }}
@@ -20,7 +20,6 @@ const props = defineProps(['message']);
   .my-card{
     background-color: transparent;
     width: 20rem;
-    box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, .1);
 
   }
 }

@@ -50,8 +50,6 @@ const divideHoursIntoIntervals = (schedules, time, dataIsReserved, dayWeek) => {
         });
     };
     schedules.forEach(day => {
-        //const dayWeek = Object.keys(day)[0];
-
         for (const period in day[dayWeek]) {
             const { open, close } = day[dayWeek][period];
 

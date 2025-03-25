@@ -12,6 +12,7 @@
   "author": "Fábio",
   "dependencies": {
     "@quasar/extras": "^1.16.12",
+    "chart.js": "^4.4.8",
     "quasar": "^2.16.9",
     "vue": "^3.4.38",
     "vue-router": "^4.5.0",
