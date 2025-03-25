@@ -118,6 +118,10 @@ const calculePriceTotal = (data) => {
     
 };
 const firstCaracterName = (name) => {
+    if(name.length <= 1){
+        return '**';
+        
+    };
     return `${name.charAt(0).toUpperCase()}${name.at(1)}`;
 
 };
