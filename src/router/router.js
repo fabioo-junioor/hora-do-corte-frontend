@@ -92,6 +92,22 @@ const routes = [
         }
     },
     {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: Dashboard,
+        beforeEnter: (_, __, next) => {
+            let dataUser = getDataUser();
+            if(!dataUser?.token){
+                next('/');
+                return;
+                
+            }
+            next();
+            return;
+
+        }
+    },
+    {
         path: '/editUser',
         name: 'editUser',
         component: EditUser,
@@ -150,16 +166,6 @@ const routes = [
                 return;
 
             };
-            next();
-            return;
-
-        }
-    },
-    {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: Dashboard,
-        beforeEnter: (_, __, next) => {
             next();
             return;
 
