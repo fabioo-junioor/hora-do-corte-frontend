@@ -1,8 +1,9 @@
 <script setup>
 import { onBeforeMount, onMounted, reactive, ref, watch } from "vue";
-import { MonthReservations, WeekReservations, BestProfessional, CardContent, CardStatusAccount } from '../../components';
+import { MonthReservations, WeekReservations, BestProfessional, CardContent, CardStatusAccount, SkeletonCharts, SkeletonStatus } from '../../components';
 import { getStatsReservations, getLastPurchasePlan, getBestProfessionals } from '../../services/api/api.dashboard.js';
 import { numberRandom, mainColors, getDateToday, checkDaysUntilDate } from '../../utils/dataUtils.js';
+import { getDataUser } from '../../services/storage/settingSession.js';
 
 const isDataChartWeek = ref(false);
 const isDataChartMonth = ref(false);
@@ -73,6 +74,7 @@ const statsReservations = async (data) => {
         };
         dataCardTop[2].value += Number(elem.price);
         dataCardTop[3].value += 1;
+
     });
 };
 const statsReservationsWeek = async (data) => {
@@ -94,7 +96,7 @@ const statsReservationsWeek = async (data) => {
 
         };
     });
-    isDataChartWeek.value = true;
+    //isDataChartWeek.value = true;
 
 };
 const statsReservationsMonth = async (data) => {
@@ -104,7 +106,7 @@ const statsReservationsMonth = async (data) => {
         dataChartMonth.dataChart[month]++;
 
     });
-    isDataChartMonth.value = true;
+    //isDataChartMonth.value = true;
 
 };
 const bestProfessionals = async (data) => {
@@ -114,7 +116,7 @@ const bestProfessionals = async (data) => {
         dataChartBestProfessional.professionals.push(elem.name);
 
     });
-    isDataChartBestProfesional.value = true;
+    //isDataChartBestProfesional.value = true;
 
 };
 const lastPurchasePlan = async (data) => {
@@ -125,29 +127,35 @@ const lastPurchasePlan = async (data) => {
     dataStatusPlan.pricePlan = data[0].pricePlan;
     dataStatusPlan.purchaseValidity = data[0].purchaseValidity;
     dataStatusPlan.closeToExpiration = checkDaysUntilDate(data[0].purchaseValidity, data[0].purchaseTime, 5);
-    isDataStatusPlan.value = true;
+    //isDataStatusPlan.value = true;
     
 };
 onMounted(async () => {
-    let dataStats = await getStatsReservations(1);
+    let dataUser = getDataUser();
+    let dataStats = await getStatsReservations(dataUser?.pkUser);
     if(dataStats?.statusCode == 200 && dataStats?.data.length !== 0){
         await statsReservations(dataStats?.data);
         await statsReservationsMonth(dataStats?.data);
         await statsReservationsWeek(dataStats?.data);
 
-    };    
+    };
+    isDataChartWeek.value = true;
+    isDataChartMonth.value = true; 
     
-    let lastPurchase = await getLastPurchasePlan(1);
+    let lastPurchase = await getLastPurchasePlan(dataUser?.pkUser);
     if(lastPurchase?.statusCode === 200 && lastPurchase?.data.length !== 0){
         await lastPurchasePlan(lastPurchase?.data);
 
     };
+    isDataStatusPlan.value = true;
 
-    let bestProfessional = await getBestProfessionals(1);
+    let bestProfessional = await getBestProfessionals(dataUser?.pkUser);
     if(bestProfessional?.statusCode === 200 && bestProfessional?.data.length !== 0){
         await bestProfessionals(bestProfessional?.data);
         
-    };   
+    };
+    isDataChartBestProfesional.value = true;
+
 });
 </script>
 <template>
@@ -171,6 +179,8 @@ onMounted(async () => {
                 :txtColor='dataChartWeek.txtColor'
                 :dataChart='dataChartWeek.dataChart'
                 :icon='dataChartWeek.icon' />
+            <SkeletonCharts
+                v-else />
         </div>
         <div class="">
             <MonthReservations
@@ -181,6 +191,8 @@ onMounted(async () => {
                 :txtColor='dataChartMonth.txtColor'
                 :dataChart='dataChartMonth.dataChart'
                 :icon='dataChartMonth.icon' />
+            <SkeletonCharts
+                v-else />
         </div>
         <div class="dashboard-data-charts-status-account">
             <CardStatusAccount
@@ -191,6 +203,8 @@ onMounted(async () => {
                 :pricePlan='dataStatusPlan.pricePlan'
                 :purchaseValidity="dataStatusPlan.purchaseValidity"
                 :closeToExpiration='dataStatusPlan.closeToExpiration' />
+            <SkeletonStatus
+                v-else />
         </div>
         <div class="">
             <BestProfessional
@@ -203,6 +217,8 @@ onMounted(async () => {
                 :dataChart='dataChartBestProfessional.dataChart'
                 :professionals='dataChartBestProfessional.professionals'
                 :icon='dataChartBestProfessional.icon' />
+            <SkeletonCharts
+                v-else />
         </div>
     </div>
   </div>

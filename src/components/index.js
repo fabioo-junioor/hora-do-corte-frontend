@@ -28,6 +28,9 @@ import MonthReservations from './charts/MonthReservations.vue';
 import WeekReservations from './charts/WeekReservations.vue';
 import BestProfessional from './charts/BestProfessional.vue';
 
+import SkeletonCharts from '../components/skeletons/SkeletonCharts.vue';
+import SkeletonStatus from '../components/skeletons/SkeletonStatus.vue';
+
 export {
     Navbar,
     AlertUser,
@@ -52,5 +55,7 @@ export {
     TimeSchedule,
     MonthReservations,
     WeekReservations,
-    BestProfessional
+    BestProfessional,
+    SkeletonCharts,
+    SkeletonStatus
 }
