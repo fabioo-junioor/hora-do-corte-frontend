@@ -153,8 +153,8 @@ onBeforeMount(async () => {
                   push
                   stack
                   color="brown-8"
-                  icon="query_stats"
-                  label="Estatisticas">
+                  icon="insert_chart"
+                  label="Dashboard">
                   <q-list class="bg-brown-5">
                     <q-item clickable v-close-popup @click="getReservations">
                       <q-item-section avatar>
@@ -170,11 +170,11 @@ onBeforeMount(async () => {
                     </q-item>
                     <q-item clickable v-close-popup @click="getDashboard">
                       <q-item-section avatar>
-                        <q-icon name="insert_chart" size="md" color="white" />
+                        <q-icon name="query_stats" size="md" color="white" />
                       </q-item-section>
                       <q-item-section>
                         <q-item-label class="text-white text-h6"
-                          >Dashboard</q-item-label>
+                          >Estatisticas</q-item-label>
                       </q-item-section>
                     </q-item>
                   </q-list>
