@@ -35,7 +35,7 @@ const create = async () => {
 <template>
   <div id="cad-user">
     <div class="cad-user-img">
-      <q-img src="../../assets/logo/logo.png" height="70%" width="70%" />
+      <q-img src="../../assets/logo/logo_transparent.png" height="70%" width="70%" />
     </div>
     <div class="cad-user-forms q-px-sm">
       <FormUser

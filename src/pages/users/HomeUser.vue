@@ -94,7 +94,7 @@ const checkScheduleDate = async (date) => {
         let timesReserved = await getReservationByProfessional(dataReservation.pkProfessional, date);
         if(timesReserved?.data){
             timesIsReserved.push(
-                timesReserved.data.map(elem => {
+                timesReserved?.data.map(elem => {
                     return { "timeStart": elem.timeReservation, "timeEnd": sumTimeService(elem.timeReservation, elem.duration)}
 
                 })

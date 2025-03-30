@@ -43,7 +43,7 @@ const reloadPage = () => {
   <div id="recover-pass-user">
     <div class="recover-pass-user-img">
       <q-img
-        src="../../assets/logo/logo.png"
+        src="../../assets/logo/logo_transparent.png"
         height="70%"
         width="70%"
         fit="contain"

@@ -24,7 +24,7 @@
                 <q-img
                 height="10rem"
                 width="10rem"
-                src="../assets/logo/logo.png"
+                src="../assets/logo/logo_transparent.png"
                 fit="contain"
                 />
             </div>
