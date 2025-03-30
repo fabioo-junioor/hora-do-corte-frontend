@@ -122,7 +122,7 @@ onBeforeMount(async () => {
               <q-toolbar-title>
                 <q-img
                   style="border-radius: 5px"
-                  src="../assets/logo/logo.png"
+                  src="../assets/logo/logo_transparent.png"
                   height="4rem"
                   width="4rem"
                 />

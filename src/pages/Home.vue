@@ -1,73 +1,52 @@
 <script setup>
-import { reactive } from "vue";
+import { onMounted, reactive } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { CardPricing, Loader } from "../components";
 import { getDataUser } from "../services/storage/settingSession.js";
+import { getAllPlans } from '../services/api/api.plan.js';
 
 const router = useRouter();
 const store = useStore();
-const pricingPlans = reactive([
-  {
-    pk: 1,
-    name: "Free",
-    about:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    price: 0,
-    time: 30,
-    benefits: ["30 dias de uso grátis", "Suporte diário"],
-  },
-  {
-    pk: 2,
-    name: "Basic",
-    about:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    price: 25,
-    time: 30,
-    benefits: ["30 dias de uso", "Suporte diário"],
-  },
-  {
-    pk: 3,
-    name: "Pró",
-    about:
-      "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
-    price: 135,
-    time: 180,
-    benefits: ["180 dias de uso", "Suporte diário"],
-  },
-]);
-const getDetailsPlan = (pk) => {
-  return pricingPlans.filter((elem) => elem.pk === pk);
+const pricingPlans = reactive([]);
+const getDetailsPlan = (pkPlan) => {
+  return pricingPlans.filter((elem) => elem.pkPlan === pkPlan);
 
 };
 const buyPlan = (data) => {
   let dataUser = getDataUser();
   if (!dataUser) {
-    store.commit("setAlertConfig", {
-      message: "Primeiramente efetue o login ou cadastre-se!",
-      type: "warning",
-    });
+    store.commit("setAlertConfig", { message: "Primeiramente efetue o login ou cadastre-se!", type: "warning" });
     return;
 
   };
-  store.commit("setStateBuyPlan", {
-    pkPlan: data,
-    pkUser: dataUser.pkUser,
-    details: [...getDetailsPlan(data)],
-  });
+  store.commit("setStateBuyPlan", { pkPlan: data, pkUser: dataUser.pkUser, details: [...getDetailsPlan(data)] });
   router.push({ path: "/checkoutBuyPlan" });
   return;
 
+};
+const getPlans = async () => {
+  let allPlans = await getAllPlans();
+  if(allPlans?.statusCode === 200 && allPlans?.data.length !== 0){
+    pricingPlans.push(...allPlans?.data);
+    return;
+
+  };
 };
 const register = () => {
   router.push({ path: "/cadUser" });
   return;
 
 };
+onMounted(async () => {
+  await getPlans();
+
+
+});
 </script>
 <template>
   <div id="home">
-    <div class="home-about q-pt-xl">
+    <div class="home-about q-py-xl">
       <h1 class="q-ma-xl">Hora do corte</h1>
       <p class="q-mb-xl">
         Plataforma de agendamentos online para barbearias. Simplifique o
@@ -79,14 +58,12 @@ const register = () => {
         src="../assets/icon/navalha.svg"
         height="9rem"
         width="9rem"
-        class="home-icon-navalha"
-      />
+        class="home-icon-navalha" />
       <q-img
-        src="../assets/icon/maquina-cortar-cabelo.svg"
+        src="../assets/icon/barbearia.svg"
         height="9rem"
         width="9rem"
-        class="home-icon-maquina-cortar-cabelo"
-      />
+        class="home-icon-barbearia" />
 
       <q-btn
         push
@@ -101,43 +78,53 @@ const register = () => {
     </div>
     <div class="home-works q-py-xl q-my-xl">
       <h3 class="q-ma-none">Como funciona?</h3>
-      <div class="home-work-profesional">
+      <div class="home-work-services bg-brown-6 q-pa-md">
         <q-img
-          src="https://www.cbvl.esp.br/upload/post/default.jpg"
+          src="../assets/screen/screen_1.png"
           class="rounded-borders"
           height="auto"
-          width="50%"
-        />
-        <p class="q-pa-sm">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with
-          the release of Letraset sheets containing Lorem Ipsum passages, and
-          more recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum.
+          width="70%" />
+        <p class="q-ml-md text-justify">
+          1. Escolha o profissional de sua preferência. <br>
+          2. Cada profissional possui seus próprios serviços.
         </p>
       </div>
-      <div class="home-work-services">
+      <div class="home-work-services bg-brown-6 q-pa-md">
+        <p class="q-mr-md text-justify">
+          1. Escolha um ou mais serviços. <br>
+          2. Os serviços estão relacionados diretamente com o profissional definido anteriormente. <br>
+          3. Cada serviços possui seu valor e duração especifica.
+        </p>
         <q-img
-          src="https://www.cbvl.esp.br/upload/post/default.jpg"
+          src="../assets/screen/screen_2.png"
           class="rounded-borders"
           height="auto"
-          width="50%"
-        />
-        <p class="q-pa-sm">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with
-          the release of Letraset sheets containing Lorem Ipsum passages, and
-          more recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum.
+          width="70%" />
+      </div>
+      <div class="home-work-services bg-brown-6 q-pa-md">
+        <q-img
+          src="../assets/screen/screen_3.png"
+          class="rounded-borders"
+          height="auto"
+          width="70%" />
+        <p class="q-ml-md text-justify">
+          1. Escolha o dia e horário de suas prefêrencia. <br>
+          2. Os dias e horários podem alterar dependendo de cada profissional. <br>
+          3. Os dias pré definidos aparecem em destaque. <br>
+          4. Horários em vermelho já foram reservados.
         </p>
+      </div>
+      <div class="home-work-services bg-brown-6 q-pa-md">
+        <p class="q-mr-md text-justify">
+          1. Preencher alguns dados pessoais para realzar a reserva. <br>
+          2. Nome e telefone são obrigatórios. <br>
+          3. Ao informar o email o cliente receberá uma confirmação.
+        </p>
+        <q-img
+          src="../assets/screen/screen_4.png"
+          class="rounded-borders"
+          height="auto"
+          width="70%" />
       </div>
     </div>
     <div class="home-pricings row q-py-xl q-my-xl">
@@ -146,27 +133,7 @@ const register = () => {
         :key="i.pk"
         class="home-pricing"
         :dataPricing="i"
-        @buyPlan="buyPlan"
-      />
-
-      <q-img
-        src="../assets/icon/navalha2.svg"
-        height="9rem"
-        width="9rem"
-        class="home-icon-navalha2"
-      />
-      <q-img
-        src="../assets/icon/barbearia.svg"
-        height="9rem"
-        width="9rem"
-        class="home-icon-barbearia"
-      />
-      <q-img
-        src="../assets/icon/escova-barbear.svg"
-        height="9rem"
-        width="9rem"
-        class="home-icon-escova-barbear"
-      />
+        @buyPlan="buyPlan" />
     </div>
     <div class="home-footer row full-width q-pa-md q-mt-xl">
       <div class="col column justify-end">
@@ -186,7 +153,7 @@ const register = () => {
         <q-img
           height="10rem"
           width="10rem"
-          src="../assets/logo/logo.png"
+          src="../assets/logo/logo_transparent.png"
           fit="contain"
         />
       </div>
@@ -238,7 +205,7 @@ const register = () => {
       opacity: 0.4;
 
     }
-    .home-icon-maquina-cortar-cabelo {
+    .home-icon-barbearia {
       position: absolute;
       bottom: 10%;
       right: 10%;
@@ -251,34 +218,23 @@ const register = () => {
     flex-direction: column;
     align-items: center;
     gap: 2rem;
-    width: 80%;
+    width: 90%;
 
     h3 {
       color: $grey-2;
       font-weight: 500;
 
     }
-    .home-work-profesional {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      p {
-        width: 50%;
-        font-size: 1rem;
-        color: $grey-2;
-
-      }
-    }
     .home-work-services {
       display: flex;
-      flex-direction: row-reverse;
       justify-content: center;
       align-items: center;
+      border-radius: 10px;
+      width: 100%;
 
       p {
         width: 50%;
-        font-size: 1rem;
+        font-size: 1.5rem;
         color: $grey-2;
 
       }
@@ -292,31 +248,6 @@ const register = () => {
     gap: 0.5rem;
     width: 80%;
 
-    .home-pricing {
-      z-index: 2;
-
-    }
-    .home-icon-navalha2 {
-      position: absolute;
-      top: 10%;
-      left: 10%;
-      opacity: 0.5;
-
-    }
-    .home-icon-barbearia {
-      position: absolute;
-      bottom: 0;
-      left: 40%;
-      opacity: 0.5;
-
-    }
-    .home-icon-escova-barbear {
-      position: absolute;
-      bottom: 5%;
-      right: 5%;
-      opacity: 0.5;
-
-    }
   }
   .home-footer {
     background-color: $darkColorSecondary;

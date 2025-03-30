@@ -3,23 +3,24 @@ const props = defineProps(["dataPricing"]);
 const emit = defineEmits(["buyPlan"]);
 
 const buyPlan = () => {
-  emit("buyPlan", props.dataPricing.pk);
+  emit("buyPlan", props.dataPricing.pkPlan);
+  
 };
 </script>
 <template>
   <div id="card-pricing">
-    <q-card dark class="my-card q-pa-sm">
+    <q-card dark flat class="my-card q-pa-sm">
       <q-card-section class="flex-column items-center">
         <div class="pricing-about">
           <q-badge
-            v-if="props.dataPricing.pk === 3"
+            v-if="props.dataPricing.pkPlan === 3"
             class="badge-discount q-pa-sm"
             color="red-8"
             >-10%</q-badge
           >
           <div class="text-h4 q-mb-sm">{{ props.dataPricing.name }}</div>
           <div class="text-subtitle2 q-my-xs">
-            {{ props.dataPricing.about }}
+            {{ props.dataPricing.description }}
           </div>
           <div class="text-h5 q-my-md">R$ {{ props.dataPricing.price }}</div>
         </div>
@@ -29,14 +30,14 @@ const buyPlan = () => {
           @click="buyPlan"
           class="full-width q-mb-md"
           size="lg"
-          :label="props.dataPricing.pk == 0 ? 'Teste grátis' : 'Adquirir plano'"
+          :label="props.dataPricing.pkPlan == 1 ? 'Teste grátis' : 'Adquirir plano'"
           color="brown-6"
           text-color="grey-3"
         />
         <div class="pricing-details">
           <div
             class="pricing-detail flex items-center q-my-md"
-            v-for="i in props.dataPricing.benefits"
+            v-for="i in JSON.parse(props.dataPricing.benefits)"
             :key="i"
           >
             <q-icon class="q-mr-sm" size="xs" name="check_circle" />
@@ -61,7 +62,7 @@ const buyPlan = () => {
 
       .badge-discount {
         position: absolute;
-        top: -25%;
+        top: -15%;
         right: -8%;
         font-size: 1rem;
         

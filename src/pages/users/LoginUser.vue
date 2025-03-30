@@ -48,7 +48,7 @@ const reloadPage = () => {
   <div id="login-user">
     <div class="login-user-img">
       <q-img
-        src="../../assets/logo/logo.png"
+        src="../../assets/logo/logo_transparent.png"
         height="70%"
         width="70%"
         fit="contain"
