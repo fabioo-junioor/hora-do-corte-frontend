@@ -4,6 +4,7 @@ import { useStore } from "vuex";
 import { CardReservation, Loader, CardNotice, CardMessage, CardAlertNotice } from "../../components";
 import { getReservation, deleteReservation } from "../../services/api/api.reservation.js";
 import { getDataUser } from "../../services/storage/settingSession.js";
+import { getDateToday, getCurrentTime, dateCompare } from '../../utils/dataUtils.js';
 
 const store = useStore();
 const isLoaderReservations = ref(false);
@@ -59,7 +60,7 @@ const groupByDate = (array) => {
 };
 const getReservations = async () => {
   let dataUser = getDataUser();
-  let dataReservaions = await getReservation(dataUser?.pkUser);
+  let dataReservaions = await getReservation(dataUser?.pkUser, getDateToday());
   if((dataReservaions?.statusCode === 200) &
     (dataReservaions?.data.length === 0)) {
     isLoaderReservations.value = true;
@@ -81,6 +82,10 @@ const getReservations = async () => {
     return;
 
   };
+};
+const verifyTimeBefore = (data) => {
+  return !dateCompare(data[0].dateReservation, data[0].timeReservation, getDateToday(), getCurrentTime());
+
 };
 const converterDataToJson = (data) => {
   data.filter((elem) => {
@@ -127,6 +132,7 @@ onMounted(async () => {
         :key="i"
         :dataCustomerReservation="i"
         :isLoaderTime="isLoaderCancelReservations"
+        :isDisabledBtn='verifyTimeBefore(i)'
         @cancelReservation="cancelReservation">
         <Loader loaderSize="1.2em" loaderColor="white" />  
       </CardReservation>

@@ -97,13 +97,13 @@ onMounted(() => {
             <q-separator dark color="brown-4" />
           </div>
           <div class="text-subtitle2 q-my-md">
-            Descrição: {{ dataBuyPlan.details[0]?.about }}
+            Descrição: {{ dataBuyPlan.details[0]?.description }}
             <q-separator dark color="brown-4" />
           </div>
           <div class="text-subtitle2 wrap q-my-md">
             Beneficios:
             <q-badge
-              v-for="i in dataBuyPlan.details[0]?.benefits"
+              v-for="i in JSON.parse(dataBuyPlan.details[0]?.benefits)"
               :key="i"
               class="q-ma-xs q-pa-xs text-white text-subtitle2"
               color="brown-5"

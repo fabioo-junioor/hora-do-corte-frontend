@@ -85,15 +85,15 @@ onMounted(async () => {
           height="auto"
           width="70%" />
         <p class="q-ml-md text-justify">
-          1. Escolha o profissional de sua preferência. <br>
-          2. Cada profissional possui seus próprios serviços.
+          Escolha o profissional de sua preferência. <br>
+          Cada profissional possui seus próprios serviços.
         </p>
       </div>
       <div class="home-work-services bg-brown-6 q-pa-md">
         <p class="q-mr-md text-justify">
-          1. Escolha um ou mais serviços. <br>
-          2. Os serviços estão relacionados diretamente com o profissional definido anteriormente. <br>
-          3. Cada serviços possui seu valor e duração especifica.
+          Escolha um ou mais serviços. <br>
+          Os serviços estão relacionados diretamente com o profissional definido anteriormente. <br>
+          Cada serviços possui seu valor e duração especifica.
         </p>
         <q-img
           src="../assets/screen/screen_2.png"
@@ -108,17 +108,17 @@ onMounted(async () => {
           height="auto"
           width="70%" />
         <p class="q-ml-md text-justify">
-          1. Escolha o dia e horário de suas prefêrencia. <br>
-          2. Os dias e horários podem alterar dependendo de cada profissional. <br>
-          3. Os dias pré definidos aparecem em destaque. <br>
-          4. Horários em vermelho já foram reservados.
+          Escolha o dia e horário de suas prefêrencia. <br>
+          Os dias e horários podem alterar dependendo de cada profissional. <br>
+          Os dias pré definidos aparecem em destaque. <br>
+          Horários em vermelho já foram reservados.
         </p>
       </div>
       <div class="home-work-services bg-brown-6 q-pa-md">
         <p class="q-mr-md text-justify">
-          1. Preencher alguns dados pessoais para realzar a reserva. <br>
-          2. Nome e telefone são obrigatórios. <br>
-          3. Ao informar o email o cliente receberá uma confirmação.
+          Preencher alguns dados pessoais para realzar a reserva. <br>
+          Nome e telefone são obrigatórios. <br>
+          Ao informar o email o cliente receberá uma confirmação.
         </p>
         <q-img
           src="../assets/screen/screen_4.png"
@@ -234,7 +234,7 @@ onMounted(async () => {
 
       p {
         width: 50%;
-        font-size: 1.5rem;
+        font-size: 1.2rem;
         color: $grey-2;
 
       }
@@ -271,10 +271,6 @@ onMounted(async () => {
 @media only screen and (max-width: 1200px) {
   #home {
     .home-about {
-      width: 70%;
-
-    }
-    .home-works {
       width: 70%;
 
     }
@@ -326,19 +322,19 @@ onMounted(async () => {
         font-size: 3rem;
 
       }
-      .home-work-profesional {
-        flex-direction: column-reverse;
-
-        p {
-          width: 100%;
-
-        }
-      }
       .home-work-services {
         flex-direction: column-reverse;
+        padding: .5rem;
 
+        .q-img{
+          width: 100% !important;
+
+        }
         p {
           width: 100%;
+          text-align: center;
+          font-size: 1rem;
+          margin: .5rem;
 
         }
       }

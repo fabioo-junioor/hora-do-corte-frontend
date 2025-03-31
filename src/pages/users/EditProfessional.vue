@@ -271,7 +271,6 @@ const editScheduleProfessional = async (data) => {
 
   };
   if(dataSchedule?.statusCode === 200 && dataSchedule?.data.length === 0) {
-    store.commit("setAlertConfig", { message: dataSchedule?.message, type: "info" });
     dataEditSchedules.splice(0, dataEditSchedules.length);
     dataEditSchedules.push(...scheduleFormatter);
     pkProfessionalSchedule.value = null;
@@ -301,7 +300,6 @@ const editServicesProfessional = async (services) => {
 
   };
   if(dataService?.statusCode === 200 && dataService?.data.length === 0) {
-    store.commit("setAlertConfig", { message: dataService?.message, type: "info" });
     pkProfessionalServices.value = null;
     isDialogServices.value = true;
     return;

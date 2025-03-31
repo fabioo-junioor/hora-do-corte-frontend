@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(["dataCustomerReservation", "isLoaderTime"]);
+const props = defineProps(["dataCustomerReservation", "isLoaderTime", "isDisabledBtn"]);
 const emit = defineEmits(["cancelReservation"]);
 import userDefault from "../../assets/imgsDefault/user.png";
 
@@ -92,7 +92,7 @@ const cancelReservation = (pkReservation) => {
               dark
               stack
               push
-              :disable="isLoaderTime"
+              :disable="isLoaderTime || isDisabledBtn"
               @click="cancelReservation(i.pkReservation)"
               class="full-height full-width"
               size=".8rem"
