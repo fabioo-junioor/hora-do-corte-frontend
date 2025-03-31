@@ -3,12 +3,15 @@ import { getDataUser } from '../storage/settingSession.js';
 const dataUser = getDataUser();
 const header = { "Content-Type" : "application/json", Authorization: `Bearer ${dataUser?.token || ''}` };
 
-const getReservation = async (pkUser) => {
+const getReservation = async (pkUser, today) => {
     try {
         const response = await fetch(url+`reservation/${pkUser}/getAllReservation`, {
             headers: header,
-            method: 'GET',
-            mode: 'cors'
+            method: 'POST',
+            mode: 'cors',
+            body: JSON.stringify({
+                today: today
+            })
         });
         const data = await response.json();
         return data;       
