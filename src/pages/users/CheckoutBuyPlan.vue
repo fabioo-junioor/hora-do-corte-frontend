@@ -4,7 +4,9 @@ import { useStore } from "vuex";
 import { Loader, CardAlertNotice } from '../../components';
 import { createPurchasePlan } from "../../services/api/api.purchase.js";
 import { getDateToday, getCurrentTime } from "../../utils/dataUtils.js";
-import barbershop from "../../assets/imgsDefault/barbershop-ai.jpg";
+import qrcodeplan2 from "../../assets/qrcodes/qrcode-pix-hdcpl2.png";
+import qrcodeplan3 from "../../assets/qrcodes/qrcode-pix-hdcpl3.png";
+import imgsDefault from '../../assets/imgsDefault/barbershop-ai.jpg'
 
 const store = useStore();
 const isParamsStore = ref(false);
@@ -14,6 +16,10 @@ const dataBuyPlan = reactive({
   pkPlan: null,
   namePlan: "",
   details: [],
+});
+const dataCodes = reactive({
+  code2: '00020126580014BR.GOV.BCB.PIX0136ab39bfb4-d4d4-4ac9-be64-4c8d67da1787520400005303986540525.005802BR5901N6001C62100506HDCPL26304EA23',
+  code3: '00020126580014BR.GOV.BCB.PIX0136ab39bfb4-d4d4-4ac9-be64-4c8d67da17875204000053039865406135.005802BR5901N6001C62100506HDCPL363040038'
 });
 
 const checkoutVerify = () => {
@@ -56,6 +62,20 @@ const buyPlan = async () => {
 
   };
 };
+const verifyQrcode = (pkPlan) => {
+  if(pkPlan == 1){
+    return imgsDefault;
+
+  };
+  if(pkPlan == 2){
+    return qrcodeplan2;
+
+  };
+  if(pkPlan == 3){
+    return qrcodeplan3;
+
+  };
+};
 onMounted(() => {
   checkoutVerify();
 
@@ -69,46 +89,50 @@ onMounted(() => {
         <q-separator dark color="white" />
       </div>
     </div>
-    <div v-else class="checkout-buy-plan-card">
+    <div v-else class="checkout-buy-plan-card q-py-sm">
       <q-card dark flat class="my-card bg-brown-9">
-        <q-card-section class="q-pa-none">
-          <q-badge
-            floating
-            transparent
-            v-if="dataBuyPlan.pkPlan === 3"
-            label="-10%"
-            class="badge-discount q-pa-sm text-subtitle1"
-            color="red-10"
-          />
-          <q-img height="15rem" :src="barbershop">
-            <div class="absolute-bottom text-h6 text-center">
-              {{ dataBuyPlan.namePlan }}
-            </div>
-          </q-img>
-        </q-card-section>
-
-        <q-card-section>
-          <div class="text-subtitle2 q-my-md">
-            Valor(R$): {{ dataBuyPlan.details[0]?.price }}
-            <q-separator dark color="brown-4" />
-          </div>
-          <div class="text-subtitle2 q-my-md">
-            Tempo: {{ dataBuyPlan.details[0]?.time }} dias
-            <q-separator dark color="brown-4" />
-          </div>
-          <div class="text-subtitle2 q-my-md">
-            Descrição: {{ dataBuyPlan.details[0]?.description }}
-            <q-separator dark color="brown-4" />
-          </div>
-          <div class="text-subtitle2 wrap q-my-md">
-            Beneficios:
+        <q-card-section horizontal>
+          <div class="checkout-buy-plan-card-qrcode">
             <q-badge
-              v-for="i in JSON.parse(dataBuyPlan.details[0]?.benefits)"
-              :key="i"
-              class="q-ma-xs q-pa-xs text-white text-subtitle2"
-              color="brown-5"
-              :label="i"
-            />
+              floating
+              transparent
+              v-if="dataBuyPlan.pkPlan === 3"
+              label="-10%"
+              class="badge-discount q-pa-sm text-subtitle1"
+              color="red-10" />
+            <q-img fit="contain" :src="verifyQrcode(dataBuyPlan.pkPlan)" />
+            <q-input
+              dark
+              outlined
+              v-if="dataBuyPlan.pkPlan !== 1"
+              v-model="dataCodes.code2"
+              class="q-my-sm q-mx-xs"
+              label="Código para pagamento"
+              label-color="brown-2"
+              bg-color="brown-7" />
+          </div>
+          <div class="checkout-buy-plan-card-details q-pa-xs">
+            <div class="text-subtitle2 q-my-md">
+              Valor: R${{ dataBuyPlan.details[0]?.price }}
+              <q-separator dark color="brown-4" />
+            </div>
+            <div class="text-subtitle2 q-my-md">
+              Tempo: {{ dataBuyPlan.details[0]?.time }} dias
+              <q-separator dark color="brown-4" />
+            </div>
+            <div class="text-subtitle2 q-my-md">
+              Descrição: {{ dataBuyPlan.details[0]?.description }}
+              <q-separator dark color="brown-4" />
+            </div>
+            <div class="text-subtitle2 wrap q-my-md">
+              Beneficios:
+              <q-badge
+                v-for="i in JSON.parse(dataBuyPlan.details[0]?.benefits)"
+                :key="i"
+                class="q-ma-xs q-pa-xs text-white text-subtitle2"
+                color="brown-5"
+                :label="i" />
+            </div>
           </div>
         </q-card-section>
 
@@ -117,6 +141,7 @@ onMounted(() => {
         <q-card-actions class="row justify-center">
           <q-btn
             push
+            v-if="dataBuyPlan.pkPlan == 1"
             style="height: 3rem"
             :disable="isLoaderBuyPlan"
             @click="buyPlan"
@@ -125,6 +150,10 @@ onMounted(() => {
             color="brown-5">
             <Loader v-if="isLoaderBuyPlan" loaderSize="1.2em" loaderColor="white" />
           </q-btn>
+          <div v-else class="text-subtitle1 text-center q-my-sm">
+            Observação: Adicionar na descrição do pagamento
+            o MESMO EMAIL de cadastro que foi utilizada na plataforma!
+          </div>
         </q-card-actions>
       </q-card>
     </div>
@@ -145,16 +174,24 @@ onMounted(() => {
   background-size: cover;
 
   .checkout-buy-plan-card {
-    min-height: calc(100vh - 5rem);
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
 
     .q-card {
-      width: 30%;
-      box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3) !important;
+      width: 60%;
+      box-shadow: 0px 0px 5px 5px rgba(0, 0, 0, .3) !important;
       z-index: 0;
+
+      .checkout-buy-plan-card-qrcode{
+        width: 40%;
+
+      }
+      .checkout-buy-plan-card-details{
+        width: 60%;
+
+      }
 
       .badge-discount {
         top: -1rem;
@@ -169,12 +206,20 @@ onMounted(() => {
 @media only screen and (max-width: 1560px) {
 }
 @media only screen and (max-width: 1200px) {
+  #checkout-buy-plan {
+    .checkout-buy-plan-card {
+      .q-card {
+        width: 70%;
+
+      }
+    }
+  }
 }
 @media only screen and (max-width: 992px) {
   #checkout-buy-plan {
     .checkout-buy-plan-card {
       .q-card {
-        width: 40%;
+        width: 80%;
 
       }
     }
@@ -184,8 +229,21 @@ onMounted(() => {
   #checkout-buy-plan {
     .checkout-buy-plan-card {
       .q-card {
-        width: 60%;
+        width: 50%;
 
+        .q-card__section{
+          flex-direction: column;
+          align-items: center;
+
+          .checkout-buy-plan-card-qrcode{
+            width: 100%;
+
+          }
+          .checkout-buy-plan-card-details{
+            width: 100%;
+
+          }
+        }
       }
     }
   }
@@ -194,8 +252,8 @@ onMounted(() => {
   #checkout-buy-plan {
     .checkout-buy-plan-card {
       .q-card {
-        width: 95%;
-        
+        width: 70%;
+
       }
     }
   }
