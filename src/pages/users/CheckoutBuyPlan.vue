@@ -11,15 +11,12 @@ import imgsDefault from '../../assets/imgsDefault/barbershop-ai.jpg'
 const store = useStore();
 const isParamsStore = ref(false);
 const isLoaderBuyPlan = ref(false);
+const dataCodeSelected = ref('');
 const dataBuyPlan = reactive({
   pkUser: null,
   pkPlan: null,
   namePlan: "",
   details: [],
-});
-const dataCodes = reactive({
-  code2: '00020126580014BR.GOV.BCB.PIX0136ab39bfb4-d4d4-4ac9-be64-4c8d67da1787520400005303986540525.005802BR5901N6001C62100506HDCPL26304EA23',
-  code3: '00020126580014BR.GOV.BCB.PIX0136ab39bfb4-d4d4-4ac9-be64-4c8d67da17875204000053039865406135.005802BR5901N6001C62100506HDCPL363040038'
 });
 
 const checkoutVerify = () => {
@@ -63,21 +60,39 @@ const buyPlan = async () => {
   };
 };
 const verifyQrcode = (pkPlan) => {
-  if(pkPlan == 1){
+  if(pkPlan === 1){
     return imgsDefault;
 
   };
-  if(pkPlan == 2){
+  if(pkPlan === 2){
     return qrcodeplan2;
 
   };
-  if(pkPlan == 3){
+  if(pkPlan === 3){
     return qrcodeplan3;
+
+  };
+};
+const verifyCode = () => {
+  if(dataBuyPlan.pkPlan === 1){
+    dataCodeSelected.value = '';
+    return;
+
+  };
+  if(dataBuyPlan.pkPlan === 2){
+    dataCodeSelected.value = '00020126580014BR.GOV.BCB.PIX0136ab39bfb4-d4d4-4ac9-be64-4c8d67da1787520400005303986540525.005802BR5901N6001C62100506HDCPL26304EA23';
+    return;
+
+  };
+  if(dataBuyPlan.pkPlan === 3){
+    dataCodeSelected.value = '00020126580014BR.GOV.BCB.PIX0136ab39bfb4-d4d4-4ac9-be64-4c8d67da17875204000053039865406135.005802BR5901N6001C62100506HDCPL363040038';
+    return;
 
   };
 };
 onMounted(() => {
   checkoutVerify();
+  verifyCode();
 
 });
 </script>
@@ -105,7 +120,7 @@ onMounted(() => {
               dark
               outlined
               v-if="dataBuyPlan.pkPlan !== 1"
-              v-model="dataCodes.code2"
+              v-model="dataCodeSelected"
               class="q-my-sm q-mx-xs"
               label="Código para pagamento"
               label-color="brown-2"
