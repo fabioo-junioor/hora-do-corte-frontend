@@ -1,13 +1,14 @@
 <script setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
-import { CardPricing, Loader } from "../components";
+import { CardPricing, Loader, SkeletonCardPricing } from "../components";
 import { getDataUser } from "../services/storage/settingSession.js";
 import { getAllPlans } from '../services/api/api.plan.js';
 
 const router = useRouter();
 const store = useStore();
+const isLoaderCardPricing = ref(false);
 const pricingPlans = reactive([]);
 const getDetailsPlan = (pkPlan) => {
   return pricingPlans.filter((elem) => elem.pkPlan === pkPlan);
@@ -29,6 +30,7 @@ const getPlans = async () => {
   let allPlans = await getAllPlans();
   if(allPlans?.statusCode === 200 && allPlans?.data.length !== 0){
     pricingPlans.push(...allPlans?.data);
+    isLoaderCardPricing.value = true;
     return;
 
   };
@@ -129,11 +131,15 @@ onMounted(async () => {
     </div>
     <div class="home-pricings row q-py-xl q-my-xl">
       <CardPricing
+        v-show="isLoaderCardPricing"
         v-for="i in pricingPlans"
         :key="i.pk"
         class="home-pricing"
         :dataPricing="i"
         @buyPlan="buyPlan" />
+        <SkeletonCardPricing
+          v-show="!isLoaderCardPricing"
+          v-for="i in 3" :key="i" />
     </div>
     <div class="home-footer row full-width q-pa-md q-mt-xl">
       <div class="col column justify-end">

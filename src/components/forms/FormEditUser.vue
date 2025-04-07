@@ -100,8 +100,8 @@ onMounted(() => {
                     type="tel"
                     label="Whatsapp *"
                     mask="(##) ####-#####"
-                    lazy-rules
-                    :rules="[rulesUser.required, rulesUser.phone]">
+                    :rules="[rulesUser.required, rulesUser.phone]"
+                    lazy-rules>
                     <template v-slot:prepend>
                         <i class='bx bxl-whatsapp text-white' />
                     </template>    
@@ -116,7 +116,8 @@ onMounted(() => {
                     bg-color="brown-8"
                     v-model="dataEditUser.instagram"
                     type="text"
-                    label="Link do instagram"
+                    label="Usuário do instagram"
+                    :hint="!!dataEditUser.instagram ? `https://www.instagram.com/${dataEditUser.instagram}` : ''"
                     lazy-rules>
                     <template v-slot:prepend>
                         <i class='bx bxl-instagram-alt text-white' />
