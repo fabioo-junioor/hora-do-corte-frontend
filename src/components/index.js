@@ -30,6 +30,7 @@ import BestProfessional from './charts/BestProfessional.vue';
 
 import SkeletonCharts from '../components/skeletons/SkeletonCharts.vue';
 import SkeletonStatus from '../components/skeletons/SkeletonStatus.vue';
+import SkeletonCardPricing from '../components/skeletons/SkeletonCardPricing.vue';
 
 export {
     Navbar,
@@ -57,5 +58,6 @@ export {
     WeekReservations,
     BestProfessional,
     SkeletonCharts,
-    SkeletonStatus
+    SkeletonStatus,
+    SkeletonCardPricing
 }
