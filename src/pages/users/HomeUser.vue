@@ -303,7 +303,7 @@ onMounted(async () => {
                     </div>
                     <div class=" home-user-details-contact column items-end justify-end">
                         <div class="text-subtitle1">
-                            <a :href="dataUser[0]?.instagram" target="_blank">
+                            <a :href="`https://www.instagram.com/${dataUser[0]?.instagram}`" target="_blank">
                                 <i class='bx bxl-instagram-alt text-white q-ma-xs' />
                             </a>
                         </div>
