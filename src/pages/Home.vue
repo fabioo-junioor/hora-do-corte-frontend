@@ -180,42 +180,47 @@ onMounted(async () => {
   background-size: cover;
   
   .home-about {
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 50%;
-    color: $whiteColorPrimary;
+    width: 60%;
+    padding: 3rem 2rem;
+    color: white;
+    text-align: center;
+    position: relative;
+    z-index: 2;
 
     h1 {
-      font-size: 5rem;
-      font-weight: 500;
-      z-index: 2;
+      font-size: 4.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
 
     }
     p {
-      text-align: center;
       font-size: 1.3rem;
       color: $grey-3;
-      z-index: 2;
+      margin-bottom: 2rem;
 
     }
     .q-btn {
       width: 100%;
+      border-radius: 12px;
+      font-weight: bold;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 
     }
     .home-icon-navalha {
       position: absolute;
       top: 15%;
       left: 5%;
-      opacity: 0.4;
+      opacity: .3;
 
     }
     .home-icon-barbearia {
       position: absolute;
       bottom: 10%;
       right: 10%;
-      opacity: 0.5;
+      opacity: .3;
 
     }
   }
@@ -223,12 +228,14 @@ onMounted(async () => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 95%;
+    padding: 3rem 0;
     gap: 2rem;
-    width: 90%;
 
     h3 {
-      color: $grey-2;
-      font-weight: 500;
+      font-size: 2.5rem;
+      color: $brown-10;
+      font-weight: 600;
 
     }
     .home-work-services {
@@ -236,12 +243,22 @@ onMounted(async () => {
       justify-content: center;
       align-items: center;
       border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
       width: 100%;
+      gap: 1.5rem;
+
 
       p {
-        width: 50%;
+        flex: 1;
         font-size: 1.2rem;
-        color: $grey-2;
+        color: $grey-1;
+        line-height: 1.6;
+
+
+      }
+      .q-img{
+        flex: 1;
+        border-radius: 10px;
 
       }
     }
@@ -251,21 +268,29 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     flex-wrap: nowrap;
-    gap: 0.5rem;
+    gap: 1rem;
     width: 80%;
 
   }
   .home-footer {
+    width: 100%;
     background-color: $darkColorSecondary;
     border-top: 2px solid $brown-8;
-    box-shadow: 0px -1px 3px 1px $brown-7;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, .2);
+    padding: 2rem;
+
+    .col {
+      color: $grey-3;
+
+    }
 
     i {
-      font-size: 2.5rem;
-      color: $brown-10;
+      font-size: 2rem;
+      color: $brown-8;
+      transition: color .3s ease;
 
       &:hover {
-        color: $brown-8;
+        color: $brown-6;
 
       }
     }
@@ -355,7 +380,7 @@ onMounted(async () => {
   #home {
     .home-about {
       h1 {
-        font-size: 3rem;
+        font-size: 2.5rem;
 
       }
       p {
