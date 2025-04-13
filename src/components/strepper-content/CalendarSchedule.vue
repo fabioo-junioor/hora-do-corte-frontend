@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { verifySchedulesAvailable } from '../../utils/formatters.js';
+import { verifySchedulesAvailable, sumTimeService } from '../../utils/formatters.js';
 import { getDateToday } from '../../utils/dataUtils.js';
 import { TimeSchedule } from '../../components';
-const props = defineProps(['schedules', 'timesAvailable']);
+const props = defineProps(['schedules', 'timesAvailable', 'durationInterval']);
 const emit = defineEmits(['checkScheduleDate', 'checkScheduleTime']);
 const isLoaderTimes = defineModel('isLoaderTimes');
 
@@ -166,7 +166,7 @@ onMounted(() => {
                             <TimeSchedule
                                 @click="!verifyTimeBeforeToday(i) || checkScheduleTime(i)"
                                 v-for='i in props.timesAvailable' :key='i'
-                                :time='i.time'
+                                :time="{start: i.time, end: sumTimeService(i.time, props.durationInterval)}"
                                 v-model:timeCheck='timeCheck'
                                 :isAvailable='verifyTimeBeforeToday(i.time)'
                                 :isReserved='i.isReserved' />
@@ -185,7 +185,7 @@ onMounted(() => {
     
     .calendar-schedules-times{
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-around;
         flex-wrap: wrap;
         gap: .5rem;
 

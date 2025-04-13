@@ -377,6 +377,7 @@ onMounted(async () => {
                                 :schedules='dataScheduleSelected'
                                 :timesAvailable='dataTimesFromWeek'
                                 :isLoaderTimes='isTimes'
+                                :durationInterval='dataReservation.duration'
                                 @checkScheduleDate='checkScheduleDate'
                                 @checkScheduleTime='checkScheduleTime'>
                                 <Loader loaderColor='white' />
