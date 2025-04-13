@@ -100,7 +100,10 @@ const sumTimeService = (time, minutesToAdd) => {
     totalMinutes = totalMinutes % 60;
     totalHours = totalHours % 24;
 
-    return `${String(totalHours).padStart(2, '0')}:${String(totalMinutes).padStart(2, '0')}`;
+    let paddedHours = String(totalHours).padStart(2, '0');
+    let paddedMinutes = String(totalMinutes).padStart(2, '0');
+
+    return `${paddedHours}:${paddedMinutes}`;
 
 };
 

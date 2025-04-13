@@ -24,14 +24,14 @@ const verifyReservationColorBg = (data, time) =>{
   <div id="time-schedules">
     <q-badge
         :style="'cursor: '+ (!props.isReserved ? 'pointer' : 'not-allowed')"
-        class="q-py-xs q-px-sm text-h6"
+        class="q-py-xs q-px-sm text-subtitle1 text-weight-bold"
         @mouseover="isHovered = true"
         @mouseleave="isHovered = false"
-        :color="(isHovered && !props.isReserved) ? 'grey-2' : verifyReservationColorBg(props.isReserved, props.time)"
+        :color="(isHovered && !props.isReserved) ? 'grey-2' : verifyReservationColorBg(props.isReserved, props.time.start)"
         :text-color="(isHovered && !props.isReserved) ? 'grey-8' : 'grey-2'">
-        {{ props.time }}
+        {{ props.time.start }} - {{ props.time.end }}
         <q-icon
-          v-if="(timeCheck == props.time && !props.isReserved)" 
+          v-if="(timeCheck == props.time.start && !props.isReserved)" 
           class="icon-check" 
           size="1.1rem" 
           name="done_outline" 
