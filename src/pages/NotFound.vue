@@ -1,4 +1,17 @@
 <script setup>
+import { onMounted, reactive } from 'vue';
+
+
+const contactHDC = reactive({
+  email: '',
+  instagram: ''
+
+});
+onMounted(() => {
+  contactHDC.email = import.meta.env.VITE_CONTACT_EMAIL || '--';
+  contactHDC.instagram = import.meta.env.VITE_CONTACT_INSTAGRAM || '';
+
+});
 </script>
 <template>
     <div id="not-found">
@@ -9,12 +22,12 @@
         <div class="not-found-footer row full-width q-pa-md">
             <div class="col column justify-end">
                 <div class="col row items-end">
-                    <a href="https://www.instagram.com/horadocorte.real/" target="_blank">
+                    <a :href="`https://www.instagram.com/${contactHDC.instagram}/`" target="_blank">
                         <i class="bx bxl-instagram" />
                     </a>
                 </div>
                 <div class="col text-subtitle1 row items-end">
-                    Contato: contato@gmail.com
+                    Contato: {{ contactHDC.email }}
                 </div>
                 <div class="col text-subtitle2 row items-end">
                     Hora do Corte, 2025. All Rights Reserved.
@@ -55,16 +68,23 @@
         }        
     }
     .not-found-footer {
+        width: 100%;
         background-color: $darkColorSecondary;
         border-top: 2px solid $brown-8;
-        box-shadow: 0px -1px 3px 1px $brown-7;
+        box-shadow: 0 -2px 6px rgba(0, 0, 0, .2);
+        padding: 1rem 2rem;
 
+        .col {
+            color: $grey-3;
+
+        }
         i {
-        font-size: 2.5rem;
-        color: $brown-10;
+            font-size: 2rem;
+            color: $brown-8;
+            transition: color .3s ease;
 
             &:hover {
-                color: $brown-8;
+                color: $brown-5;
 
             }
         }
