@@ -9,6 +9,11 @@ import { getAllPlans } from '../services/api/api.plan.js';
 const router = useRouter();
 const store = useStore();
 const isLoaderCardPricing = ref(false);
+const contactHDC = reactive({
+  email: '',
+  instagram: ''
+
+});
 const pricingPlans = reactive([]);
 const getDetailsPlan = (pkPlan) => {
   return pricingPlans.filter((elem) => elem.pkPlan === pkPlan);
@@ -42,7 +47,8 @@ const register = () => {
 };
 onMounted(async () => {
   await getPlans();
-
+  contactHDC.email = import.meta.env.VITE_CONTACT_EMAIL || '--';
+  contactHDC.instagram = import.meta.env.VITE_CONTACT_INSTAGRAM || '';
 
 });
 </script>
@@ -144,12 +150,12 @@ onMounted(async () => {
     <div class="home-footer row full-width q-pa-md q-mt-xl">
       <div class="col column justify-end">
         <div class="col row items-end">
-          <a href="https://www.instagram.com/horadocorte.real/" target="_blank">
+          <a :href="`https://www.instagram.com/${contactHDC.instagram}/`" target="_blank">
             <i class="bx bxl-instagram" />
           </a>
         </div>
         <div class="col text-subtitle1 row items-end">
-          Contato: contato@gmail.com
+          Contato: {{ contactHDC.email }}
         </div>
         <div class="col text-subtitle2 row items-end">
           Hora do Corte, 2025. All Rights Reserved.
@@ -277,7 +283,7 @@ onMounted(async () => {
     background-color: $darkColorSecondary;
     border-top: 2px solid $brown-8;
     box-shadow: 0 -2px 6px rgba(0, 0, 0, .2);
-    padding: 2rem;
+    padding: 1rem 2rem;
 
     .col {
       color: $grey-3;
@@ -290,7 +296,7 @@ onMounted(async () => {
       transition: color .3s ease;
 
       &:hover {
-        color: $brown-6;
+        color: $brown-5;
 
       }
     }
