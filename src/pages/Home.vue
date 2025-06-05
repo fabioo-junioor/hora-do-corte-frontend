@@ -1,9 +1,9 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import { useStore } from "vuex";
-import { CardPricing, Loader, SkeletonCardPricing } from "../components";
-import { getDataUser } from "../services/storage/settingSession.js";
+import { onMounted, reactive, ref } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import { useStore } from 'vuex';
+import { CardPricing, Loader, SkeletonCardPricing } from '../components';
+import { getDataUser } from '../services/storage/settingSession.js';
 import { getAllPlans } from '../services/api/api.plan.js';
 
 const router = useRouter();
