@@ -1,7 +1,6 @@
 <script setup>
 import { onMounted, reactive } from 'vue';
 
-
 const contactHDC = reactive({
   email: '',
   instagram: ''
